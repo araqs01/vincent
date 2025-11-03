@@ -17,7 +17,7 @@ class GrapeSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = storage_path('app/public/grapes.xlsx');
+        $path = 'database/seeders/catalog/grapes.xlsx';
 
         if (!file_exists($path)) {
             $this->command->error("❌ Файл не найден 111: $path");
