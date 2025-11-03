@@ -20,7 +20,7 @@ class GrapeSeeder extends Seeder
         $path = storage_path('app/public/grapes.xlsx');
 
         if (!file_exists($path)) {
-            $this->command->error("❌ Файл не найден 111: $path");
+            $this->command->error("❌ Файл не найден : $path");
             return;
         }
 
