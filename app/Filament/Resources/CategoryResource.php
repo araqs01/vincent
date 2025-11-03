@@ -3,6 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
+use App\Filament\Resources\CategoryResource\RelationManagers\MenuBannersRelationManager;
+use App\Filament\Resources\CategoryResource\RelationManagers\MenuBlocksRelationManager;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -144,7 +146,9 @@ class CategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Resources\CategoryResource\RelationManagers\AttributesRelationManager::class,
+//            \App\Filament\Resources\CategoryResource\RelationManagers\AttributesRelationManager::class,
+            MenuBannersRelationManager::class,
+            MenuBlocksRelationManager::class
         ];
     }
     public static function getPages(): array

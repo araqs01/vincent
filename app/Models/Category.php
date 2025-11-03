@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Translatable\HasTranslations;
@@ -49,5 +50,16 @@ class Category extends Model
     public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function menuBanners(): HasMany
+    {
+        return $this->hasMany(MenuBanner::class);
+    }
+
+
+    public function menuBlocks(): HasMany
+    {
+        return $this->hasMany(MenuBlock::class);
     }
 }

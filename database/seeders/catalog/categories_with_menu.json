@@ -96,6 +96,29 @@
                     ]
                 }
             ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
+                }
+            ],
             "filters": [
                 {
                     "key": "color",
@@ -646,7 +669,7 @@
                 },
                 {
                     "title": { "ru": "Производитель", "en": "Brand" },
-                    "type": "brand",
+                    "type": "manufacturer",
                     "values": [
                         { "ru": "Moet & Chandon", "en": "Moet & Chandon" },
                         { "ru": "Canti", "en": "Canti" },
@@ -684,14 +707,46 @@
                     ]
                 },
                 {
-                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
-                    "type": "gift_pack",
+                    "title": { "ru": "Специальные шампанские", "en": "Special Champagnes" },
+                    "type": "special_champagne",
+                    "values": [
+                        { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                        { "ru": "В большой бутылке", "en": "Large Bottle" },
+                        { "ru": "Шампанское по акции", "en": "Discounted Champagne" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
                     "values": [
                         { "ru": "500–1000 руб.", "en": "500–1000 RUB" },
                         { "ru": "1000–1500 руб.", "en": "1000–1500 RUB" },
                         { "ru": "1500–2000 руб.", "en": "1500–2000 RUB" },
                         { "ru": "2000–3000 руб.", "en": "2000–3000 RUB" }
                     ]
+                }
+            ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
                 }
             ],
             "filters": [
@@ -1072,8 +1127,17 @@
                     ]
                 },
                 {
-                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
-                    "type": "gift_pack",
+                    "title": { "ru": "Специальные виски", "en": "Special Whiskies" },
+                    "type": "special_whisky",
+                    "values": [
+                        { "ru": "Большие бутылки", "en": "Large Bottles" },
+                        { "ru": "Маленькие бутылочки", "en": "Mini Bottles" },
+                        { "ru": "Подарочная упаковка", "en": "Gift Packaging" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
                     "values": [
                         { "ru": "до 1000 руб.", "en": "up to 1000 RUB" },
                         { "ru": "1000–3000 руб.", "en": "1000–3000 RUB" },
@@ -1339,6 +1403,29 @@
                         }
                     ]
                 }
+            ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
+                }
             ]
         },
         {
@@ -1411,8 +1498,15 @@
                     ]
                 },
                 {
-                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
-                    "type": "gift_pack",
+                    "title": { "ru": "Специальные коньяки", "en": "Special Cognacs" },
+                    "type": "special_cognac",
+                    "values": [
+                        { "ru": "Подарочная упаковка", "en": "Gift Packaging" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
                     "values": [
                         { "ru": "до 1000 руб.", "en": "up to 1000 RUB" },
                         { "ru": "1000–3000 руб.", "en": "1000–3000 RUB" },
@@ -1517,7 +1611,7 @@
                     "ui_type": "tree"
                 },
                 {
-                    "key": "producer",
+                    "key": "manufacturer",
                     "title": { "ru": "Производитель", "en": "Producer" },
                     "mode": "reference",
                     "source_model": "App\\Models\\Producer",
@@ -1652,6 +1746,29 @@
                         }
                     ]
                 }
+            ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
+                }
             ]
         },
         {
@@ -1705,6 +1822,16 @@
                         { "ru": "Пина Колада", "en": "Pina Colada" },
                         { "ru": "Самбука", "en": "Sambuca" },
                         { "ru": "Трипл Сек", "en": "Triple Sec" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
+                    "values": [
+                        { "ru": "до 1000 руб.", "en": "up to 1000 RUB" },
+                        { "ru": "1000–2000 руб.", "en": "1000–2000 RUB" },
+                        { "ru": "2000–6000 руб.", "en": "2000–6000 RUB" },
+                        { "ru": "6000–10000 руб.", "en": "6000–10000 RUB" }
                     ]
                 }
             ],
@@ -2243,7 +2370,7 @@
                     "ui_type": "toggle"
                 }
             ],
-                "sorts": [
+            "sorts": [
                 {
                     "key": "general_sorts",
                     "title": { "ru": "Основные сортировки", "en": "General sorts" },
@@ -2298,6 +2425,29 @@
                             "direction": "desc"
                         }
                     ]
+                }
+            ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
                 }
             ]
         },
@@ -2374,8 +2524,15 @@
                     ]
                 },
                 {
-                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
-                    "type": "gift_pack",
+                    "title": { "ru": "Специальные предложения", "en": "Special Offers" },
+                    "type": "special_vodka",
+                    "values": [
+                        { "ru": "Подарочная упаковка", "en": "Gift Packaging" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
                     "values": [
                         { "ru": "до 500 руб.", "en": "up to 500 RUB" },
                         { "ru": "500–1000 руб.", "en": "500–1000 RUB" },
@@ -2612,7 +2769,7 @@
                     ]
                 }
                 ],
-                "sorts": [
+            "sorts": [
                 {
                     "key": "general_sorts",
                     "title": { "ru": "Основные сортировки", "en": "General sorts" },
@@ -2667,6 +2824,29 @@
                             "direction": "desc"
                         }
                     ]
+                }
+            ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
                 }
             ]
         },
@@ -2737,6 +2917,16 @@
                     "values": [
                         { "ru": "Верховое брожжение", "en": "Top Fermentation" },
                         { "ru": "Низовое брожжение", "en": "Bottom Fermentation" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
+                    "values": [
+                        { "ru": "до 100 руб.", "en": "up to 100 RUB" },
+                        { "ru": "100–200 руб.", "en": "100–200 RUB" },
+                        { "ru": "200–300 руб.", "en": "200–300 RUB" },
+                        { "ru": "300–500 руб.", "en": "300–500 RUB" }
                     ]
                 },
                 {
@@ -3084,6 +3274,29 @@
                         }
                     ]
                 }
+            ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
+                }
             ]
         },
         {
@@ -3209,6 +3422,29 @@
                             "direction": "desc"
                         }
                     ]
+                }
+            ],
+            "menu_banners": [
+                {
+                    "title": { "ru": "Рейтинговое", "en": "Top Rated" },
+                    "filter_key": "rating_high",
+                    "image": "",
+                    "active": true,
+                    "order": 1
+                },
+                {
+                    "title": { "ru": "Топ до 1000", "en": "Top under 1000" },
+                    "filter_key": "price_low",
+                    "image": "",
+                    "active": true,
+                    "order": 2
+                },
+                {
+                    "title": { "ru": "В подарок", "en": "As a Gift" },
+                    "filter_key": "gift_packaging",
+                    "image": "",
+                    "active": true,
+                    "order": 3
                 }
             ]
         },

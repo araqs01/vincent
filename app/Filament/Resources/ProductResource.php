@@ -8,6 +8,7 @@ use App\Filament\Resources\ProductResource\RelationManagers\CollectionsRelationM
 use App\Filament\Resources\ProductResource\RelationManagers\DishesRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\GrapeVariantsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\PairingsRelationManager;
+use App\Filament\Resources\ProductResource\RelationManagers\ProductVariantsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\TastesRelationManager;
 use App\Imports\ProductImporter;
 use App\Models\Product;
@@ -201,10 +202,11 @@ class ProductResource extends Resource
     {
         return [
             AttributeValuesRelationManager::class,
-            CollectionsRelationManager::class,
+//            CollectionsRelationManager::class,
             TastesRelationManager::class,
             GrapeVariantsRelationManager::class,
             PairingsRelationManager::class,
+            ProductVariantsRelationManager::class
         ];
     }
 

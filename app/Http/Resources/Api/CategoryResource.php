@@ -15,13 +15,23 @@ class CategoryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'type' => $this->type,
-            'name' => $this->getTranslations('name'),
+            'id'          => $this->id,
+            'slug'        => $this->slug,
+            'type'        => $this->type,
+            'name'        => $this->getTranslations('name'),
             'description' => $this->getTranslations('description'),
+
             'children' => $this->whenLoaded('children', fn() =>
             CategoryResource::collection($this->children)
+            ),
+
+            'menu_blocks' => $this->whenLoaded('menuBlocks', fn() =>
+            MenuBlockResource::collection($this->menuBlocks->sortBy('order_index'))
+            ),
+
+            // 🔹 Баннеры меню
+            'menu_banners' => $this->whenLoaded('menuBanners', fn() =>
+            MenuBannerResource::collection($this->menuBanners->sortBy('order'))
             ),
         ];
     }

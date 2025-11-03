@@ -11,15 +11,33 @@ class CategoryController extends BaseController
 {
     public function index(Request $request)
     {
-        $cacheKey = $this->cacheKey('categories-tree');
+        $cacheKey = $this->cacheKey("categories-with-menu");
 
         $categories = $this->rememberCache($cacheKey, function () {
             return Category::query()
                 ->whereNull('parent_id')
-                ->with(['children' => fn($q) => $q->orderBy('id')])
+                ->with([
+                    // 🔹 Подкатегории
+                    'children' => fn($q) => $q->orderBy('id'),
+
+                    // 🔹 Меню-блоки (только активные)
+                    'menuBlocks' => fn($q) => $q
+                        ->where('is_active', true)
+                        ->orderBy('order_index')
+                        ->with([
+                            'values' => fn($v) => $v
+                                ->where('is_active', true)
+                                ->orderBy('order_index'),
+                        ]),
+
+                    // 🔹 Баннеры (только активные)
+                    'menuBanners' => fn($q) => $q
+                        ->where('is_active', true)
+                        ->orderBy('order_index'),
+                ])
                 ->orderBy('id')
                 ->get();
-        }, 24 * 3600); // кеш 24 часа
+        }, 12 * 3600); // кэш 12 часов
 
         return $this->renderApi(
             resource: CategoryResource::collection($categories),

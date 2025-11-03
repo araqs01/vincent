@@ -4,19 +4,15 @@ namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MenuBlockResource extends JsonResource
+class MenuBlockValueResource extends JsonResource
 {
     public function toArray($request)
     {
         return [
             'id'         => $this->id,
-            'title'      => $this->title,
-            'type'       => $this->type,
+            'value'      => $this->value,
             'order'      => $this->order_index,
             'is_active'  => (bool) $this->is_active,
-            'values'     => $this->whenLoaded('values', fn() =>
-            MenuBlockValueResource::collection($this->values->sortBy('order_index'))
-            ),
         ];
     }
 }

@@ -118,7 +118,7 @@ class Product extends Model implements HasMedia
             ->withTimestamps();
     }
 
-    public function variants()
+    public function variants(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }

@@ -79,6 +79,24 @@ class CategoriesAndMenuSeeder extends Seeder
                 });
             });
 
+
+            collect($cat['menu_banners'] ?? [])->each(function ($banner, $bannerIndex) use ($category) {
+                $bannerRu = $banner['title']['ru'] ?? null;
+                $bannerEn = $banner['title']['en'] ?? $bannerRu;
+
+                \App\Models\MenuBanner::updateOrCreate(
+                    [
+                        'category_id' => $category->id,
+                        'filter_key'  => $banner['filter_key'] ?? Str::slug($bannerRu),
+                    ],
+                    [
+                        'title'       => ['ru' => $bannerRu, 'en' => $bannerEn],
+                        'is_active'   => $banner['active'] ?? true,
+                        'order_index' => $banner['order'] ?? ($bannerIndex + 1),
+                    ]
+                );
+            });
+
             /** --------------------------------------------------------
              *  2️⃣  Фильтры категории
              * -------------------------------------------------------- */

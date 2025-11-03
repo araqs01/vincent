@@ -14,5 +14,5 @@ Route::prefix('catalog')->group(function () {
 
     Route::get('/categories', [CategoryController::class, 'index'])->name('api.catalog.categories');
 
-    Route::get('/menu-blocks/{slug}', [MenuBlockController::class, 'index'])->name('api.catalog.menu-blocks');
+//    Route::get('/menu-blocks/{slug}', [MenuBlockController::class, 'index'])->name('api.catalog.menu-blocks');
 });
