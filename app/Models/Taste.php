@@ -9,23 +9,25 @@ class Taste extends Model
 {
     use HasTranslations;
 
-    protected $fillable = [
-        'taste_group_id',
-        'name',
-        'name_en',
-        'weight',
-    ];
-
+    protected $fillable = ['name', 'taste_group_id'];
     public $translatable = ['name'];
 
-    public function group(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function group()
     {
         return $this->belongsTo(TasteGroup::class, 'taste_group_id');
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function products()
     {
         return $this->belongsToMany(Product::class, 'product_taste')
-            ->withPivot('intensity_percent');
+            ->withPivot('intensity_percent')
+            ->withTimestamps();
     }
+
+    public function grapeVariants()
+    {
+        return $this->belongsToMany(GrapeVariant::class, 'grape_variant_taste');
+    }
+
 }
+

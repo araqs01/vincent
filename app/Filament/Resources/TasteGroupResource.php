@@ -12,10 +12,28 @@ use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableCont
 class TasteGroupResource extends Resource
 {
     protected static ?string $model = TasteGroup::class;
-    protected static ?string $navigationIcon = 'heroicon-o-folder';
-    protected static ?string $navigationGroup = 'Справочники';
-    protected static ?string $label = 'Группа вкусов';
-    protected static ?string $pluralLabel = 'Группы вкусов';
+    protected static ?string $navigationIcon = 'heroicon-o-fire';
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('app.navigation_groups.raw_materials');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.taste_group.plural');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('app.taste_group.singular');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('app.taste_group.plural');
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -64,7 +82,7 @@ class TasteGroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Позже добавим RelationManager для Tastes
+            // Позже добавим RelationManagers для Tastes
         ];
     }
 

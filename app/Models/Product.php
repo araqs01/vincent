@@ -3,28 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Translatable\HasTranslations;
 
 class Product extends Model implements HasMedia
 {
-    use HasTranslations;
-    use InteractsWithMedia;
+    use HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'name',
         'slug',
-        'brand_id',
         'category_id',
+        'brand_id',
+        'brand_line_id',
         'region_id',
         'supplier_id',
         'price',
         'final_price',
-        'status',
         'rating',
+        'status',
         'description',
         'meta',
+        'manufacturer_id',
     ];
 
     public $translatable = ['name', 'description'];
@@ -38,6 +39,16 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
+    public function brand(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function brandLine(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(BrandLine::class);
+    }
+
     public function region(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Region::class);
@@ -48,28 +59,106 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(Supplier::class);
     }
 
-    public function attributeValues(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function manufacturer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasMany(AttributeValue::class);
+        return $this->belongsTo(Manufacturer::class);
     }
 
-    public function tastes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+
+    public function attributes()
     {
-        return $this->belongsToMany(Taste::class, 'product_taste')->withPivot('intensity_percent');
+        return $this->belongsToMany(Attribute::class, 'product_attribute_value')
+            ->withPivot('value')
+            ->withTimestamps();
     }
 
-    public function dishes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+
+    public function attributeValues()
     {
-        return $this->belongsToMany(Dish::class, 'product_dish')->withPivot('match_percent');
+        return $this->belongsToMany(AttributeValue::class, 'product_attribute_value')
+            ->withTimestamps();
     }
 
-    public function collections(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+
+    public function filterOptions()
+    {
+        return $this->belongsToMany(CategoryFilterOption::class, 'product_filter_option', 'product_id', 'category_filter_option_id')
+            ->withTimestamps();
+    }
+
+    public function tastes()
+    {
+        return $this->belongsToMany(Taste::class, 'product_taste')
+            ->withPivot('intensity_percent');
+    }
+
+    public function dishes()
+    {
+        return $this->belongsToMany(Dish::class, 'product_dish')
+            ->withPivot('match_percent');
+    }
+
+    public function collections()
     {
         return $this->belongsToMany(Collection::class, 'collection_product');
     }
 
-    public function brand(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function grapes()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsToMany(Grape::class, 'product_grape')
+            ->withPivot('percent', 'main')
+            ->withTimestamps();
+    }
+
+
+    public function grapeVariants()
+    {
+        return $this->belongsToMany(GrapeVariant::class, 'product_grape_variant')
+            ->withPivot('percent', 'main')
+            ->withTimestamps();
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    public function pairings()
+    {
+        return $this->belongsToMany(Pairing::class, 'product_pairing')
+            ->withTimestamps();
+    }
+
+
+    public function getLocalizedName(): string
+    {
+        return $this->getTranslation('name', app()->getLocale());
+    }
+
+    public function getLocalizedDescription(): ?string
+    {
+        return $this->getTranslation('description', app()->getLocale());
+    }
+
+    public function getFullBrandName(): string
+    {
+        if ($this->brand && $this->brandLine) {
+            return "{$this->brand->getTranslation('name', app()->getLocale())} {$this->brandLine->getTranslation('name', app()->getLocale())}";
+        }
+
+        return $this->brand?->getTranslation('name', app()->getLocale()) ?? '';
+    }
+
+    public function hasDiscount(): bool
+    {
+        return !is_null($this->final_price) && $this->final_price < $this->price;
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('images')
+            ->useDisk('public') // или 'media' если у тебя отдельный диск
+            ->singleFile(); // если нужно хранить только одно фото
     }
 }

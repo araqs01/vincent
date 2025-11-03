@@ -6,26 +6,37 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\AttributeValuesRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\CollectionsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\DishesRelationManager;
+use App\Filament\Resources\ProductResource\RelationManagers\GrapeVariantsRelationManager;
+use App\Filament\Resources\ProductResource\RelationManagers\PairingsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\TastesRelationManager;
+use App\Imports\ProductImporter;
 use App\Models\Product;
 use Filament\Forms;
-use Filament\Tables;
-use Filament\Resources\Resource;
-use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Imports\ProductImporter;
-use Maatwebsite\Excel\Facades\Excel;
-use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use FilamentTiptapEditor\TiptapEditor;
+use Maatwebsite\Excel\Facades\Excel;
+use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer;
 
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
     protected static ?string $navigationIcon = 'heroicon-o-cube';
-    protected static ?string $navigationGroup = 'Товары';
-    protected static ?string $label = 'Товар';
-    protected static ?string $pluralLabel = 'Товары';
+    protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('app.navigation_groups.catalog');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.product.plural');
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -41,9 +52,7 @@ class ProductResource extends Resource
                     ),
 
                     TranslatableContainer::make(
-                        Forms\Components\Textarea::make('description')
-                            ->label(__('app.product.fields.description'))
-                            ->rows(3),
+                        TiptapEditor::make('description')->label(__('app.product.fields.description'))->required(),
                     ),
 
                     Forms\Components\TextInput::make('slug')
@@ -81,7 +90,7 @@ class ProductResource extends Resource
             Forms\Components\Section::make(__('app.product.sections.pricing'))
                 ->schema([
                     Forms\Components\TextInput::make('price')
-                        ->label(__('app.product.fields.base_price'))
+                        ->label(__('app.product.fields.price'))
                         ->numeric()
                         ->suffix('₽')
                         ->required(),
@@ -117,24 +126,17 @@ class ProductResource extends Resource
                 ->schema([
                     SpatieMediaLibraryFileUpload::make('images')
                         ->label(__('app.product.fields.images'))
-                        ->collection('products')
+                        ->collection('images')
                         ->multiple()
                         ->reorderable()
                         ->image(),
                 ])
                 ->collapsible(),
-
             // ⚙️ Мета и прочее
-            Forms\Components\Section::make(__('app.product.sections.meta'))
-                ->schema([
-                    Forms\Components\KeyValue::make('meta')
-                        ->label(__('app.product.fields.meta'))
-                        ->keyLabel('Key')
-                        ->valueLabel('Value')
-                        ->addButtonLabel('Add'),
-                ])
-                ->columns(1)
-                ->collapsible(),
+            Forms\Components\ViewField::make('meta')
+                ->label('Мета данные')
+                ->view('filament.resources.product.partials.meta-display')
+
         ]);
     }
 
@@ -201,7 +203,8 @@ class ProductResource extends Resource
             AttributeValuesRelationManager::class,
             CollectionsRelationManager::class,
             TastesRelationManager::class,
-            DishesRelationManager::class,
+            GrapeVariantsRelationManager::class,
+            PairingsRelationManager::class,
         ];
     }
 

@@ -4,47 +4,57 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BrandResource\Pages;
 use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Region;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
+use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer;
 
 class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationGroup = 'Catalog';
-    protected static ?string $modelLabel = 'Бренд';
-    protected static ?string $pluralModelLabel = 'Бренды';
+    protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('app.navigation_groups.references');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.brand.plural');
+    }
+
 
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form->schema([
-            TextInput::make('name.ru')
-                ->label('Название (RU)')
-                ->required(),
-
-            TextInput::make('name.en')
-                ->label('Название (EN)'),
+            TranslatableContainer::make(
+            TextInput::make('name')
+                ->label('Название'),
+            ),
 
             TextInput::make('slug')
                 ->label('Slug')
                 ->required(),
 
-            TextInput::make('country')
-                ->label('Страна'),
+            Forms\Components\Select::make('region_id')
+                ->relationship('region', 'name')
+                ->label('Регион')
+                ->searchable(),
 
-
-            Forms\Components\Textarea::make('description.ru')
-                ->label('Описание (RU)')
+            TranslatableContainer::make(
+            Forms\Components\Textarea::make('description')
+                ->label('Описание')
                 ->rows(3),
-
-            Forms\Components\Textarea::make('description.en')
-                ->label('Описание (EN)')
-                ->rows(3),
+            ),
         ]);
     }
 
@@ -53,12 +63,19 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                TextColumn::make('name.ru')->label('Название'),
-                TextColumn::make('country')->label('Страна'),
+                TextColumn::make('name')->label('Название'),
+                Tables\Columns\TextColumn::make('region.name')->label('Регион'),
                 TextColumn::make('slug')->label('Slug'),
                 TextColumn::make('products_count')
                     ->counts('products')
                     ->label('Кол-во товаров'),
+            ])
+            ->filters([
+                SelectFilter::make('region_id')
+                    ->label('Регион')
+                    ->options(Region::pluck('name', 'id')->toArray())
+                    ->searchable()
+                    ->placeholder('Все Регионы'),
             ])
             ->defaultSort('id', 'desc');
     }

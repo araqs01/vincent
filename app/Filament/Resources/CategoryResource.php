@@ -14,7 +14,17 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
     protected static ?string $navigationIcon = 'heroicon-o-bars-3';
-    protected static ?string $navigationGroup = 'Catalog';
+    protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('app.navigation_groups.catalog');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.category.plural');
+    }
 
     public static function getLabel(): string
     {
@@ -25,6 +35,7 @@ class CategoryResource extends Resource
     {
         return __('app.category.plural');
     }
+
 
 
     public static function form(Forms\Form $form): Forms\Form
@@ -81,6 +92,7 @@ class CategoryResource extends Resource
             ])
             ->columns(2);
     }
+
 
 
     public static function table(Table $table): Table

@@ -10,7 +10,6 @@ use Spatie\Translatable\HasTranslations;
 class Attribute extends Model
 {
     use HasTranslations;
-    use HasSlug;
 
     protected $fillable = [
         'name',

@@ -12,15 +12,15 @@ use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableCont
 class AttributeResource extends Resource
 {
     protected static ?string $model = Attribute::class;
-    protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
-    protected static ?string $navigationGroup = 'Catalog';
+    protected static ?string $navigationIcon = 'heroicon-o-adjustments-vertical';
+    protected static ?int $navigationSort = 3;
 
-    public static function getLabel(): string
+    public static function getNavigationGroup(): ?string
     {
-        return __('app.attribute.singular');
+        return __('app.navigation_groups.catalog');
     }
 
-    public static function getPluralLabel(): string
+    public static function getNavigationLabel(): string
     {
         return __('app.attribute.plural');
     }

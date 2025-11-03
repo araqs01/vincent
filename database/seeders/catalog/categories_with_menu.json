@@ -1,0 +1,3842 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": { "ru": "ВИНО", "en": "Wine" },
+            "parent_id": null,
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "type": "country",
+                    "values": [
+                        { "ru": "Франция", "en": "France" },
+                        { "ru": "Италия", "en": "Italy" },
+                        { "ru": "Испания", "en": "Spain" },
+                        { "ru": "Россия", "en": "Russia" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цвет – Сахар", "en": "Color – Sweetness" },
+                    "type": "color_sugar",
+                    "values": [
+                        { "ru": "Белое сухое", "en": "White Dry" },
+                        { "ru": "Красное сухое", "en": "Red Dry" },
+                        { "ru": "Розовое сухое", "en": "Rosé Dry" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Виноград и тип", "en": "Grape & Type" },
+                    "type": "grape_type",
+                    "values": [
+                        { "ru": "Каберне Совиньон", "en": "Cabernet Sauvignon" },
+                        { "ru": "Пино Нуар", "en": "Pinot Noir" },
+                        { "ru": "Шардоне", "en": "Chardonnay" },
+                        { "ru": "Каберне Фран", "en": "Cabernet Franc" },
+                        { "ru": "Совиньон Блан", "en": "Sauvignon Blanc" },
+                        { "ru": "Сира / Шираз", "en": "Syrah / Shiraz" },
+                        { "ru": "Гренаш / Гарнача", "en": "Grenache / Garnacha" },
+                        { "ru": "Портвейн", "en": "Port Wine" },
+                        { "ru": "Херес", "en": "Sherry" },
+                        { "ru": "Мадера", "en": "Madeira" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Регион", "en": "Region" },
+                    "type": "region",
+                    "values": [
+                        { "ru": "Бургундия", "en": "Burgundy" },
+                        { "ru": "Шабли", "en": "Chablis" },
+                        { "ru": "Бордо", "en": "Bordeaux" },
+                        { "ru": "Тоскана", "en": "Tuscany" },
+                        { "ru": "Кьянти", "en": "Chianti" },
+                        { "ru": "Пьемонт", "en": "Piedmont" },
+                        { "ru": "Риоха", "en": "Rioja" },
+                        { "ru": "Австрия", "en": "Austria" },
+                        { "ru": "Калифорния", "en": "California" },
+                        { "ru": "Вина Нового Света", "en": "New World Wines" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Рейтинг", "en": "Rating" },
+                    "type": "rating",
+                    "values": [
+                        { "ru": "75 + до 700", "en": "75+ up to 700" },
+                        { "ru": "80 + до 1000", "en": "80+ up to 1000" },
+                        { "ru": "85 + до 1500", "en": "85+ up to 1500" },
+                        { "ru": "90 + до 2000", "en": "90+ up to 2000" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Vivino – Цена", "en": "Vivino Price" },
+                    "type": "vivino_price",
+                    "values": [
+                        { "ru": "3.5 + до 1000", "en": "3.5+ up to 1000" },
+                        { "ru": "3.8 + до 1500", "en": "3.8+ up to 1500" },
+                        { "ru": "4.1 + до 2000", "en": "4.1+ up to 2000" },
+                        { "ru": "4.3 + до 3000", "en": "4.3+ up to 3000" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Специальные вина", "en": "Special Wines" },
+                    "type": "special_wines",
+                    "values": [
+                        { "ru": "В дубовых бочках", "en": "Aged in Oak Barrels" },
+                        { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                        { "ru": "Вино по акции", "en": "Discounted Wine" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
+                    "values": [
+                        { "ru": "500–1000 руб.", "en": "500–1000 RUB" },
+                        { "ru": "1000–1500 руб.", "en": "1000–1500 RUB" },
+                        { "ru": "1500–2000 руб.", "en": "1500–2000 RUB" },
+                        { "ru": "2000–3000 руб.", "en": "2000–3000 RUB" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "color",
+                    "title": { "ru": "Цвет", "en": "Color" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Красное", "en": "Red" ,"show_in_header": true },
+                        { "ru": "Белое", "en": "White" },
+                        { "ru": "Розовое", "en": "Rosé" },
+                        { "ru": "Оранжевое", "en": "Orange" }
+                    ]
+                },
+                {
+                    "key": "sugar",
+                    "title": { "ru": "Содержание сахара", "en": "Sugar level" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Сухое", "en": "Dry" },
+                        { "ru": "Полусухое", "en": "Semi-dry" },
+                        { "ru": "Полусладкое", "en": "Semi-sweet" },
+                        { "ru": "Сладкое", "en": "Sweet" }
+                    ]
+                },
+                {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox",
+                    "values": []
+                },
+                {
+                    "key": "wine_type",
+                    "title": { "ru": "Тип вина", "en": "Type of wine" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Вино", "en": "Wine" },
+                        { "ru": "Вермут", "en": "Vermouth" },
+                        { "ru": "Вин Санто", "en": "Vin Santo" },
+                        { "ru": "Винный напиток", "en": "Wine drink" },
+                        { "ru": "Глинтвейн", "en": "Gluhwein" },
+                        { "ru": "Десертное", "en": "Dessert" },
+                        { "ru": "Кагор", "en": "Cahors" },
+                        { "ru": "Кошерное", "en": "Kosher" },
+                        { "ru": "Креплёное (от 15%)", "en": "Fortified (from 15%)" },
+                        { "ru": "Ликёрное вино", "en": "Liqueur wine" },
+                        { "ru": "Мадера", "en": "Madeira" },
+                        { "ru": "Марсала", "en": "Marsala" },
+                        { "ru": "Плодовое", "en": "Fruit wine" },
+                        { "ru": "Портвейн", "en": "Port" },
+                        { "ru": "Сотерн", "en": "Sauternes" },
+                        { "ru": "Херес", "en": "Sherry" },
+                        { "ru": "Шерри", "en": "Sherry" },
+                        { "ru": "Херес / Jeres", "en": "Jerez - Xeres" }
+                    ]
+                },
+                {
+                    "key": "grape_variety",
+                    "title": { "ru": "Сорт винограда", "en": "Grape variety" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": []
+                },
+                {
+                    "key": "famous_wine",
+                    "title": { "ru": "Известные вина", "en": "Famous wines" },
+                    "mode": "range",
+                    "ui_type": "checkbox",
+                    "config": { "unit": "₽", "step": 100 }
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "ui_type": "checkbox",
+                    "config": { "unit": "₽", "min": 0, "max": 200000, "step": 100 }
+                },
+                {
+                    "key": "rating_type",
+                    "title": { "ru": "Тип рейтинга", "en": "Rating type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Vivino", "en": "Vivino" },
+                        { "ru": "WineStyle", "en": "WineStyle" },
+                        { "ru": "Нейросеть", "en": "Neural rating" }
+                    ]
+                },
+                {
+                    "key": "rating",
+                    "title": { "ru": "Рейтинг", "en": "Rating" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "75+", "en": "75+" },
+                        { "ru": "80+", "en": "80+" },
+                        { "ru": "85+", "en": "85+" },
+                        { "ru": "90+", "en": "90+" },
+                        { "ru": "95+", "en": "95+" }
+                    ]
+                },
+                {
+                    "key": "rating_price",
+                    "title": { "ru": "Рейтинг–Цена", "en": "Rating–Price" },
+                    "mode": "boolean",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "has_discount",
+                    "title": { "ru": "Со скидкой", "en": "With discount" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "is_new",
+                    "title": { "ru": "Новинки", "en": "New arrivals" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "gift_packaging",
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift packaging" },
+                    "mode": "attribute",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand_line",
+                    "title": { "ru": "Линейка бренда", "en": "Brand line" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "manufacturer",
+                    "title": { "ru": "Производитель", "en": "Manufacturer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "series",
+                    "title": { "ru": "Серия", "en": "Series" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Био", "en": "Bio" },
+                        { "ru": "Органик", "en": "Organic" },
+                        { "ru": "Гран Кюве", "en": "Grand Cuvee" },
+                        { "ru": "Кюве", "en": "Cuvee" },
+                        { "ru": "Гран Резерв", "en": "Grand Reserva" },
+                        { "ru": "Коллекционное", "en": "Collection" },
+                        { "ru": "Веган", "en": "Vegan" },
+                        { "ru": "Резерва", "en": "Reserva" },
+                        { "ru": "Крианса", "en": "Crianza" },
+                        { "ru": "Сет Дюкло", "en": "Set Duclot" },
+                        { "ru": "Биодинамик", "en": "Biodynamic" },
+                        { "ru": "Вьей Винь", "en": "Vieilles Vignes" },
+                        { "ru": "Рипассо", "en": "Ripasso" },
+                        { "ru": "Аппассименто", "en": "Appassimento" },
+                        { "ru": "Устойчивое", "en": "Sustainable" },
+                        { "ru": "Отборное", "en": "Selection" }
+                    ]
+                },
+                {
+                    "key": "view",
+                    "title": { "ru": "Вид", "en": "View" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Выдержанное", "en": "Aged" },
+                        { "ru": "Креплёное", "en": "Fortified" },
+                        { "ru": "Марочное", "en": "Vintage" },
+                        { "ru": "Ординарное", "en": "Ordinary" },
+                        { "ru": "Столовое", "en": "Table wine" }
+                    ]
+                },
+                {
+                    "key": "vermouth_type",
+                    "title": { "ru": "Тип вермута", "en": "Type of vermouth" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Бьянко", "en": "Bianco" },
+                        { "ru": "Розато", "en": "Rosato" },
+                        { "ru": "Россо", "en": "Rosso" },
+                        { "ru": "Фиеро", "en": "Fiero" },
+                        { "ru": "Экстра Драй", "en": "Extra Dry" }
+                    ]
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объем", "en": "Volume" },
+                    "mode": "range",
+                    "ui_type": "checkbox",
+                    "config": { "unit": "л", "step": 0.1 }
+                },
+                {
+                    "key": "strength",
+                    "title": { "ru": "Крепость", "en": "Strength" },
+                    "mode": "range",
+                    "ui_type": "checkbox",
+                    "config": { "unit": "%", "step": 0.5 }
+                },
+                {
+                    "key": "vintage",
+                    "title": { "ru": "Винтаж", "en": "Vintage" },
+                    "mode": "computed",
+                    "config": { "related": "grape_variety" },
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "blend",
+                    "title": { "ru": "Купаж", "en": "Blend" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "fermentation",
+                    "title": { "ru": "Ферментация", "en": "Fermentation" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Дубовые бочки", "en": "Oak barrels" },
+                        { "ru": "Нержавеющая сталь", "en": "Stainless steel" },
+                        { "ru": "Глина", "en": "Clay" },
+                        { "ru": "Бетон", "en": "Concrete" },
+                        { "ru": "На осадке", "en": "On lees" },
+                        { "ru": "Квеври", "en": "Qvevri" }
+                    ]
+                },
+                {
+                    "key": "soil_type",
+                    "title": { "ru": "Тип почвы", "en": "Soil type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Аллювиальная", "en": "Alluvial" },
+                        { "ru": "Вулканическая", "en": "Volcanic" },
+                        { "ru": "Глина", "en": "Clay" },
+                        { "ru": "Гнейс", "en": "Gneiss" },
+                        { "ru": "Гравий", "en": "Gravel" },
+                        { "ru": "Гранит", "en": "Granite" },
+                        { "ru": "Известняковая", "en": "Limestone" },
+                        { "ru": "Илистая", "en": "Silty" },
+                        { "ru": "Каменная", "en": "Rocky" },
+                        { "ru": "Кварц", "en": "Quartz" },
+                        { "ru": "Кремень", "en": "Flint" },
+                        { "ru": "Лёсс", "en": "Loess" },
+                        { "ru": "Магматическая", "en": "Magmatic" },
+                        { "ru": "Песчаная", "en": "Sandy" },
+                        { "ru": "Сланцевая", "en": "Shale" },
+                        { "ru": "Суглинистая", "en": "Loamy" }
+                    ]
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" },
+                        { "ru": "Ограниченное количество", "en": "Limited quantity" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "storage_potential",
+                    "title": { "ru": "Потенциал хранения", "en": "Storage potential" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "container_type",
+                    "title": { "ru": "Тип тары", "en": "Container type" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "Стекло", "en": "Glass" },
+                        { "ru": "Бутылка", "en": "Bottle" },
+                        { "ru": "Банка", "en": "Jar" },
+                        { "ru": "Коробка", "en": "Box" },
+                        { "ru": "ПЭТ", "en": "PET" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "character",
+                    "title": { "ru": "Характер", "en": "Character" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Злаковое", "en": "Cereal" },
+                        { "ru": "Землистое", "en": "Earthy" },
+                        { "ru": "Цветочное", "en": "Floral" },
+                        { "ru": "Фруктовое", "en": "Fruity" },
+                        { "ru": "Травяное", "en": "Herbal" },
+                        { "ru": "Минеральное", "en": "Mineral" },
+                        { "ru": "Пряное", "en": "Spicy" },
+                        { "ru": "Сладковатое", "en": "Sweetish" },
+                        { "ru": "Древесное", "en": "Woody" }
+                    ]
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "pairing",
+                    "title": { "ru": "Гастрономические сочетания", "en": "Food pairing" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "aromatic",
+                    "title": { "ru": "Ароматичность", "en": "Aromatic intensity" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "sweetness",
+                    "title": { "ru": "Сладость", "en": "Sweetness" },
+                    "mode": "range",
+                    "ui_type": "slider",
+                    "values": [
+                        { "ru": "Низкая", "en": "Low", "range": "1.0–1.5" },
+                        { "ru": "Слабая", "en": "Weak", "range": "1.5–2.0" },
+                        { "ru": "Умеренная", "en": "Moderate", "range": "2.0–2.5" },
+                        { "ru": "Средняя", "en": "Medium", "range": "2.5–3.0" },
+                        { "ru": "Выше средней", "en": "Above medium", "range": "3.0–3.5" },
+                        { "ru": "Отчётливая", "en": "Distinct", "range": "3.5–4.0" },
+                        { "ru": "Выраженная", "en": "Pronounced", "range": "4.0–4.5" },
+                        { "ru": "Высокая", "en": "High", "range": "4.5–5.0" }
+                    ]
+                },
+                {
+                    "key": "body",
+                    "title": { "ru": "Полнотелость", "en": "Body" },
+                    "mode": "range",
+                    "ui_type": "slider",
+                    "values": [
+                        { "ru": "Низкая", "en": "Low", "range": "1.0–1.5" },
+                        { "ru": "Слабая", "en": "Weak", "range": "1.5–2.0" },
+                        { "ru": "Умеренная", "en": "Moderate", "range": "2.0–2.5" },
+                        { "ru": "Средняя", "en": "Medium", "range": "2.5–3.0" },
+                        { "ru": "Выше средней", "en": "Above medium", "range": "3.0–3.5" },
+                        { "ru": "Отчётливая", "en": "Distinct", "range": "3.5–4.0" },
+                        { "ru": "Выраженная", "en": "Pronounced", "range": "4.0–4.5" },
+                        { "ru": "Высокая", "en": "High", "range": "4.5–5.0" }
+                    ]
+                },
+                {
+                    "key": "acidity",
+                    "title": { "ru": "Кислотность", "en": "Acidity" },
+                    "mode": "range",
+                    "ui_type": "slider",
+                    "values": [
+                        { "ru": "Низкая", "en": "Low", "range": "1.0–1.5" },
+                        { "ru": "Слабая", "en": "Weak", "range": "1.5–2.0" },
+                        { "ru": "Умеренная", "en": "Moderate", "range": "2.0–2.5" },
+                        { "ru": "Средняя", "en": "Medium", "range": "2.5–3.0" },
+                        { "ru": "Выше средней", "en": "Above medium", "range": "3.0–3.5" },
+                        { "ru": "Отчётливая", "en": "Distinct", "range": "3.5–4.0" },
+                        { "ru": "Выраженная", "en": "Pronounced", "range": "4.0–4.5" },
+                        { "ru": "Высокая", "en": "High", "range": "4.5–5.0" }
+                    ]
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                },
+                {
+                    "key": "taste_scales",
+                    "title": { "ru": "Вкусовые шкалы", "en": "Taste scales" },
+                    "ui_type": "scale-group",
+                    "options": [
+                        {
+                            "key": "sweetness",
+                            "title": { "ru": "Сладость", "en": "Sweetness" },
+                            "ui_type": "scale",
+                            "scale_labels": {
+                                "left": { "ru": "Менее сладкие", "en": "Less sweet" },
+                                "right": { "ru": "Более сладкие", "en": "Sweeter" }
+                            },
+                            "field": "sweetness"
+                        },
+                        {
+                            "key": "aromatic",
+                            "title": { "ru": "Ароматичность", "en": "Aromatic intensity" },
+                            "ui_type": "scale",
+                            "scale_labels": {
+                                "left": { "ru": "Нейтральные", "en": "Neutral" },
+                                "right": { "ru": "Ароматные", "en": "Aromatic" }
+                            },
+                            "field": "aromatic_intensity"
+                        },
+                        {
+                            "key": "body",
+                            "title": { "ru": "Полнотелость", "en": "Body" },
+                            "ui_type": "scale",
+                            "scale_labels": {
+                                "left": { "ru": "Легкие", "en": "Light-bodied" },
+                                "right": { "ru": "Полнотелые", "en": "Full-bodied" }
+                            },
+                            "field": "body"
+                        },
+                        {
+                            "key": "tannin",
+                            "title": { "ru": "Танинность", "en": "Tannin" },
+                            "ui_type": "scale",
+                            "scale_labels": {
+                                "left": { "ru": "Мягкие", "en": "Soft" },
+                                "right": { "ru": "Танинные", "en": "Tannic" }
+                            },
+                            "field": "tannin"
+                        },
+                        {
+                            "key": "acidity",
+                            "title": { "ru": "Кислотность", "en": "Acidity" },
+                            "ui_type": "scale",
+                            "scale_labels": {
+                                "left": { "ru": "Низкая", "en": "Low" },
+                                "right": { "ru": "Выраженная", "en": "High" }
+                            },
+                            "field": "acidity"
+                        },
+                        {
+                            "key": "taste_duration",
+                            "title": { "ru": "Продолжительность вкуса", "en": "Taste duration" },
+                            "ui_type": "scale",
+                            "scale_labels": {
+                                "left": { "ru": "Короткий", "en": "Short" },
+                                "right": { "ru": "Долгий", "en": "Long" }
+                            },
+                            "field": "taste_duration"
+                        }
+                    ]
+                },
+                {
+                    "key": "age_profile",
+                    "title": { "ru": "Возраст вина", "en": "Wine age" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        { "key": "all", "title": { "ru": "Все", "en": "All" } },
+                        { "key": "young", "title": { "ru": "Молодые", "en": "Young" }, "field": "vintage", "direction": "desc" },
+                        { "key": "mature", "title": { "ru": "Зрелые", "en": "Mature" }, "field": "vintage", "direction": "asc" }
+                    ]
+                },
+                {
+                    "key": "blend_type",
+                    "title": { "ru": "Тип купажа", "en": "Blend type" },
+                    "ui_type": "toggle",
+                    "options": [
+                        { "key": "mono", "title": { "ru": "Моносортовые", "en": "Single grape" }, "value": 1 },
+                        { "key": "blend", "title": { "ru": "Купажированные", "en": "Blended" }, "value": 0 }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": { "ru": "ШАМПАНСКОЕ", "en": "Champagne" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "type": "country",
+                    "values": [
+                        { "ru": "Испания", "en": "Spain" },
+                        { "ru": "Франция", "en": "France" },
+                        { "ru": "Россия", "en": "Russia" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Типы", "en": "Types" },
+                    "type": "type",
+                    "values": [
+                        { "ru": "Игристое", "en": "Sparkling" },
+                        { "ru": "Шампанское", "en": "Champagne" },
+                        { "ru": "Кава", "en": "Cava" },
+                        { "ru": "Просекко", "en": "Prosecco" },
+                        { "ru": "Асти", "en": "Asti" },
+                        { "ru": "Креман", "en": "Crémant" },
+                        { "ru": "Блан де блан", "en": "Blanc de Blancs" },
+                        { "ru": "Блан де нуар", "en": "Blanc de Noirs" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Производитель", "en": "Brand" },
+                    "type": "brand",
+                    "values": [
+                        { "ru": "Moet & Chandon", "en": "Moet & Chandon" },
+                        { "ru": "Canti", "en": "Canti" },
+                        { "ru": "Gancia", "en": "Gancia" },
+                        { "ru": "Fanagoria", "en": "Fanagoria" },
+                        { "ru": "Абрау-Дюрсо", "en": "Abrau-Durso" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Метод производства", "en": "Production Method" },
+                    "type": "method",
+                    "values": [
+                        { "ru": "Шампенуаз", "en": "Champenoise" },
+                        { "ru": "Шарма-Мартинотти", "en": "Charmat-Martinotti" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Рейтинг", "en": "Rating" },
+                    "type": "rating",
+                    "values": [
+                        { "ru": "75 + до 700", "en": "75+ up to 700" },
+                        { "ru": "80 + до 1000", "en": "80+ up to 1000" },
+                        { "ru": "85 + до 1500", "en": "85+ up to 1500" },
+                        { "ru": "90 + до 2000", "en": "90+ up to 2000" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Vivino – Цена", "en": "Vivino Price" },
+                    "type": "vivino_price",
+                    "values": [
+                        { "ru": "3.5 + до 1000", "en": "3.5+ up to 1000" },
+                        { "ru": "3.8 + до 1500", "en": "3.8+ up to 1500" },
+                        { "ru": "4.1 + до 2000", "en": "4.1+ up to 2000" },
+                        { "ru": "4.3 + до 3000", "en": "4.3+ up to 3000" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                    "type": "gift_pack",
+                    "values": [
+                        { "ru": "500–1000 руб.", "en": "500–1000 RUB" },
+                        { "ru": "1000–1500 руб.", "en": "1000–1500 RUB" },
+                        { "ru": "1500–2000 руб.", "en": "1500–2000 RUB" },
+                        { "ru": "2000–3000 руб.", "en": "2000–3000 RUB" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "color",
+                    "title": { "ru": "Цвет", "en": "Color" },
+                    "mode": "attribute",
+                    "values": [
+                        { "ru": "Белое", "en": "White" },
+                        { "ru": "Розовое", "en": "Rosé" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "sugar",
+                    "title": { "ru": "Сахар", "en": "Sugar" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "Экстра Брют", "en": "Extra Brut" },
+                        { "ru": "Брют Натур", "en": "Brut Nature" },
+                        { "ru": "Брют", "en": "Brut" },
+                        { "ru": "Полусухое", "en": "Demi Sec" },
+                        { "ru": "Сухое", "en": "Dry" },
+                        { "ru": "Полусладкое", "en": "Semi Sweet" },
+                        { "ru": "Сладкое", "en": "Sweet" },
+                        { "ru": "Дольче", "en": "Dolce" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип", "en": "Type" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "Игристое", "en": "Sparkling" },
+                        { "ru": "Шампанское", "en": "Champagne" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "famous_sparkling",
+                    "title": { "ru": "Известные игристые", "en": "Famous sparkling" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "Асти", "en": "Asti" },
+                        { "ru": "Блан де Блан", "en": "Blanc de Blanc" },
+                        { "ru": "Блан де Нуар", "en": "Blanc de Noir" },
+                        { "ru": "Бракетто д’Акки", "en": "Brachetto d'Acqui" },
+                        { "ru": "Вуврэ", "en": "Vouvray" },
+                        { "ru": "Зект", "en": "Sekt" },
+                        { "ru": "Кава", "en": "Cava" },
+                        { "ru": "Креман", "en": "Cremant" },
+                        { "ru": "Ламбруско", "en": "Lambrusco" },
+                        { "ru": "Просекко", "en": "Prosecco" },
+                        { "ru": "Франчакорта", "en": "Franciacorta" },
+                        { "ru": "Шампанское", "en": "Champagne" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "config": {
+                        "unit": "₽",
+                        "step": 100,
+                        "ranges": [
+                            { "ru": "до 1000", "en": "up to 1000" },
+                            { "ru": "1000–2000", "en": "1000–2000" },
+                            { "ru": "2000–3000", "en": "2000–3000" },
+                            { "ru": "3000–5000", "en": "3000–5000" },
+                            { "ru": "5000–10000", "en": "5000–10000" },
+                            { "ru": "от 10000", "en": "from 10000" },
+                            { "ru": "от 30000", "en": "from 30000" }
+                        ],
+                        "ui_type": "checkbox"
+                    }
+                },
+                {
+                    "key": "series",
+                    "title": { "ru": "Серия", "en": "Series" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "Био", "en": "Bio" },
+                        { "ru": "Органик", "en": "Organic" },
+                        { "ru": "Кюве", "en": "Cuvee" },
+                        { "ru": "Гран резерва", "en": "Grand Reserva" },
+                        { "ru": "Коллекционное", "en": "Collection" },
+                        { "ru": "Резерва", "en": "Reserva" },
+                        { "ru": "Сет Дюклот", "en": "Set Duclot" },
+                        { "ru": "Вьей Винь", "en": "Vieilles Vignes" },
+                        { "ru": "Рипассо", "en": "Ripasso" },
+                        { "ru": "Аппассименто", "en": "Appassimento" },
+                        { "ru": "Миллезим", "en": "Millesime" },
+                        { "ru": "Органик", "en": "Organic" },
+                        { "ru": "Солера", "en": "Solera" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "method_production",
+                    "title": { "ru": "Метод производства", "en": "Production method" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "Метод Шампенуаз", "en": "Methode Champenoise" },
+                        { "ru": "Метод Шарма", "en": "Metodo Charmat" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "gas",
+                    "title": { "ru": "Газация", "en": "Carbonation" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "Спуманте", "en": "Spumante" },
+                        { "ru": "Секко", "en": "Secco" },
+                        { "ru": "Спарклинг", "en": "Sparkling" },
+                        { "ru": "Фризанте", "en": "Frizzante" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "discount",
+                    "title": { "ru": "Со скидкой", "en": "Discount" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "gift_packaging",
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift packaging" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand_line",
+                    "title": { "ru": "Линейка бренда", "en": "Brand line" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "manufacturer",
+                    "title": { "ru": "Производитель", "en": "Manufacturer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объем", "en": "Volume" },
+                    "mode": "range",
+                    "config": { "unit": "л", "step": 0.1 },
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "strength",
+                    "title": { "ru": "Крепость", "en": "Strength" },
+                    "mode": "range",
+                    "config": { "unit": "%", "step": 0.5 },
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "aging",
+                    "title": { "ru": "Выдержка", "en": "Aging" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "blend",
+                    "title": { "ru": "Купаж", "en": "Blend" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "storage_potential",
+                    "title": { "ru": "Потенциал хранения", "en": "Storage potential" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" },
+                        { "ru": "Ограниченное количество", "en": "Limited quantity" }
+                    ],
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "pairing",
+                    "title": { "ru": "Гастрономические сочетания", "en": "Food pairing" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "aromatic",
+                    "title": { "ru": "Ароматичность", "en": "Aromatic intensity" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "sweetness",
+                    "title": { "ru": "Сладость", "en": "Sweetness" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "body",
+                    "title": { "ru": "Полнотелость", "en": "Body" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "acidity",
+                    "title": { "ru": "Кислотность", "en": "Acidity" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "sparkling_level",
+                    "title": { "ru": "Игристость", "en": "Sparkling level" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": { "ru": "ВИСКИ", "en": "Whisky" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "type": "country",
+                    "values": [
+                        { "ru": "Шотландия", "en": "Scotland" },
+                        { "ru": "Ирландия", "en": "Ireland" },
+                        { "ru": "Америка", "en": "America" },
+                        { "ru": "Япония", "en": "Japan" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Тип", "en": "Type" },
+                    "type": "type",
+                    "values": [
+                        { "ru": "Односолодовый", "en": "Single Malt" },
+                        { "ru": "Купажированный", "en": "Blended" },
+                        { "ru": "Скотч", "en": "Scotch" },
+                        { "ru": "Бурбон", "en": "Bourbon" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "type": "brand",
+                    "values": [
+                        { "ru": "Dalmore", "en": "Dalmore" },
+                        { "ru": "West Cork", "en": "West Cork" },
+                        { "ru": "Bushmills", "en": "Bushmills" },
+                        { "ru": "Johnny Walker", "en": "Johnny Walker" },
+                        { "ru": "Jack Daniel’s", "en": "Jack Daniel’s" },
+                        { "ru": "Glen Scotia", "en": "Glen Scotia" },
+                        { "ru": "Ballantine’s", "en": "Ballantine’s" },
+                        { "ru": "Tomintoul", "en": "Tomintoul" },
+                        { "ru": "Hinch", "en": "Hinch" },
+                        { "ru": "Kinnahan’s", "en": "Kinnahan’s" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Бочки", "en": "Barrels" },
+                    "type": "barrels",
+                    "values": [
+                        { "ru": "Из-под бурбона", "en": "Ex-Bourbon" },
+                        { "ru": "Дубовые бочки", "en": "Oak Barrels" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Фильтрация", "en": "Filtration" },
+                    "type": "filtration",
+                    "values": [
+                        { "ru": "Холодная фильтрация", "en": "Chill Filtration" },
+                        { "ru": "Без холодной фильтрации", "en": "Non-Chill Filtration" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Выдержка", "en": "Aging" },
+                    "type": "aging",
+                    "values": [
+                        { "ru": "5 лет", "en": "5 years" },
+                        { "ru": "10 лет", "en": "10 years" },
+                        { "ru": "12 лет", "en": "12 years" },
+                        { "ru": "15 лет", "en": "15 years" },
+                        { "ru": "25 лет", "en": "25 years" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Сырье", "en": "Raw Material" },
+                    "type": "raw_material",
+                    "values": [
+                        { "ru": "Ячменный солод (Malt)", "en": "Barley Malt" },
+                        { "ru": "Зерновые (Grain)", "en": "Grain" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                    "type": "gift_pack",
+                    "values": [
+                        { "ru": "до 1000 руб.", "en": "up to 1000 RUB" },
+                        { "ru": "1000–3000 руб.", "en": "1000–3000 RUB" },
+                        { "ru": "3000–6000 руб.", "en": "3000–6000 RUB" },
+                        { "ru": "6000–10000 руб.", "en": "6000–10000 RUB" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox",
+                    "values": []
+                },
+                {
+                    "key": "grain_type",
+                    "title": { "ru": "Тип зерна", "en": "Grain Type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Односолодовый", "en": "Single Malt" },
+                        { "ru": "Зерновой", "en": "Single Grain" },
+                        { "ru": "Купажированный", "en": "Blended" },
+                        { "ru": "Пшеничный", "en": "Wheat Whiskey" },
+                        { "ru": "Ржаной", "en": "Rye Whiskey" },
+                        { "ru": "Кукурузный", "en": "Corn Whiskey" },
+                        { "ru": "Теннесси", "en": "Tennessee Whiskey" }
+                    ]
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand_line",
+                    "title": { "ru": "Линейка бренда", "en": "Brand Line" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "manufacturer",
+                    "title": { "ru": "Производитель", "en": "Manufacturer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "config": { "unit": "₽", "min": 0, "max": 200000, "step": 100 },
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "rating_type",
+                    "title": { "ru": "Тип рейтинга", "en": "Rating Type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Vivino", "en": "Vivino" },
+                        { "ru": "WineStyle", "en": "WineStyle" },
+                        { "ru": "Whiskybase", "en": "Whiskybase" }
+                    ]
+                },
+                {
+                    "key": "rating",
+                    "title": { "ru": "Рейтинг", "en": "Rating" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "75+", "en": "75+" },
+                        { "ru": "80+", "en": "80+" },
+                        { "ru": "85+", "en": "85+" },
+                        { "ru": "90+", "en": "90+" },
+                        { "ru": "95+", "en": "95+" }
+                    ]
+                },
+                {
+                    "key": "rating_price",
+                    "title": { "ru": "Цена–рейтинг", "en": "Price–Rating" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "has_discount",
+                    "title": { "ru": "Со скидкой", "en": "With discount" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "gift_packaging",
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "barrel_aging_type",
+                    "title": { "ru": "Тип бочковой выдержки", "en": "Barrel Aging Type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Бочковой крепости", "en": "Cask Strength" },
+                        { "ru": "Одинарной бочки", "en": "Single Cask" },
+                        { "ru": "Двойной бочки", "en": "Double Cask" },
+                        { "ru": "Трипл Вуд", "en": "Triple Wood" },
+                        { "ru": "Баррель Финиш", "en": "Barrel Finish" },
+                        { "ru": "Амбарное Вуд", "en": "Amarone Wood" }
+                    ]
+                },
+                {
+                    "key": "barrel_type",
+                    "title": { "ru": "Тип бочки", "en": "Barrel Type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Из-под Бурбона", "en": "Ex-Bourbon" },
+                        { "ru": "Из-под Хереса", "en": "Sherry Cask" },
+                        { "ru": "Из-под Рома", "en": "Rum Cask" },
+                        { "ru": "Из-под Портвейна", "en": "Port Cask" },
+                        { "ru": "Из-под Вина", "en": "Wine Cask" },
+                        { "ru": "Дубовая", "en": "Oak" }
+                    ]
+                },
+                {
+                    "key": "strength",
+                    "title": { "ru": "Крепость", "en": "Strength" },
+                    "mode": "range",
+                    "config": { "unit": "%", "min": 35, "max": 65, "step": 0.5 },
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объем", "en": "Volume" },
+                    "mode": "range",
+                    "config": { "unit": "л", "min": 0.1, "max": 2, "step": 0.1 },
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "aging_years",
+                    "title": { "ru": "Выдержка (лет)", "en": "Aging (years)" },
+                    "mode": "range",
+                    "config": { "unit": "лет", "min": 3, "max": 30, "step": 1 },
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "filtration",
+                    "title": { "ru": "Фильтрация", "en": "Filtration" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Холодная фильтрация", "en": "Chill Filtration" },
+                        { "ru": "Без холодной фильтрации", "en": "Non-Chill Filtration" }
+                    ]
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" },
+                        { "ru": "Ограниченное количество", "en": "Limited quantity" }
+                    ]
+                },
+                {
+                    "key": "character",
+                    "title": { "ru": "Характер", "en": "Character" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Кремовый", "en": "Creamy" },
+                        { "ru": "Цветочный", "en": "Floral" },
+                        { "ru": "Фруктовый", "en": "Fruity" },
+                        { "ru": "Зерновой", "en": "Grainy" },
+                        { "ru": "Торфяной / Копченый", "en": "Peaty / Smoky" },
+                        { "ru": "Пряный", "en": "Spicy" },
+                        { "ru": "Серный", "en": "Sulphury" },
+                        { "ru": "Сладкий", "en": "Sweet" },
+                        { "ru": "Древесный", "en": "Woody" }
+                    ]
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Лайм и имбирь", "en": "Lime & Ginger" },
+                        { "ru": "Ваниль и специи", "en": "Vanilla & Spices" },
+                        { "ru": "Карамель", "en": "Caramel" },
+                        { "ru": "Медовый", "en": "Honey" },
+                        { "ru": "Апельсиновый", "en": "Orange" },
+                        { "ru": "Пряный", "en": "Spicy" }
+                    ]
+                },
+                {
+                    "key": "pairing",
+                    "title": { "ru": "Гастрономические сочетания", "en": "Food Pairing" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": { "ru": "КОНЬЯК", "en": "Cognac" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Тип напитка", "en": "Drink Type" },
+                    "type": "drink_type",
+                    "values": [
+                        { "ru": "Коньяк", "en": "Cognac" },
+                        { "ru": "Арманьяк", "en": "Armagnac" },
+                        { "ru": "Бренди", "en": "Brandy" },
+                        { "ru": "Кальвадос", "en": "Calvados" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "type": "country",
+                    "values": [
+                        { "ru": "Французский", "en": "French" },
+                        { "ru": "Армянский", "en": "Armenian" },
+                        { "ru": "Грузинский", "en": "Georgian" },
+                        { "ru": "Российский", "en": "Russian" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "type": "brand",
+                    "values": [
+                        { "ru": "Арарат", "en": "Ararat" },
+                        { "ru": "Chabout", "en": "Chabout" },
+                        { "ru": "Tesseron", "en": "Tesseron" },
+                        { "ru": "Gautier", "en": "Gautier" },
+                        { "ru": "Godet", "en": "Godet" },
+                        { "ru": "Meukow", "en": "Meukow" },
+                        { "ru": "Асканели", "en": "Askaneli" },
+                        { "ru": "Dupuy", "en": "Dupuy" },
+                        { "ru": "Lautrec", "en": "Lautrec" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Класс", "en": "Class" },
+                    "type": "class",
+                    "values": [
+                        { "ru": "VS", "en": "VS" },
+                        { "ru": "VSOP", "en": "VSOP" },
+                        { "ru": "XO", "en": "XO" },
+                        { "ru": "Все", "en": "All" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Выдержка", "en": "Aging" },
+                    "type": "aging",
+                    "values": [
+                        { "ru": "3 года", "en": "3 years" },
+                        { "ru": "5 лет", "en": "5 years" },
+                        { "ru": "10 лет", "en": "10 years" },
+                        { "ru": "20 лет", "en": "20 years" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Рейтинг", "en": "Rating" },
+                    "type": "rating",
+                    "values": [
+                        { "ru": "90-91", "en": "90-91" },
+                        { "ru": "92-93", "en": "92-93" },
+                        { "ru": "94-95", "en": "94-95" },
+                        { "ru": "96+", "en": "96+" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                    "type": "gift_pack",
+                    "values": [
+                        { "ru": "до 1000 руб.", "en": "up to 1000 RUB" },
+                        { "ru": "1000–3000 руб.", "en": "1000–3000 RUB" },
+                        { "ru": "3000–6000 руб.", "en": "3000–6000 RUB" },
+                        { "ru": "6000–10000 руб.", "en": "6000–10000 RUB" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип", "en": "Type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Коньяк", "en": "Cognac" },
+                        { "ru": "Арманьяк", "en": "Armagnac" },
+                        { "ru": "Бренди", "en": "Brandy" },
+                        { "ru": "Кальвадос", "en": "Calvados" }
+                    ]
+                },
+                {
+                    "key": "class",
+                    "title": { "ru": "Класс", "en": "Class" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "3 звезды", "en": "3 Stars" },
+                        { "ru": "4 звезды", "en": "4 Stars" },
+                        { "ru": "5 звезд", "en": "5 Stars" },
+                        { "ru": "KB", "en": "KB" },
+                        { "ru": "KBBK", "en": "KBBK" },
+                        { "ru": "KC", "en": "KC" },
+                        { "ru": "Extra", "en": "Extra" },
+                        { "ru": "Napoleon", "en": "Napoleon" },
+                        { "ru": "Hors d'Age", "en": "Hors d'Age" },
+                        { "ru": "VS", "en": "VS" },
+                        { "ru": "VSO", "en": "VSO" },
+                        { "ru": "VSOP", "en": "VSOP" },
+                        { "ru": "VVSOP", "en": "VVSOP" },
+                        { "ru": "XO", "en": "XO" },
+                        { "ru": "XXO", "en": "XXO" },
+                        { "ru": "Vieille Reserve", "en": "Vieille Reserve" },
+                        { "ru": "Tres Vieux", "en": "Tres Vieux" }
+                    ]
+                },
+                {
+                    "key": "kind",
+                    "title": { "ru": "Вид", "en": "Kind" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Марочный", "en": "Vintage" },
+                        { "ru": "Ординарный", "en": "Ordinary" },
+                        { "ru": "Молодой", "en": "Young" },
+                        { "ru": "Выдержанный", "en": "Aged" }
+                    ]
+                },
+                {
+                    "key": "aging",
+                    "title": { "ru": "Выдержка (лет)", "en": "Aging (years)" },
+                    "mode": "range",
+                    "ui_type": "slider",
+                    "config": { "unit": "лет", "min": 3, "max": 20, "step": 1 }
+                },
+                {
+                    "key": "series",
+                    "title": { "ru": "Серия", "en": "Series" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Резерва", "en": "Reserva" },
+                        { "ru": "Гран Резерва", "en": "Gran Reserva" },
+                        { "ru": "Выдержанный", "en": "Aged" },
+                        { "ru": "Солера", "en": "Solera" },
+                        { "ru": "Тре Корс", "en": "Tres Corse" },
+                        { "ru": "Ор д’Аж", "en": "Or d'Age" },
+                        { "ru": "Птит Шампань", "en": "Petit Champagne" },
+                        { "ru": "Гран Шампань", "en": "Grande Champagne" },
+                        { "ru": "Пэи д’Ож", "en": "Pays d’Auge" }
+                    ]
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand_line",
+                    "title": { "ru": "Линейка бренда", "en": "Brand Line" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\BrandLine",
+                    "ui_type": "tree"
+                },
+                {
+                    "key": "producer",
+                    "title": { "ru": "Производитель", "en": "Producer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "ui_type": "slider",
+                    "config": { "unit": "₽", "min": 1000, "max": 50000, "step": 500 }
+                },
+                {
+                    "key": "has_discount",
+                    "title": { "ru": "Со скидкой", "en": "With Discount" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "gift_packaging",
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объем", "en": "Volume" },
+                    "mode": "range",
+                    "ui_type": "slider",
+                    "config": { "unit": "л", "min": 0.1, "max": 2, "step": 0.1 }
+                },
+                {
+                    "key": "strength",
+                    "title": { "ru": "Крепость", "en": "Strength" },
+                    "mode": "range",
+                    "ui_type": "slider",
+                    "config": { "unit": "%", "min": 35, "max": 65, "step": 0.5 }
+                },
+                {
+                    "key": "vintage",
+                    "title": { "ru": "Винтаж", "en": "Vintage" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" },
+                        { "ru": "Ограниченное количество", "en": "Limited quantity" }
+                    ]
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Цветочный", "en": "Floral" },
+                        { "ru": "Фруктовый", "en": "Fruity" },
+                        { "ru": "Пряный", "en": "Spicy" },
+                        { "ru": "Медовый", "en": "Honey" },
+                        { "ru": "Ванильный", "en": "Vanilla" },
+                        { "ru": "Ореховый", "en": "Nutty" },
+                        { "ru": "Шоколадный", "en": "Chocolate" },
+                        { "ru": "Древесный", "en": "Woody" }
+                    ]
+                },
+                {
+                    "key": "pairing",
+                    "title": { "ru": "Гастрономические сочетания", "en": "Food Pairing" },
+                    "mode": "computed",
+                    "ui_type": "checkbox"
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": { "ru": "КРЕПКИЕ НАПИТКИ", "en": "Strong Drinks" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Виды", "en": "Types" },
+                    "type": "types",
+                    "values": [
+                        { "ru": "Абсент", "en": "Absinthe" },
+                        { "ru": "Граппа", "en": "Grappa" },
+                        { "ru": "Джин", "en": "Gin" },
+                        { "ru": "Кашаса", "en": "Cachaça" },
+                        { "ru": "Ликеры", "en": "Liqueurs" },
+                        { "ru": "Ром", "en": "Rum" },
+                        { "ru": "Текила", "en": "Tequila" },
+                        { "ru": "Шнапс", "en": "Schnapps" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Ром", "en": "Rum" },
+                    "type": "rum_type",
+                    "values": [
+                        { "ru": "Anejo", "en": "Anejo" },
+                        { "ru": "Gran Reserva", "en": "Gran Reserva" },
+                        { "ru": "Premium", "en": "Premium" },
+                        { "ru": "Superiore", "en": "Superiore" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Бренды", "en": "Brands" },
+                    "type": "brand",
+                    "values": [
+                        { "ru": "Bols", "en": "Bols" },
+                        { "ru": "De Kuyper", "en": "De Kuyper" },
+                        { "ru": "Marie Brizard", "en": "Marie Brizard" },
+                        { "ru": "Gambini", "en": "Gambini" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Ликеры", "en": "Liqueurs" },
+                    "type": "liqueurs",
+                    "values": [
+                        { "ru": "Амаретто", "en": "Amaretto" },
+                        { "ru": "Аперитив", "en": "Aperitif" },
+                        { "ru": "Кофейный", "en": "Coffee" },
+                        { "ru": "Крем де Кассис", "en": "Crème de Cassis" },
+                        { "ru": "Кюрасао", "en": "Curaçao" },
+                        { "ru": "Лимончелло", "en": "Limoncello" },
+                        { "ru": "Пина Колада", "en": "Pina Colada" },
+                        { "ru": "Самбука", "en": "Sambuca" },
+                        { "ru": "Трипл Сек", "en": "Triple Sec" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "drink_type",
+                    "title": { "ru": "Тип напитка", "en": "Drink type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Абсент", "en": "Absinthe" },
+                        { "ru": "Аквавит", "en": "Aquavit" },
+                        { "ru": "Аперитив", "en": "Aperitif" },
+                        { "ru": "Бальзам", "en": "Balsam" },
+                        { "ru": "Биттер", "en": "Bitter" },
+                        { "ru": "Граппа", "en": "Grappa" },
+                        { "ru": "Джин", "en": "Gin" },
+                        { "ru": "Кашаса", "en": "Cachaça" },
+                        { "ru": "Ликер", "en": "Liqueur" },
+                        { "ru": "Мескаль", "en": "Mezcal" },
+                        { "ru": "Настойка", "en": "Tincture" },
+                        { "ru": "Писко", "en": "Pisco" },
+                        { "ru": "Ракия", "en": "Rakia" },
+                        { "ru": "Ром", "en": "Rum" },
+                        { "ru": "Самогон", "en": "Moonshine" },
+                        { "ru": "Сакэ", "en": "Sake" },
+                        { "ru": "Соджу", "en": "Soju" },
+                        { "ru": "Текила", "en": "Tequila" },
+                        { "ru": "Узо", "en": "Ouzo" }
+                    ]
+                },
+                {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand_line",
+                    "title": { "ru": "Линейка бренда", "en": "Brand line" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "manufacturer",
+                    "title": { "ru": "Производитель", "en": "Manufacturer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "₽", "min": 0, "max": 100000, "step": 100 }
+                },
+                {
+                    "key": "strength",
+                    "title": { "ru": "Крепость", "en": "Alcohol strength" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "%", "min": 0, "max": 80, "step": 0.5 }
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объем", "en": "Volume" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "л", "min": 0.05, "max": 5, "step": 0.05 }
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" },
+                        { "ru": "Ограниченно", "en": "Limited" }
+                    ]
+                },
+                {
+                    "key": "discount",
+                    "title": { "ru": "Скидка", "en": "Discount" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "gift_packaging",
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift packaging" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "rum_line",
+                    "title": { "ru": "Линейка рома", "en": "Rum line" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Anejo", "en": "Anejo" },
+                        { "ru": "Gran Reserva", "en": "Gran Reserva" },
+                        { "ru": "Spiced", "en": "Spiced" },
+                        { "ru": "Reserva", "en": "Reserva" },
+                        { "ru": "XO", "en": "XO" },
+                        { "ru": "Selección", "en": "Selection" }
+                    ]
+                },
+                {
+                    "key": "rum_aging",
+                    "title": { "ru": "Выдержка рома", "en": "Rum aging" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Выдержанный", "en": "Aged" },
+                        { "ru": "Невыдержанный", "en": "Unaged" }
+                    ]
+                },
+                {
+                    "key": "aging_type",
+                    "title": { "ru": "Тип выдержки", "en": "Aging type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Single Barrel", "en": "Single Barrel" },
+                        { "ru": "Single Batch", "en": "Single Batch" }
+                    ]
+                },
+                {
+                    "key": "tequila_type",
+                    "title": { "ru": "Тип текилы", "en": "Tequila type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Аньехо", "en": "Anejo" },
+                        { "ru": "Бланко", "en": "Blanco" },
+                        { "ru": "Репосадо", "en": "Reposado" },
+                        { "ru": "Голд", "en": "Gold" },
+                        { "ru": "Сильвер", "en": "Silver" },
+                        { "ru": "Ховен", "en": "Joven" },
+                        { "ru": "Эспесьяль Голд", "en": "Especial Gold" },
+                        { "ru": "Эспесьяль Сильвер", "en": "Especial Silver" }
+                    ]
+                },
+                {
+                    "key": "gin_type",
+                    "title": { "ru": "Тип джина", "en": "Gin type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Блю", "en": "Blue" },
+                        { "ru": "Драй", "en": "Dry" },
+                        { "ru": "Оранж", "en": "Orange" },
+                        { "ru": "Пинк", "en": "Pink" },
+                        { "ru": "Терновый", "en": "Sloe" },
+                        { "ru": "Медовый", "en": "Honey" },
+                        { "ru": "Пряный", "en": "Spicy" },
+                        { "ru": "Ягодный", "en": "Berry" },
+                        { "ru": "Цитрус", "en": "Citrus" }
+                    ]
+                },
+                {
+                    "key": "absinthe_thujone",
+                    "title": { "ru": "Содержание туйона (Абсент)", "en": "Thujone content (Absinthe)" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "мг/кг", "min": 0, "max": 35, "step": 1 }
+                },    {
+                    "key": "liqueur_type",
+                    "title": { "ru": "Тип ликёра", "en": "Liqueur type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Абрикосовый", "en": "Apricot" },
+                        { "ru": "Айвовый", "en": "Quince" },
+                        { "ru": "Амаретто", "en": "Amaretto" },
+                        { "ru": "Ананасовый", "en": "Pineapple" },
+                        { "ru": "Апельсиновый", "en": "Orange" },
+                        { "ru": "Аперитив", "en": "Aperitif" },
+                        { "ru": "Банановый", "en": "Banana" },
+                        { "ru": "Бергамот", "en": "Bergamot" },
+                        { "ru": "Биттер", "en": "Bitter" },
+                        { "ru": "Блю Кюрасао", "en": "Blue Curaçao" },
+                        { "ru": "Бузина", "en": "Elderflower" },
+                        { "ru": "Ванильный", "en": "Vanilla" },
+                        { "ru": "Виноградный", "en": "Grape" },
+                        { "ru": "Вишнёвый", "en": "Cherry" },
+                        { "ru": "Грейпфрутовый", "en": "Grapefruit" },
+                        { "ru": "Грушевый", "en": "Pear" },
+                        { "ru": "Дынный", "en": "Melon" },
+                        { "ru": "Ежевичный", "en": "Blackberry" },
+                        { "ru": "Жасмин", "en": "Jasmine" },
+                        { "ru": "Зеленое яблоко", "en": "Green Apple" },
+                        { "ru": "Имбирный", "en": "Ginger" },
+                        { "ru": "Йогуртовый", "en": "Yogurt" },
+                        { "ru": "Какао", "en": "Cacao" },
+                        { "ru": "Карамельный", "en": "Caramel" },
+                        { "ru": "Кедровый", "en": "Cedar Nut" },
+                        { "ru": "Клубничный", "en": "Strawberry" },
+                        { "ru": "Клюквенный", "en": "Cranberry" },
+                        { "ru": "Кокосовый", "en": "Coconut" },
+                        { "ru": "Кола", "en": "Cola" },
+                        { "ru": "Кофейный", "en": "Coffee" },
+                        { "ru": "Крем де Банан", "en": "Crème de Banane" },
+                        { "ru": "Крем де Кассис", "en": "Crème de Cassis" },
+                        { "ru": "Крем де Пеш", "en": "Crème de Pêche" },
+                        { "ru": "Кремовый", "en": "Cream" },
+                        { "ru": "Кюрасао", "en": "Curaçao" },
+                        { "ru": "Лаванда", "en": "Lavender" },
+                        { "ru": "Лесной орех", "en": "Hazelnut" },
+                        { "ru": "Лесные травы", "en": "Herbal" },
+                        { "ru": "Лимончелло", "en": "Limoncello" },
+                        { "ru": "Лимонный", "en": "Lemon" },
+                        { "ru": "Личи", "en": "Lychee" },
+                        { "ru": "Малиновый", "en": "Raspberry" },
+                        { "ru": "Мараскино", "en": "Maraschino" },
+                        { "ru": "Марципановый", "en": "Marzipan" },
+                        { "ru": "Медовый", "en": "Honey" },
+                        { "ru": "Молочный", "en": "Milky" },
+                        { "ru": "Облепиховый", "en": "Sea Buckthorn" },
+                        { "ru": "Огуречный", "en": "Cucumber" },
+                        { "ru": "Перцовый", "en": "Pepper" },
+                        { "ru": "Пина Колада", "en": "Piña Colada" },
+                        { "ru": "Пряный", "en": "Spiced" },
+                        { "ru": "Пшеничный", "en": "Wheat" },
+                        { "ru": "Ревень", "en": "Rhubarb" },
+                        { "ru": "Ржаной", "en": "Rye" },
+                        { "ru": "Розовый грейпфрут", "en": "Pink Grapefruit" },
+                        { "ru": "Рябиновый", "en": "Rowan" },
+                        { "ru": "Сливочный", "en": "Creamy" },
+                        { "ru": "Смородиновый", "en": "Blackcurrant" },
+                        { "ru": "Сосновый", "en": "Pine" },
+                        { "ru": "Табаско", "en": "Tabasco" },
+                        { "ru": "Тоффи", "en": "Toffee" },
+                        { "ru": "Травяной", "en": "Herbal" },
+                        { "ru": "Трипл Сек", "en": "Triple Sec" },
+                        { "ru": "Тутовый", "en": "Mulberry" },
+                        { "ru": "Фиалковый", "en": "Violet" },
+                        { "ru": "Фисташковый", "en": "Pistachio" },
+                        { "ru": "Цитрусовый", "en": "Citrus" },
+                        { "ru": "Черносмородиновый", "en": "Blackcurrant" },
+                        { "ru": "Черничный", "en": "Blueberry" },
+                        { "ru": "Шоколадный", "en": "Chocolate" },
+                        { "ru": "Эспрессо", "en": "Espresso" },
+                        { "ru": "Юдзу", "en": "Yuzu" },
+                        { "ru": "Яблочный", "en": "Apple" },
+                        { "ru": "Ягодный", "en": "Berry" }
+                    ]
+                },
+                {
+                    "key": "liqueur_base",
+                    "title": { "ru": "Основа ликёра", "en": "Liqueur base" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Зерновая", "en": "Grain" },
+                        { "ru": "Фруктовая", "en": "Fruit" },
+                        { "ru": "Тростниковая", "en": "Sugarcane" },
+                        { "ru": "Молочная", "en": "Dairy" },
+                        { "ru": "Ореховая", "en": "Nut-based" }
+                    ]
+                },
+                {
+                    "key": "liqueur_style",
+                    "title": { "ru": "Стиль ликёра", "en": "Liqueur style" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Классический", "en": "Classic" },
+                        { "ru": "Премиум", "en": "Premium" },
+                        { "ru": "Авторский", "en": "Signature" },
+                        { "ru": "Десертный", "en": "Dessert" },
+                        { "ru": "Коктейльный", "en": "Cocktail" }
+                    ]
+                },
+                {
+                    "key": "tincture_aperitif_type",
+                    "title": { "ru": "Тип аперитива / настойки", "en": "Aperitif / Tincture type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Абрикосовая", "en": "Apricot" },
+                        { "ru": "Абрикос-Жимолость", "en": "Apricot Honeysuckle" },
+                        { "ru": "Ананасовая", "en": "Pineapple" },
+                        { "ru": "Апельсин-Шоколад", "en": "Orange-Chocolate" },
+                        { "ru": "Арбузная", "en": "Watermelon" },
+                        { "ru": "Белый налив", "en": "White Apple" },
+                        { "ru": "Брусничная", "en": "Lingonberry" },
+                        { "ru": "Ванильная", "en": "Vanilla" },
+                        { "ru": "Виноградно-алоэ", "en": "Grape-Aloe" },
+                        { "ru": "Вишнёвая", "en": "Cherry" },
+                        { "ru": "Вишня на коньяке", "en": "Cherry in Cognac" },
+                        { "ru": "Вишня-Шоколад", "en": "Cherry-Chocolate" },
+                        { "ru": "Горькая", "en": "Bitter" },
+                        { "ru": "Грейпфрутовая", "en": "Grapefruit" },
+                        { "ru": "Грецкий орех", "en": "Walnut" },
+                        { "ru": "Грибная", "en": "Mushroom" },
+                        { "ru": "Грушевая", "en": "Pear" },
+                        { "ru": "Дынная", "en": "Melon" },
+                        { "ru": "Зубровая", "en": "Zubrowka" },
+                        { "ru": "Кедровая", "en": "Cedar" },
+                        { "ru": "Клубника в шоколаде", "en": "Strawberry in Chocolate" },
+                        { "ru": "Клубничная", "en": "Strawberry" },
+                        { "ru": "Клюква на коньяке", "en": "Cranberry in Cognac" },
+                        { "ru": "Клюквенная", "en": "Cranberry" },
+                        { "ru": "Кокосовая", "en": "Coconut" },
+                        { "ru": "Кола", "en": "Cola" },
+                        { "ru": "Лайм", "en": "Lime" },
+                        { "ru": "Лимонная", "en": "Lemon" },
+                        { "ru": "Малиновая", "en": "Raspberry" },
+                        { "ru": "Манго", "en": "Mango" },
+                        { "ru": "Мед и перец", "en": "Honey & Pepper" },
+                        { "ru": "Медовая", "en": "Honey" },
+                        { "ru": "Миндаль с коньяком", "en": "Almond in Cognac" },
+                        { "ru": "Облепиховая", "en": "Sea Buckthorn" },
+                        { "ru": "Перец", "en": "Pepper" },
+                        { "ru": "Перец и мед", "en": "Pepper & Honey" },
+                        { "ru": "Перцовая", "en": "Peppery" },
+                        { "ru": "Пряная", "en": "Spiced" },
+                        { "ru": "Пшеничная", "en": "Wheat" },
+                        { "ru": "Рябиновая", "en": "Rowan" },
+                        { "ru": "Северная ягода", "en": "Northern Berry" },
+                        { "ru": "Сливовая", "en": "Plum" },
+                        { "ru": "Смородиновая", "en": "Blackcurrant" },
+                        { "ru": "Специи и травы", "en": "Spices & Herbs" },
+                        { "ru": "Цитрусовая", "en": "Citrus" },
+                        { "ru": "Черника-Можжевельник", "en": "Blueberry-Juniper" },
+                        { "ru": "Черничная", "en": "Blueberry" },
+                        { "ru": "Чернослив в коньяке", "en": "Prune in Cognac" },
+                        { "ru": "Шоколадная", "en": "Chocolate" },
+                        { "ru": "Яблочная", "en": "Apple" },
+                        { "ru": "Ягодная", "en": "Berry" },
+                        { "ru": "Липовая", "en": "Linden" }
+                    ]
+                },
+                {
+                    "key": "base",
+                    "title": { "ru": "Основа напитка", "en": "Base ingredient" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Зерновая", "en": "Grain" },
+                        { "ru": "Фруктовая", "en": "Fruit" },
+                        { "ru": "Тростниковая", "en": "Sugarcane" },
+                        { "ru": "Агавовая", "en": "Agave" },
+                        { "ru": "Виноградная", "en": "Grape" }
+                    ]
+                },
+                {
+                    "key": "style",
+                    "title": { "ru": "Стиль напитка", "en": "Drink style" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Премиум", "en": "Premium" },
+                        { "ru": "Классический", "en": "Classic" },
+                        { "ru": "Авторский", "en": "Signature" },
+                        { "ru": "Эксклюзивный", "en": "Exclusive" }
+                    ]
+                },
+                {
+                    "key": "color",
+                    "title": { "ru": "Цвет", "en": "Color" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Прозрачный", "en": "Clear" },
+                        { "ru": "Светлый", "en": "Light" },
+                        { "ru": "Золотистый", "en": "Golden" },
+                        { "ru": "Темный", "en": "Dark" },
+                        { "ru": "Янтарный", "en": "Amber" }
+                    ]
+                },
+                {
+                    "key": "character",
+                    "title": { "ru": "Характер", "en": "Character" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Мягкий", "en": "Soft" },
+                        { "ru": "Выраженный", "en": "Expressive" },
+                        { "ru": "Насыщенный", "en": "Rich" },
+                        { "ru": "Пряный", "en": "Spicy" },
+                        { "ru": "Яркий", "en": "Bright" }
+                    ]
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Сладкий", "en": "Sweet" },
+                        { "ru": "Полусладкий", "en": "Semi-sweet" },
+                        { "ru": "Горький", "en": "Bitter" },
+                        { "ru": "Пряный", "en": "Spicy" },
+                        { "ru": "Фруктовый", "en": "Fruity" },
+                        { "ru": "Цитрусовый", "en": "Citrus" },
+                        { "ru": "Травяной", "en": "Herbal" },
+                        { "ru": "Ореховый", "en": "Nutty" },
+                        { "ru": "Карамельный", "en": "Caramel" },
+                        { "ru": "Ванильный", "en": "Vanilla" }
+                    ]
+                },
+                {
+                    "key": "pairing",
+                    "title": { "ru": "Гастрономические сочетания", "en": "Food pairing" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Мясо", "en": "Meat" },
+                        { "ru": "Рыба", "en": "Fish" },
+                        { "ru": "Сыр", "en": "Cheese" },
+                        { "ru": "Шоколад", "en": "Chocolate" },
+                        { "ru": "Фрукты", "en": "Fruits" },
+                        { "ru": "Десерты", "en": "Desserts" },
+                        { "ru": "Кофе", "en": "Coffee" }
+                    ]
+                },
+                {
+                    "key": "aging_potential",
+                    "title": { "ru": "Потенциал выдержки", "en": "Aging potential" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Без выдержки", "en": "No aging" },
+                        { "ru": "Средний срок выдержки", "en": "Medium aging" },
+                        { "ru": "Долгая выдержка", "en": "Long aging" }
+                    ]
+                },
+                {
+                    "key": "container_type",
+                    "title": { "ru": "Тип тары", "en": "Container type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Стекло", "en": "Glass" },
+                        { "ru": "Бутылка", "en": "Bottle" },
+                        { "ru": "Банка", "en": "Jar" },
+                        { "ru": "Коробка", "en": "Box" },
+                        { "ru": "ПЭТ", "en": "PET" }
+                    ]
+                },
+                {
+                    "key": "region_type",
+                    "title": { "ru": "Регион происхождения", "en": "Region of origin" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "producer_line",
+                    "title": { "ru": "Линейка производителя", "en": "Producer line" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "serving_temperature",
+                    "title": { "ru": "Температура подачи", "en": "Serving temperature" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "°C", "min": -5, "max": 25, "step": 1 }
+                },
+                {
+                    "key": "sugar_content",
+                    "title": { "ru": "Содержание сахара", "en": "Sugar content" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "г/л", "min": 0, "max": 300, "step": 5 }
+                },
+                {
+                    "key": "flavor_profile",
+                    "title": { "ru": "Вкусовой профиль", "en": "Flavor profile" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Балансированный", "en": "Balanced" },
+                        { "ru": "Яркий", "en": "Bright" },
+                        { "ru": "Сложный", "en": "Complex" },
+                        { "ru": "Мягкий", "en": "Soft" }
+                    ]
+                },
+                {
+                    "key": "aroma_intensity",
+                    "title": { "ru": "Ароматичность", "en": "Aromatic intensity" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "баллы", "min": 0, "max": 10, "step": 0.5 }
+                },
+                {
+                    "key": "production_method",
+                    "title": { "ru": "Метод производства", "en": "Production method" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Традиционный", "en": "Traditional" },
+                        { "ru": "Современный", "en": "Modern" },
+                        { "ru": "Ремесленный", "en": "Craft" }
+                    ]
+                },
+                {
+                    "key": "filtration",
+                    "title": { "ru": "Фильтрация", "en": "Filtration" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Без фильтрации", "en": "Unfiltered" },
+                        { "ru": "Холодная фильтрация", "en": "Cold filtration" },
+                        { "ru": "Многократная фильтрация", "en": "Multiple filtration" }
+                    ]
+                },
+                {
+                    "key": "limited_edition",
+                    "title": { "ru": "Лимитированная серия", "en": "Limited edition" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "organic",
+                    "title": { "ru": "Органический продукт", "en": "Organic" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "new_arrival",
+                    "title": { "ru": "Новинка", "en": "New arrival" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                }
+            ],
+                "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "name": { "ru": "ВОДКА", "en": "Vodka" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "type": "country",
+                    "values": [
+                        { "ru": "Россия", "en": "Russia" },
+                        { "ru": "Япония", "en": "Japan" },
+                        { "ru": "Польша", "en": "Poland" },
+                        { "ru": "Белоруссия", "en": "Belarus" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Тип", "en": "Type" },
+                    "type": "type",
+                    "values": [
+                        { "ru": "Классическая", "en": "Classic" },
+                        { "ru": "Саке", "en": "Sake" },
+                        { "ru": "Полугар", "en": "Polugar" },
+                        { "ru": "Чача", "en": "Chacha" },
+                        { "ru": "Фруктовая", "en": "Fruit" },
+                        { "ru": "Органическая", "en": "Organic" },
+                        { "ru": "Виноградная", "en": "Grape" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "type": "brand",
+                    "values": [
+                        { "ru": "Absolut", "en": "Absolut" },
+                        { "ru": "Kremlin Award", "en": "Kremlin Award" },
+                        { "ru": "АМГ", "en": "AMG" },
+                        { "ru": "Налибоки", "en": "Naliboki" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Фильтрация", "en": "Filtration" },
+                    "type": "filtration",
+                    "values": [
+                        { "ru": "Березовый уголь", "en": "Birch Charcoal" },
+                        { "ru": "Угольный фильтр", "en": "Carbon Filter" },
+                        { "ru": "Кварц", "en": "Quartz" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Класс", "en": "Class" },
+                    "type": "class",
+                    "values": [
+                        { "ru": "Стандарт", "en": "Standard" },
+                        { "ru": "Премиум", "en": "Premium" },
+                        { "ru": "Ультра-Премиум", "en": "Ultra Premium" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Спирт", "en": "Spirit" },
+                    "type": "spirit",
+                    "values": [
+                        { "ru": "Альфа", "en": "Alpha" },
+                        { "ru": "Люкс", "en": "Lux" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Сырье", "en": "Raw Material" },
+                    "type": "raw_material",
+                    "values": [
+                        { "ru": "Пшеница", "en": "Wheat" },
+                        { "ru": "Зерновая смесь", "en": "Grain Blend" },
+                        { "ru": "Рожь", "en": "Rye" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift Packaging" },
+                    "type": "gift_pack",
+                    "values": [
+                        { "ru": "до 500 руб.", "en": "up to 500 RUB" },
+                        { "ru": "500–1000 руб.", "en": "500–1000 RUB" },
+                        { "ru": "1000–2000 руб.", "en": "1000–2000 RUB" },
+                        { "ru": "2000–5000 руб.", "en": "2000–5000 RUB" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип напитка", "en": "Drink type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Водка", "en": "Vodka" },
+                        { "ru": "Водка плодовая", "en": "Fruit vodka" },
+                        { "ru": "Писко", "en": "Pisco" },
+                        { "ru": "Полугар", "en": "Polugar" },
+                        { "ru": "Ракия", "en": "Rakia" },
+                        { "ru": "Самогон", "en": "Samogon" },
+                        { "ru": "Узо", "en": "Ouzo" },
+                        { "ru": "Чача", "en": "Chacha" },
+                        { "ru": "Шнапс", "en": "Schnaps" }
+                    ]
+                },
+                {
+                    "key": "spirit_type",
+                    "title": { "ru": "Тип спирта", "en": "Spirit type" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Альфа", "en": "Alpha" },
+                        { "ru": "Люкс", "en": "Lux" }
+                    ]
+                },
+                {
+                    "key": "class",
+                    "title": { "ru": "Класс напитка", "en": "Drink class" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Премиум", "en": "Premium" },
+                        { "ru": "Стандарт", "en": "Standard" },
+                        { "ru": "Супер-премиум", "en": "Super Premium" },
+                        { "ru": "Ультра-премиум", "en": "Ultra Premium" }
+                    ]
+                },
+                {
+                    "key": "series",
+                    "title": { "ru": "Серия", "en": "Series" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Кошерная", "en": "Kosher" }
+                    ]
+                },
+                {
+                    "key": "distillation",
+                    "title": { "ru": "Дистилляция", "en": "Distillation" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Одиночная", "en": "Single" },
+                        { "ru": "Двойная", "en": "Double" },
+                        { "ru": "Тройная", "en": "Triple" },
+                        { "ru": "Многоступенчатая", "en": "Multistage" }
+                    ]
+                },
+                {
+                    "key": "raw_material",
+                    "title": { "ru": "Сырьё", "en": "Raw material" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Зерновое", "en": "Grain" },
+                        { "ru": "Картофельное", "en": "Potato" },
+                        { "ru": "Фруктовое", "en": "Fruit" },
+                        { "ru": "Виноградное", "en": "Grape" },
+                        { "ru": "Медовое", "en": "Honey" },
+                        { "ru": "Тростниковое", "en": "Sugarcane" }
+                    ]
+                },
+                {
+                    "key": "additive",
+                    "title": { "ru": "Добавка", "en": "Additive" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Настоянная", "en": "Infused" },
+                        { "ru": "Ароматизированная", "en": "Flavored" },
+                        { "ru": "Без добавок", "en": "Pure" },
+                        { "ru": "С травами", "en": "Herbal" },
+                        { "ru": "С ягодами", "en": "Berry" },
+                        { "ru": "С пряностями", "en": "Spiced" }
+                    ]
+                },
+                {
+                    "key": "capacity",
+                    "title": { "ru": "Ёмкость", "en": "Bottle size" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "л", "min": 0.05, "max": 3, "step": 0.05 }
+                },
+                {
+                    "key": "strength",
+                    "title": { "ru": "Крепость", "en": "Alcohol strength" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "%", "min": 30, "max": 80, "step": 0.5 }
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "₽", "min": 0, "max": 20000, "step": 100 }
+                },    {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand_line",
+                    "title": { "ru": "Линейка бренда", "en": "Brand line" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "producer",
+                    "title": { "ru": "Производитель", "en": "Producer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "discount",
+                    "title": { "ru": "Скидка", "en": "Discount" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "%", "min": 0, "max": 70, "step": 5 }
+                },
+                {
+                    "key": "gift_pack",
+                    "title": { "ru": "Подарочная упаковка", "en": "Gift packaging" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объём", "en": "Volume" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "л", "min": 0.05, "max": 3, "step": 0.05 }
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" },
+                        { "ru": "Ограниченное количество", "en": "Limited quantity" }
+                    ]
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Абрикосовая", "en": "Apricot" },
+                        { "ru": "Айвовая", "en": "Quince" },
+                        { "ru": "Берёзовая", "en": "Birch" },
+                        { "ru": "Брусничная", "en": "Lingonberry" },
+                        { "ru": "Виноградная", "en": "Grape" },
+                        { "ru": "Вишнёвая", "en": "Cherry" },
+                        { "ru": "Голубиковая", "en": "Blueberry" },
+                        { "ru": "Грушёвая", "en": "Pear" },
+                        { "ru": "Дикая брусника", "en": "Wild Lingonberry" },
+                        { "ru": "Дубовые клепки", "en": "Oak Chips" },
+                        { "ru": "Жгучий перец", "en": "Hot Pepper" },
+                        { "ru": "Кедровая", "en": "Cedar" },
+                        { "ru": "Кизиловая", "en": "Cornelian Cherry" },
+                        { "ru": "Клубничная", "en": "Strawberry" },
+                        { "ru": "Клюквенная", "en": "Cranberry" },
+                        { "ru": "Медовая", "en": "Honey" },
+                        { "ru": "Можжевеловая", "en": "Juniper" },
+                        { "ru": "Морошковая", "en": "Cloudberry" },
+                        { "ru": "На семенах конопли", "en": "Hemp Seed" },
+                        { "ru": "Персиковая", "en": "Peach" },
+                        { "ru": "Пшеничная", "en": "Wheat" },
+                        { "ru": "Расторопша", "en": "Milk Thistle" },
+                        { "ru": "Сливовая", "en": "Plum" },
+                        { "ru": "Сэро", "en": "Serro" },
+                        { "ru": "Ткемалевая", "en": "Tkemali" },
+                        { "ru": "Тутовая", "en": "Mulberry" },
+                        { "ru": "Фруктовая", "en": "Fruit" },
+                        { "ru": "Фейхоа", "en": "Feijoa" },
+                        { "ru": "Хурма", "en": "Persimmon" },
+                        { "ru": "Цитронная", "en": "Citron" },
+                        { "ru": "Цитрус", "en": "Citrus" },
+                        { "ru": "Черничная", "en": "Blueberry" },
+                        { "ru": "Шиповник", "en": "Rosehip" },
+                        { "ru": "Яблочная", "en": "Apple" },
+                        { "ru": "Ржаная", "en": "Rye" }
+                    ]
+                },
+                {
+                    "key": "pairing",
+                    "title": { "ru": "Гастрономические сочетания", "en": "Food pairing" },
+                    "mode": "computed",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Закуски", "en": "Appetizers" },
+                        { "ru": "Мясо", "en": "Meat" },
+                        { "ru": "Рыба", "en": "Fish" },
+                        { "ru": "Икра", "en": "Caviar" },
+                        { "ru": "Соленья", "en": "Pickles" },
+                        { "ru": "Сыр", "en": "Cheese" },
+                        { "ru": "Гриль", "en": "Grill" },
+                        { "ru": "Пельмени", "en": "Dumplings" },
+                        { "ru": "Овощи", "en": "Vegetables" }
+                    ]
+                }
+                ],
+                "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "name": { "ru": "ПИВО и СИДР", "en": "Beer and Cider" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Тип напитка", "en": "Drink Type" },
+                    "type": "drink_type",
+                    "values": [
+                        { "ru": "Пиво", "en": "Beer" },
+                        { "ru": "Сидр", "en": "Cider" },
+                        { "ru": "Медовуха", "en": "Mead" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "type": "country",
+                    "values": [
+                        { "ru": "Россия", "en": "Russia" },
+                        { "ru": "Бельгия", "en": "Belgium" },
+                        { "ru": "Германия", "en": "Germany" },
+                        { "ru": "Чехия", "en": "Czech Republic" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Фильтрация", "en": "Filtration" },
+                    "type": "filtration",
+                    "values": [
+                        { "ru": "Фильтрованное", "en": "Filtered" },
+                        { "ru": "Нефильтрованное", "en": "Unfiltered" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Тип сидра", "en": "Cider Type" },
+                    "type": "cider_type",
+                    "values": [
+                        { "ru": "Яблочный", "en": "Apple" },
+                        { "ru": "Грушевый", "en": "Pear" },
+                        { "ru": "Сухой", "en": "Dry" },
+                        { "ru": "Полусладкий", "en": "Semi-sweet" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цвет", "en": "Color" },
+                    "type": "color",
+                    "values": [
+                        { "ru": "Светлое", "en": "Light" },
+                        { "ru": "Темное", "en": "Dark" },
+                        { "ru": "Красное", "en": "Red" },
+                        { "ru": "Янтарное", "en": "Amber" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Стиль", "en": "Style" },
+                    "type": "style",
+                    "values": [
+                        { "ru": "Эль", "en": "Ale" },
+                        { "ru": "Лагер", "en": "Lager" },
+                        { "ru": "Фруктовое", "en": "Fruit" },
+                        { "ru": "Пилснер", "en": "Pilsner" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Ферментация", "en": "Fermentation" },
+                    "type": "fermentation",
+                    "values": [
+                        { "ru": "Верховое брожжение", "en": "Top Fermentation" },
+                        { "ru": "Низовое брожжение", "en": "Bottom Fermentation" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
+                    "values": [
+                        { "ru": "до 100 руб.", "en": "up to 100 RUB" },
+                        { "ru": "100–200 руб.", "en": "100–200 RUB" },
+                        { "ru": "200–300 руб.", "en": "200–300 RUB" },
+                        { "ru": "300–500 руб.", "en": "300–500 RUB" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип напитка", "en": "Drink type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Пиво", "en": "Beer" },
+                        { "ru": "Сидр", "en": "Cider" }
+                    ]
+                },
+                {
+                    "key": "cider_type",
+                    "title": { "ru": "Тип сидра", "en": "Cider type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Лимон-имбирь", "en": "Lemon-Ginger" },
+                        { "ru": "Малина", "en": "Raspberry" },
+                        { "ru": "Груша", "en": "Pear" }
+                    ]
+                },
+                {
+                    "key": "color",
+                    "title": { "ru": "Цвет", "en": "Color" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Светлое", "en": "Light" },
+                        { "ru": "Тёмное", "en": "Dark" },
+                        { "ru": "Янтарное", "en": "Amber" },
+                        { "ru": "Белое", "en": "White" }
+                    ]
+                },
+                {
+                    "key": "filtration",
+                    "title": { "ru": "Фильтрация", "en": "Filtration" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Нефильтрованное", "en": "Unfiltered" },
+                        { "ru": "Фильтрованное", "en": "Filtered" }
+                    ]
+                },
+                {
+                    "key": "sugar",
+                    "title": { "ru": "Содержание сахара", "en": "Sugar level" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Сухое", "en": "Dry" },
+                        { "ru": "Полусухое", "en": "Semi-dry" },
+                        { "ru": "Полусладкое", "en": "Semi-sweet" },
+                        { "ru": "Сладкое", "en": "Sweet" }
+                    ]
+                },
+                {
+                    "key": "style",
+                    "title": { "ru": "Стиль", "en": "Style" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Lager", "en": "Lager" },
+                        { "ru": "IPA", "en": "IPA" },
+                        { "ru": "Porter", "en": "Porter" },
+                        { "ru": "Stout", "en": "Stout" },
+                        { "ru": "Pilsner", "en": "Pilsner" },
+                        { "ru": "Weissbier", "en": "Weissbier" },
+                        { "ru": "Cider", "en": "Cider" }
+                    ]
+                },
+                {
+                    "key": "sparkling",
+                    "title": { "ru": "Игристость", "en": "Carbonation" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Без газа", "en": "Still" },
+                        { "ru": "Слегка газированное", "en": "Lightly carbonated" },
+                        { "ru": "Газированное", "en": "Carbonated" },
+                        { "ru": "Сильно газированное", "en": "Highly carbonated" }
+                    ]
+                },
+                {
+                    "key": "strength",
+                    "title": { "ru": "Крепость", "en": "Strength" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Безалкогольное (менее 0.5%)", "en": "Non-alcoholic (under 0.5%)" },
+                        { "ru": "Лёгкое (до 4.4%)", "en": "Light (up to 4.4%)" },
+                        { "ru": "Среднее (4.5 – 5.9%)", "en": "Medium (4.5 – 5.9%)" },
+                        { "ru": "Крепкое (свыше 6%)", "en": "Strong (over 6%)" }
+                    ]
+                },
+                {
+                    "key": "capacity",
+                    "title": { "ru": "Ёмкость", "en": "Capacity" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Бутылка", "en": "Bottle" },
+                        { "ru": "Банка", "en": "Can" },
+                        { "ru": "Бочонок", "en": "Keg" }
+                    ]
+                },
+                {
+                    "key": "capsule",
+                    "title": { "ru": "Капсула", "en": "Capsule" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "С капсулой", "en": "With capsule" },
+                        { "ru": "Без капсулы", "en": "Without capsule" }
+                    ]
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "₽", "min": 0, "max": 2000, "step": 50 }
+                },
+                {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "brand_line",
+                    "title": { "ru": "Линейка бренда", "en": "Brand line" },
+                    "mode": "attribute",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "producer",
+                    "title": { "ru": "Производитель", "en": "Producer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "discount",
+                    "title": { "ru": "Скидка", "en": "Discount" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "%", "min": 0, "max": 70, "step": 5 }
+                },
+                {
+                    "key": "craft",
+                    "title": { "ru": "Крафтовое", "en": "Craft beer" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "rating_type",
+                    "title": { "ru": "Тип рейтинга", "en": "Rating type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Untappd", "en": "Untappd" },
+                        { "ru": "RateBeer", "en": "RateBeer" },
+                        { "ru": "Vivino", "en": "Vivino" },
+                        { "ru": "Нейросеть", "en": "Neural rating" }
+                    ]
+                },
+                {
+                    "key": "rating",
+                    "title": { "ru": "Рейтинг", "en": "Rating" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "3.0+", "en": "3.0+" },
+                        { "ru": "3.5+", "en": "3.5+" },
+                        { "ru": "4.0+", "en": "4.0+" },
+                        { "ru": "4.5+", "en": "4.5+" }
+                    ]
+                },
+                {
+                    "key": "rating_price",
+                    "title": { "ru": "Рейтинг–Цена", "en": "Rating–Price" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "season",
+                    "title": { "ru": "Время года", "en": "Season" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Лето", "en": "Summer" },
+                        { "ru": "Осень", "en": "Autumn" },
+                        { "ru": "Зима", "en": "Winter" },
+                        { "ru": "Весна", "en": "Spring" },
+                        { "ru": "Круглый год", "en": "All year" }
+                    ]
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Горький", "en": "Bitter" },
+                        { "ru": "Хмелевой", "en": "Hoppy" },
+                        { "ru": "Фруктовый", "en": "Fruity" },
+                        { "ru": "Цитрусовый", "en": "Citrus" },
+                        { "ru": "Карамельный", "en": "Caramel" },
+                        { "ru": "Зерновой", "en": "Grainy" },
+                        { "ru": "Пшеничный", "en": "Wheaty" },
+                        { "ru": "Медовый", "en": "Honey" },
+                        { "ru": "Сладковатый", "en": "Sweet" },
+                        { "ru": "Кисловатый", "en": "Sour" },
+                        { "ru": "Дымный", "en": "Smoky" },
+                        { "ru": "Пряный", "en": "Spicy" },
+                        { "ru": "Травяной", "en": "Herbal" },
+                        { "ru": "Свежий", "en": "Fresh" },
+                        { "ru": "Насыщенный", "en": "Rich" },
+                        { "ru": "Балансированный", "en": "Balanced" }
+                    ]
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" },
+                        { "ru": "Ограниченное количество", "en": "Limited quantity" }
+                    ]
+                },
+                {
+                    "key": "pairing",
+                    "title": { "ru": "Гастрономические сочетания", "en": "Food pairing" },
+                    "mode": "computed",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Закуски", "en": "Appetizers" },
+                        { "ru": "Сыр", "en": "Cheese" },
+                        { "ru": "Колбасы", "en": "Sausages" },
+                        { "ru": "Гриль", "en": "Grill" },
+                        { "ru": "Бургер", "en": "Burger" },
+                        { "ru": "Пицца", "en": "Pizza" },
+                        { "ru": "Морепродукты", "en": "Seafood" },
+                        { "ru": "Овощи", "en": "Vegetables" },
+                        { "ru": "Салаты", "en": "Salads" },
+                        { "ru": "Снеки", "en": "Snacks" }
+                    ]
+                },
+                {
+                    "key": "organic",
+                    "title": { "ru": "Органический продукт", "en": "Organic product" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "limited_edition",
+                    "title": { "ru": "Лимитированная серия", "en": "Limited edition" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                },
+                {
+                    "key": "new_arrival",
+                    "title": { "ru": "Новинка", "en": "New arrival" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "name": { "ru": "БОКАЛЫ", "en": "Glasses" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Назначение", "en": "Purpose" },
+                    "type": "purpose",
+                    "values": [
+                        { "ru": "Для вина", "en": "For Wine" },
+                        { "ru": "Для шампанского", "en": "For Champagne" },
+                        { "ru": "Для коньяка", "en": "For Cognac" },
+                        { "ru": "Для водки", "en": "For Vodka" },
+                        { "ru": "Для коктейлей", "en": "For Cocktails" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "type": "brand",
+                    "values": [
+                        { "ru": "Spiegelau", "en": "Spiegelau" },
+                        { "ru": "Zalto", "en": "Zalto" },
+                        { "ru": "Josephine", "en": "Josephine" },
+                        { "ru": "Rona", "en": "Rona" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Материал", "en": "Material" },
+                    "type": "material",
+                    "values": [
+                        { "ru": "Стекло", "en": "Glass" },
+                        { "ru": "Хрусталь", "en": "Crystal" },
+                        { "ru": "Хрустальное стекло", "en": "Crystal Glass" },
+                        { "ru": "Цветное стекло", "en": "Colored Glass" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Декантеры", "en": "Decanters" },
+                    "type": "decanters",
+                    "values": [
+                        { "ru": "Riedel Decanters", "en": "Riedel Decanters" },
+                        { "ru": "Spiegelau", "en": "Spiegelau" },
+                        { "ru": "Deru", "en": "Deru" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Аксессуары", "en": "Accessories" },
+                    "type": "accessories",
+                    "values": [
+                        { "ru": "Камни для виски", "en": "Whisky Stones" },
+                        { "ru": "Штопоры", "en": "Corkscrews" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Бокалы ручной работы", "en": "Handmade Glasses" },
+                    "type": "handmade"
+                },
+                {
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "type": "price",
+                    "values": [
+                        { "ru": "до 1000 руб.", "en": "up to 1000 RUB" },
+                        { "ru": "1000–2000 руб.", "en": "1000–2000 RUB" },
+                        { "ru": "2000–5000 руб.", "en": "2000–5000 RUB" },
+                        { "ru": "5000–10000 руб.", "en": "5000–10000 RUB" }
+                    ]
+                }
+            ],
+            "filters": [],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "name": { "ru": "ПОДАРКИ", "en": "Gifts" },
+            "menu_blocks": [
+                {
+                    "title": { "ru": "Подарки", "en": "Gifts For" },
+                    "type": "gift_for",
+                    "values": [
+                        { "ru": "В подарок мужчине", "en": "Gift for Man" },
+                        { "ru": "В подарок женщине", "en": "Gift for Woman" },
+                        { "ru": "Вино в подарок", "en": "Wine as a Gift" },
+                        { "ru": "Шампанское в подарок", "en": "Champagne as a Gift" },
+                        { "ru": "Виски в подарок", "en": "Whisky as a Gift" },
+                        { "ru": "Коньяк в подарок", "en": "Cognac as a Gift" },
+                        { "ru": "Водка в подарок", "en": "Vodka as a Gift" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Наборы", "en": "Sets" },
+                    "type": "sets",
+                    "values": [
+                        { "ru": "Винные наборы", "en": "Wine Sets" },
+                        { "ru": "Вино в коробке", "en": "Wine in Box" },
+                        { "ru": "Шампанское в коробке", "en": "Champagne in Box" },
+                        { "ru": "Виски в коробке", "en": "Whisky in Box" },
+                        { "ru": "Коньяк в коробке", "en": "Cognac in Box" },
+                        { "ru": "Водка в коробке", "en": "Vodka in Box" }
+                    ]
+                },
+                {
+                    "title": { "ru": "Подарочные сертификаты", "en": "Gift Certificates" },
+                    "type": "certificates"
+                },
+                {
+                    "title": { "ru": "Упаковка", "en": "Packaging" },
+                    "type": "packaging",
+                    "values": [
+                        { "ru": "Пакеты", "en": "Bags" },
+                        { "ru": "Коробки и тубы", "en": "Boxes and Tubes" }
+                    ]
+                }
+            ],
+            "filters": [
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип аксессуара", "en": "Accessory type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Бокал", "en": "Glass" },
+                        { "ru": "Графин", "en": "Carafe" },
+                        { "ru": "Декантер", "en": "Decanter" },
+                        { "ru": "Пробка", "en": "Cork" },
+                        { "ru": "Стакан", "en": "Tumbler" }
+                    ]
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": {
+                        "unit": "₽",
+                        "ranges": [
+                            { "ru": "до 1000", "en": "up to 1000" },
+                            { "ru": "1000–3000", "en": "1000–3000" },
+                            { "ru": "3000–6000", "en": "3000–6000" },
+                            { "ru": "от 6000", "en": "from 6000" }
+                        ],
+                        "min": 0,
+                        "max": 10000,
+                        "step": 100
+                    }
+                },
+                {
+                    "key": "manufacturer",
+                    "title": { "ru": "Производитель", "en": "Manufacturer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" }
+                    ]
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "name": { "ru": "ВОДА И ЛИМОНАДЫ", "en": "Water and Soft Drinks" },
+            "filters": [
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип напитка", "en": "Drink type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Вода минеральная", "en": "Mineral water" },
+                        { "ru": "Тоник", "en": "Tonic" },
+                        { "ru": "Сироп", "en": "Syrup" },
+                        { "ru": "Сок", "en": "Juice" },
+                        { "ru": "Концентрат", "en": "Concentrate" },
+                        { "ru": "Нектар", "en": "Nectar" },
+                        { "ru": "Морс", "en": "Berry drink" }
+                    ]
+                },
+                {
+                    "key": "carbonation",
+                    "title": { "ru": "Газированность", "en": "Carbonation" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Газированная", "en": "Carbonated" },
+                        { "ru": "Негазированная", "en": "Still" }
+                    ]
+                },
+                {
+                    "key": "container_type",
+                    "title": { "ru": "Тип тары", "en": "Container type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В ПЭТ", "en": "In PET bottle" },
+                        { "ru": "В стеклянной бутылке", "en": "In glass bottle" }
+                    ]
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объём", "en": "Volume" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "л", "min": 0.2, "max": 2.0, "step": 0.1 }
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" }
+                    ]
+                },
+                {
+                    "key": "new_arrival",
+                    "title": { "ru": "Новинка", "en": "New arrival" },
+                    "mode": "boolean",
+                    "ui_type": "toggle"
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "name": { "ru": "ПРОДУКТЫ", "en": "Food Products" },
+            "filters": [
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип продукта", "en": "Product type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Оливковое масло", "en": "Olive oil" },
+                        { "ru": "Уксус", "en": "Vinegar" },
+                        { "ru": "Кондитерские изделия", "en": "Confectionery" },
+                        { "ru": "Хлебцы", "en": "Crispbread" },
+                        { "ru": "Печенье", "en": "Cookies" },
+                        { "ru": "Макаронные изделия", "en": "Pasta" },
+                        { "ru": "Консервация", "en": "Canned food" }
+                    ]
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "price",
+                    "title": { "ru": "Цена", "en": "Price" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "₽", "min": 0, "max": 20000, "step": 50 }
+                },
+                {
+                    "key": "manufacturer",
+                    "title": { "ru": "Производитель", "en": "Manufacturer" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Producer",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "additive",
+                    "title": { "ru": "Добавка", "en": "Additive" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Без добавок", "en": "No additives" },
+                        { "ru": "С солью", "en": "With salt" },
+                        { "ru": "С травами", "en": "With herbs" },
+                        { "ru": "С сахаром", "en": "With sugar" },
+                        { "ru": "С приправами", "en": "With spices" }
+                    ]
+                },
+                {
+                    "key": "weight",
+                    "title": { "ru": "Вес", "en": "Weight" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "г", "min": 50, "max": 5000, "step": 50 }
+                },
+                {
+                    "key": "country",
+                    "title": { "ru": "Страна", "en": "Country" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Region",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "packaging",
+                    "title": { "ru": "Упаковка", "en": "Packaging" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Банка", "en": "Jar" },
+                        { "ru": "Бутылка", "en": "Bottle" },
+                        { "ru": "Пакет", "en": "Bag" },
+                        { "ru": "Коробка", "en": "Box" },
+                        { "ru": "Стекло", "en": "Glass" },
+                        { "ru": "Пластик", "en": "Plastic" }
+                    ]
+                },
+                {
+                    "key": "taste",
+                    "title": { "ru": "Вкус", "en": "Taste" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Классический", "en": "Classic" },
+                        { "ru": "Острый", "en": "Spicy" },
+                        { "ru": "Сладкий", "en": "Sweet" },
+                        { "ru": "Соленый", "en": "Salty" },
+                        { "ru": "Кисло-сладкий", "en": "Sweet and sour" }
+                    ]
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" }
+                    ]
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "name": { "ru": "ТАБАК И ВЭЙП", "en": "Tobacco & Vape" },
+            "filters": [
+                {
+                    "key": "type",
+                    "title": { "ru": "Тип устройства / продукта", "en": "Product type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "POD-система", "en": "POD system" },
+                        { "ru": "POD-система со сменными картриджами", "en": "POD system with replaceable cartridges" },
+                        { "ru": "Электронная сигарета", "en": "E-cigarette" },
+                        { "ru": "Жидкость", "en": "Liquid" },
+                        { "ru": "Сменный картридж для POD-систем", "en": "Replaceable POD cartridge" },
+                        { "ru": "Аксессуар", "en": "Accessory" }
+                    ]
+                },
+                {
+                    "key": "brand",
+                    "title": { "ru": "Бренд", "en": "Brand" },
+                    "mode": "reference",
+                    "source_model": "App\\Models\\Brand",
+                    "ui_type": "checkbox"
+                },
+                {
+                    "key": "flavor_type",
+                    "title": { "ru": "Тип вкуса", "en": "Flavor type" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Фруктовый", "en": "Fruity" },
+                        { "ru": "Ягодный", "en": "Berry" },
+                        { "ru": "Десертный", "en": "Dessert" },
+                        { "ru": "Ментоловый", "en": "Menthol" },
+                        { "ru": "Табачный", "en": "Tobacco" },
+                        { "ru": "Цитрусовый", "en": "Citrus" },
+                        { "ru": "Сложный микс", "en": "Complex mix" }
+                    ]
+                },
+                {
+                    "key": "flavor",
+                    "title": { "ru": "Вкус", "en": "Flavor" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Манго", "en": "Mango" },
+                        { "ru": "Арбуз", "en": "Watermelon" },
+                        { "ru": "Черника", "en": "Blueberry" },
+                        { "ru": "Мята", "en": "Mint" },
+                        { "ru": "Кола", "en": "Cola" },
+                        { "ru": "Яблоко", "en": "Apple" },
+                        { "ru": "Вишня", "en": "Cherry" },
+                        { "ru": "Малина", "en": "Raspberry" },
+                        { "ru": "Ананас", "en": "Pineapple" },
+                        { "ru": "Табак", "en": "Tobacco" }
+                    ]
+                },
+                {
+                    "key": "nicotine_strength",
+                    "title": { "ru": "Крепость (мг/мл)", "en": "Nicotine strength (mg/ml)" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "мг", "min": 0, "max": 50, "step": 1 }
+                },
+                {
+                    "key": "volume",
+                    "title": { "ru": "Объем жидкости", "en": "Liquid volume" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "мл", "min": 2, "max": 120, "step": 2 }
+                },
+                {
+                    "key": "composition",
+                    "title": { "ru": "Состав", "en": "Composition" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "Соль", "en": "Salt" },
+                        { "ru": "Freebase", "en": "Freebase" },
+                        { "ru": "VG/PG 70/30", "en": "VG/PG 70/30" },
+                        { "ru": "VG/PG 50/50", "en": "VG/PG 50/50" }
+                    ]
+                },
+                {
+                    "key": "battery_capacity",
+                    "title": { "ru": "Емкость аккумулятора", "en": "Battery capacity" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "mAh", "min": 200, "max": 5000, "step": 100 }
+                },
+                {
+                    "key": "puffs",
+                    "title": { "ru": "Количество затяжек", "en": "Number of puffs" },
+                    "mode": "range",
+                    "ui_type": "range",
+                    "config": { "unit": "п.", "min": 200, "max": 10000, "step": 100 }
+                },
+                {
+                    "key": "charging",
+                    "title": { "ru": "Подзарядка", "en": "Charging" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "С подзарядкой", "en": "Rechargeable" },
+                        { "ru": "Без подзарядки", "en": "Non-rechargeable" }
+                    ]
+                },
+                {
+                    "key": "availability",
+                    "title": { "ru": "Наличие", "en": "Availability" },
+                    "mode": "discrete",
+                    "ui_type": "checkbox",
+                    "values": [
+                        { "ru": "В наличии", "en": "In stock" },
+                        { "ru": "Под заказ", "en": "On order" }
+                    ]
+                },
+                {
+                    "key": "sources",
+                    "title": { "ru": "Источники данных", "en": "Data sources" },
+                    "mode": "links",
+                    "ui_type": "links",
+                    "values": [
+                        { "ru": "smokenvape.website", "en": "smokenvape.website" },
+                        { "ru": "svc-shop.ru", "en": "svc-shop.ru" },
+                        { "ru": "milkyshisha.com", "en": "milkyshisha.com" },
+                        { "ru": "vapelab.shop", "en": "vapelab.shop" },
+                        { "ru": "hqd.market", "en": "hqd.market" },
+                        { "ru": "tabaking.shop", "en": "tabaking.shop" },
+                        { "ru": "B2B Moysklad каталог", "en": "B2B Moysklad catalog", "url": "https://b2b.moysklad.ru/public/aZFaPieCWC6c/catalog" }
+                    ]
+                }
+            ],
+            "sorts": [
+                {
+                    "key": "general_sorts",
+                    "title": { "ru": "Основные сортировки", "en": "General sorts" },
+                    "ui_type": "dropdown",
+                    "options": [
+                        {
+                            "key": "rating_high",
+                            "title": { "ru": "Высокий рейтинг", "en": "High rating" },
+                            "field": "rating",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "rating_price_ratio",
+                            "title": { "ru": "Цена/Рейтинг", "en": "Price/Rating ratio" },
+                            "field": "rating_price_ratio",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_low",
+                            "title": { "ru": "Сначала дешевые", "en": "Lowest price" },
+                            "field": "price",
+                            "direction": "asc"
+                        },
+                        {
+                            "key": "price_high",
+                            "title": { "ru": "Сначала дорогие", "en": "Highest price" },
+                            "field": "price",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "max_discount",
+                            "title": { "ru": "Максимальная скидка", "en": "Max discount" },
+                            "field": "discount",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "newest",
+                            "title": { "ru": "Последние новинки", "en": "Newest arrivals" },
+                            "field": "created_at",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "popularity",
+                            "title": { "ru": "По популярности", "en": "By popularity" },
+                            "field": "views",
+                            "direction": "desc"
+                        },
+                        {
+                            "key": "volume_desc",
+                            "title": { "ru": "По объему", "en": "By volume" },
+                            "field": "volume",
+                            "direction": "desc"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

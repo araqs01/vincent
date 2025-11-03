@@ -14,18 +14,19 @@ use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableCont
 class RegionResource extends Resource
 {
     protected static ?string $model = Region::class;
-    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
-    protected static ?string $navigationGroup = 'Catalog';
+    protected static ?string $navigationIcon = 'heroicon-o-map';
+    protected static ?int $navigationSort = 4;
 
-    public static function getLabel(): string
+    public static function getNavigationGroup(): ?string
     {
-        return __('app.region.singular');
+        return __('app.navigation_groups.references');
     }
 
-    public static function getPluralLabel(): string
+    public static function getNavigationLabel(): string
     {
         return __('app.region.plural');
     }
+
 
     public static function form(Forms\Form $form): Forms\Form
     {

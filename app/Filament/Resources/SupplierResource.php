@@ -13,9 +13,17 @@ class SupplierResource extends Resource
 {
     protected static ?string $model = Supplier::class;
     protected static ?string $navigationIcon = 'heroicon-o-truck';
-    protected static ?string $navigationGroup = 'Справочники';
-    protected static ?string $label = 'Поставщик';
-    protected static ?string $pluralLabel = 'Поставщики';
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('app.navigation_groups.references');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.supplier.plural');
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {

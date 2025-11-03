@@ -53,7 +53,7 @@ class AttributesRelationManager extends RelationManager
                             ->default(0),
                     ])
                     ->action(function (array $data): void {
-                        // ✅ Получаем текущую категорию через RelationManager
+                        // ✅ Получаем текущую категорию через RelationManagers
                         $category = $this->getOwnerRecord();
 
                         // Проверим, не прикреплён ли уже этот атрибут

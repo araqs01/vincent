@@ -16,7 +16,7 @@ return new class extends Migration
             $table->json('name')->nullable();
             $table->json('description')->nullable();
             $table->string('slug')->nullable();
-            $table->string('country')->nullable();
+            $table->foreignId('region_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

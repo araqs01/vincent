@@ -13,10 +13,28 @@ use Filament\Tables\Columns\TextColumn;
 class CollectionResource extends Resource
 {
     protected static ?string $model = Collection::class;
-//    protected static ?string $navigationIcon = 'heroicon-o-collection';
-    protected static ?string $navigationGroup = 'Справочники';
-    protected static ?string $label = 'Подборка';
-    protected static ?string $pluralLabel = 'Подборки';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 4;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('app.navigation_groups.catalog');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.collection.plural');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('app.collection.singular');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('app.collection.plural');
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -88,7 +106,7 @@ class CollectionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Здесь позже добавим RelationManager для продуктов
+            // Здесь позже добавим RelationManagers для продуктов
         ];
     }
 

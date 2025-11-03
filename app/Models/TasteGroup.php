@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\SlugOptions;
 use Spatie\Translatable\HasTranslations;
 
 class TasteGroup extends Model
@@ -10,6 +11,7 @@ class TasteGroup extends Model
     use HasTranslations;
 
     protected $fillable = [
+        'slug',
         'name',
         'name_en',
         'description',
@@ -21,4 +23,17 @@ class TasteGroup extends Model
     {
         return $this->hasMany(Taste::class);
     }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(fn() => $this->getTranslation('name', 'en') ?? $this->getTranslation('name', 'ru'))
+            ->saveSlugsTo('slug');
+    }
+
+    public function products()
+    {
+        return $this->hasManyThrough(Product::class, Taste::class, 'taste_group_id', 'id', 'id', 'id');
+    }
+
 }

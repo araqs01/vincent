@@ -27,13 +27,13 @@ class AttributeValuesRelationManager extends RelationManager
                 ->maxLength(255),
         ]);
     }
-
+    //Vkusery kpcnenq
     public function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('attribute.name')->label('Атрибут'),
-                Tables\Columns\TextColumn::make('value')->label('Значение'),
+                Tables\Columns\TextColumn::make('value.ru')->label('Значение'),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
