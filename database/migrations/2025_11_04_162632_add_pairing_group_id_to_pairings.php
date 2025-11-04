@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pairings', function (Blueprint $table) {
-            $table->id();
-            $table->json('name')->nullable();
-            $table->json('description')->nullable();
-            $table->json('body')->nullable();
-            $table->timestamps();
+        Schema::table('pairings', function (Blueprint $table) {
+            $table->foreignId('pairing_group_id')->nullable()->constrained('pairing_groups')->nullOnDelete();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pairings');
+        Schema::table('pairings', function (Blueprint $table) {
+            $table->dropForeign('pairing_group_id');
+        });
     }
 };

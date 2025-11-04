@@ -32,7 +32,7 @@ class MenuBlockController extends BaseController
         return $this->renderApi(
             resource: MenuBlockResource::collection($blocks),
             additional: [
-                'category' => $category->getTranslations('name'),
+                'category' => $category->name,
                 'locale' => app()->getLocale(),
                 'cached' => true,
             ]

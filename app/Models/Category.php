@@ -62,4 +62,16 @@ class Category extends Model
     {
         return $this->hasMany(MenuBlock::class);
     }
+
+
+    public function filters(): HasMany
+    {
+        return $this->hasMany(CategoryFilter::class);
+    }
+
+
+    public function sortGroups(): HasMany
+    {
+        return $this->hasMany(CategorySortGroup::class);
+    }
 }

@@ -12,7 +12,11 @@ Route::get('/user', function (Request $request) {
 
 Route::prefix('catalog')->group(function () {
 
-    Route::get('/categories', [CategoryController::class, 'index'])->name('api.catalog.categories');
+    Route::get('/categories', [CategoryController::class, 'catalog'])->name('api.catalog.categories');
 
 //    Route::get('/menu-blocks/{slug}', [MenuBlockController::class, 'index'])->name('api.catalog.menu-blocks');
 });
+
+Route::get('/categories', [CategoryController::class, 'index'])->name('api.catalog.categories');
+Route::get('/filters/{slug}', [CategoryController::class, 'filters']);
+Route::get('/sorts/{slug}', [CategoryController::class, 'sorts']);

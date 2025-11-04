@@ -109,69 +109,69 @@ class GrapeSeeder extends Seeder
                 ],
             ]);
 
-            // 🍓 Вкусы
-            if ($tastesString) {
-                $tasteNames = array_map('trim', explode(',', $tastesString));
-
-                foreach ($tasteNames as $tasteName) {
-                    if (!$tasteName) continue;
-
-                    // 🧭 Определяем группу вкуса
-                    $groupSlug = TasteHelper::detectGroup($tasteName) ?? 'other';
-
-                    $group = TasteGroup::firstOrCreate(
-                        ['slug' => $groupSlug],
-                        ['name' => ['ru' => ucfirst($groupSlug), 'en' => ucfirst($groupSlug)]]
-                    );
-
-                    // 🧠 Определяем язык (русский или английский)
-                    $isRussian = preg_match('/[а-яё]/iu', $tasteName);
-
-                    if ($isRussian) {
-                        // Вкус на русском → переводим на английский
-                        $ruName = $tasteName;
-                        $enName = TasteHelper::translate($tasteName, 'en');
-                    } else {
-                        // Вкус на английском → переводим на русский
-                        $enName = $tasteName;
-                        $ruName = TasteHelper::translate($tasteName, 'ru');
-                    }
-
-                    // 🍷 Создаём или обновляем вкус
-                    $taste = Taste::firstOrCreate(
-                        ['name->en' => $enName],
-                        [
-                            'name' => [
-                                'ru' => $ruName ?: $tasteName,
-                                'en' => $enName,
-                            ],
-                            'taste_group_id' => $group?->id,
-                        ]
-                    );
-
-                    // 🔗 Привязка к варианту
-                    $variant->tastes()->syncWithoutDetaching([$taste->id]);
-
-                    // 🧠 Логируем неизвестные вкусы
-                    if ($groupSlug === 'other') {
-                        \Log::info("🆕 Unknown taste detected: {$tasteName}");
-                    }
-                }
-            }
-
-            // 🍽 Гастрономические сочетания
-            if ($pairingsString) {
-                $pairingNames = array_map('trim', explode(',', $pairingsString));
-                foreach ($pairingNames as $pairingName) {
-                    if (!$pairingName) continue;
-
-                    $pairing = Pairing::firstOrCreate(
-                        ['name->ru' => $pairingName],
-                        ['name' => ['ru' => $pairingName, 'en' => $pairingName]]
-                    );
-                    $variant->pairings()->syncWithoutDetaching([$pairing->id]);
-                }
-            }
+//            // 🍓 Вкусы
+//            if ($tastesString) {
+//                $tasteNames = array_map('trim', explode(',', $tastesString));
+//
+//                foreach ($tasteNames as $tasteName) {
+//                    if (!$tasteName) continue;
+//
+//                    // 🧭 Определяем группу вкуса
+//                    $groupSlug = TasteHelper::detectGroup($tasteName) ?? 'other';
+//
+//                    $group = TasteGroup::firstOrCreate(
+//                        ['slug' => $groupSlug],
+//                        ['name' => ['ru' => ucfirst($groupSlug), 'en' => ucfirst($groupSlug)]]
+//                    );
+//
+//                    // 🧠 Определяем язык (русский или английский)
+//                    $isRussian = preg_match('/[а-яё]/iu', $tasteName);
+//
+//                    if ($isRussian) {
+//                        // Вкус на русском → переводим на английский
+//                        $ruName = $tasteName;
+//                        $enName = TasteHelper::translate($tasteName, 'en');
+//                    } else {
+//                        // Вкус на английском → переводим на русский
+//                        $enName = $tasteName;
+//                        $ruName = TasteHelper::translate($tasteName, 'ru');
+//                    }
+//
+//                    // 🍷 Создаём или обновляем вкус
+//                    $taste = Taste::firstOrCreate(
+//                        ['name->en' => $enName],
+//                        [
+//                            'name' => [
+//                                'ru' => $ruName ?: $tasteName,
+//                                'en' => $enName,
+//                            ],
+//                            'taste_group_id' => $group?->id,
+//                        ]
+//                    );
+//
+//                    // 🔗 Привязка к варианту
+//                    $variant->tastes()->syncWithoutDetaching([$taste->id]);
+//
+//                    // 🧠 Логируем неизвестные вкусы
+//                    if ($groupSlug === 'other') {
+//                        \Log::info("🆕 Unknown taste detected: {$tasteName}");
+//                    }
+//                }
+//            }
+//
+//            // 🍽 Гастрономические сочетания
+//            if ($pairingsString) {
+//                $pairingNames = array_map('trim', explode(',', $pairingsString));
+//                foreach ($pairingNames as $pairingName) {
+//                    if (!$pairingName) continue;
+//
+//                    $pairing = Pairing::firstOrCreate(
+//                        ['name->ru' => $pairingName],
+//                        ['name' => ['ru' => $pairingName, 'en' => $pairingName]]
+//                    );
+//                    $variant->pairings()->syncWithoutDetaching([$pairing->id]);
+//                }
+//            }
 
             $count++;
         }

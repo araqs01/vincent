@@ -45,42 +45,205 @@ class ProductImporter implements ToCollection, WithChunkReading
                 $normalized = $this->normalizeRow($assoc);
                 if (empty($normalized)) continue;
 
-                // 🔹 Название (RU/EN)
+                /*
+                |--------------------------------------------------------------------------
+                | Распарсить JSON-характеристики (ws_characteristics)
+                |--------------------------------------------------------------------------
+                */
+                /*
+   |--------------------------------------------------------------------------
+   | ws_characteristics → вкусы, виноград, сочетания, страна, регион
+   |--------------------------------------------------------------------------
+   */
+                if (!empty($normalized['ws_characteristics'])) {
+                    try {
+                        $chars = $normalized['ws_characteristics'];
+
+                        if (is_string($chars)) {
+                            if (str_contains($chars, "{'")) {
+                                $chars = preg_replace_callback(
+                                    '/\'(.*?)\'/',
+                                    fn($m) => '"' . str_replace('"', '\"', $m[1]) . '"',
+                                    $chars
+                                );
+                            }
+                            $chars = json_decode($chars, true);
+                        }
+
+                        if (is_array($chars)) {
+                            $metaFromChars = [];
+
+                            foreach ($chars as $char) {
+                                if (!is_array($char)) continue;
+
+                                $key = trim(mb_strtolower($char['key'] ?? ''));
+                                $val = trim((string)($char['values'] ?? ''));
+
+                                if ($key === '' || $val === '') continue;
+
+                                switch ($key) {
+                                    case 'страна':
+                                        $normalized['страна'] = $val;
+                                        break;
+
+                                    case 'регион':
+                                        $normalized['регион'] = $val;
+                                        break;
+
+                                    case 'бренд':
+                                        $normalized['бренд'] = $val;
+                                        break;
+
+                                    case 'производитель':
+                                        $normalized['производитель'] = $val;
+                                        break;
+
+                                    case 'сорта винограда':
+                                    case 'виноград':
+                                        $normalized['grapes'] = trim(($normalized['grapes'] ?? '') . ', ' . $val, ', ');
+                                        break;
+
+                                    case 'подходит к':
+                                    case 'гастрономические сочетания':
+                                        $normalized['pairing'] = trim(($normalized['pairing'] ?? '') . ', ' . $val, ', ');
+                                        break;
+
+                                    case 'аромат':
+                                    case 'характер':
+                                    case 'тело':
+                                    case 'кислотность':
+                                        $normalized['wine_tastes'] = trim(($normalized['wine_tastes'] ?? '') . ', ' . $val, ', ');
+                                        break;
+
+                                    // 🎯 Новые ключи для meta
+                                    case 'крепость':
+                                    case 'насыщенность':
+                                    case 'глубина цвета':
+                                    case 'температура сервировки':
+                                        $metaFromChars[ucfirst($key)] = $val;
+                                        break;
+                                }
+                            }
+
+                            // 💾 сохраняем в meta
+                            if (!empty($metaFromChars)) {
+                                $normalized['meta_from_chars'] = $metaFromChars;
+                            }
+                        } else {
+                            \Log::warning('ws_characteristics не распознан как JSON: ' . substr((string)$normalized['ws_characteristics'], 0, 120));
+                        }
+                    } catch (\Throwable $e) {
+                        \Log::warning('Ошибка JSON-декодирования ws_characteristics: ' . $e->getMessage());
+                    }
+                }
+
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | ws_about_product
+                |--------------------------------------------------------------------------
+                */
+                $metaSections = [];
+                if (!empty($normalized['ws_about_product'])) {
+                    try {
+                        $value = $normalized['ws_about_product'];
+
+                        if (is_string($value)) {
+                            $fixed = trim($value);
+
+                            if (str_starts_with($fixed, '[') && str_contains($fixed, "'")) {
+                                $fixed = str_replace("'", '"', $fixed);
+                            }
+
+                            $aboutSections = json_decode($fixed, true);
+
+                            if (json_last_error() !== JSON_ERROR_NONE) {
+                                \Log::warning('Ошибка JSON ws_about_product: ' . json_last_error_msg(), ['value' => $value]);
+                                $aboutSections = null;
+                            }
+                        } else {
+                            $aboutSections = is_array($value) ? $value : null;
+                        }
+
+                        // Формируем только meta.sections
+                        if (is_array($aboutSections)) {
+                            foreach ($aboutSections as $section) {
+                                if (!is_array($section)) continue;
+
+                                $title = trim($section['title'] ?? '');
+                                $text  = trim($section['text'] ?? '');
+
+                                if ($title && $text) {
+                                    $metaSections[] = [
+                                        'title' => $title,
+                                        'text'  => $text,
+                                    ];
+                                }
+                            }
+                        }
+                    } catch (\Throwable $e) {
+                        \Log::warning('Ошибка обработки ws_about_product: ' . $e->getMessage());
+                    }
+                }
+
+
+//                dump($metaSections);
+                // Очистка лишних запятых
+                foreach (['wine_tastes', 'pairing'] as $field) {
+                    if (!empty($normalized[$field])) {
+                        $normalized[$field] = trim($normalized[$field], ", \t\n\r\0\x0B");
+                    }
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Нормализация строковых полей
+                |--------------------------------------------------------------------------
+                */
+                if (!empty($normalized['grapes'])) {
+                    $normalized['grapes'] = collect(
+                        preg_split('/[,;\/]+|\s{2,}|\s(?=[А-ЯЁA-Z][а-яё]{2,}\s[А-ЯЁA-Z])/u', $normalized['grapes'])
+                    )->map(fn($v) => trim($v))
+                        ->filter()
+                        ->unique()
+                        ->implode(', ');
+                }
+
+                if (!empty($normalized['pairing'])) {
+                    $normalized['pairing'] = collect(
+                        preg_split('/[,;\/]+|\s{2,}/u', $normalized['pairing'])
+                    )->map(fn($v) => trim($v))
+                        ->filter()
+                        ->unique()
+                        ->implode(', ');
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Создание/обновление продукта
+                |--------------------------------------------------------------------------
+                */
                 $nameRu = $normalized['name_price'] ?? $normalized['name_ru'] ?? null;
                 $nameEn = $normalized['name_price_en'] ?? null;
-
-                // Берём строку, из которой извлекаем год и объём
                 $nameWithYear = $normalized['name_price_year'] ?? $nameRu;
 
-                // Парсинг базового имени, объёма и винтажа
                 [$baseName, $volume, $vintage] = $this->parseNameVolumeAndVintage($nameWithYear);
-
-                // Очистка хвостов (год, цифры, символы)
-                $baseName = preg_replace('/\b(год|year)\b/iu', '', $baseName);
-                $baseName = preg_replace('/[\/\\\()\[\]\d.,]+$/u', '', $baseName);
-                $baseName = trim(preg_replace('/\s{2,}/', ' ', $baseName));
-
-                // Генерация slug (по базовому названию)
+                $baseName = trim(preg_replace('/\s{2,}/', ' ', preg_replace('/[\/\\\()\[\]\d.,]+$/u', '', $baseName)));
                 $slug = Str::slug(Str::limit($baseName, 80, ''));
 
-                // 🔹 Описание
                 $descriptionRu = trim(($normalized['about'] ?? '') . "\n\n" . ($normalized['description'] ?? ''));
                 $descriptionEn = $normalized['description_en'] ?? null;
-
-                // 🔹 Цена
                 $price = $this->sanitizePrice($normalized['price'] ?? null);
 
-                // 🔹 Категория / Регион / Бренд / Производитель
                 $category = $this->detectCategoryFromName($baseName);
                 $regionId = $this->detectOrCreateRegion(
                     $normalized['страна'] ?? $normalized['country'] ?? null,
                     $normalized['регион'] ?? $normalized['region'] ?? null
                 );
-
                 $brandId = $this->detectOrCreateNameModel(\App\Models\Brand::class, $normalized['бренд'] ?? null, $regionId);
                 $manufacturerId = $this->detectOrCreateNameModel(\App\Models\Manufacturer::class, $normalized['производитель'] ?? null, $regionId);
 
-                // 🔹 Создание / обновление продукта
                 $product = Product::updateOrCreate(
                     ['slug' => $slug],
                     [
@@ -96,29 +259,20 @@ class ProductImporter implements ToCollection, WithChunkReading
                     ]
                 );
 
-              ProductAttributeService::extractAndAttachAttributes($product, $baseName);
-                // 🔹 Варианты (объём и год)
+                ProductAttributeService::extractAndAttachAttributes($product, $baseName);
+
                 if ($volume || $vintage) {
                     ProductVariant::updateOrCreate(
-                        [
-                            'product_id' => $product->id,
-                            'volume' => $volume,
-                            'vintage' => $vintage,
-                        ],
-                        [
-                            'price' => $price,
-                            'final_price' => $price,
-                        ]
+                        ['product_id' => $product->id, 'volume' => $volume, 'vintage' => $vintage],
+                        ['price' => $price, 'final_price' => $price]
                     );
                 }
 
-                // 🔹 Сорта винограда и профиль
                 if (!empty($normalized['grapes'])) {
                     ProductGrapeService::attachGrapes($product, (string)$normalized['grapes']);
                     ProductGrapeVariantService::updateGrapeProfile($product);
                 }
 
-                // 🔹 Вкусы
                 ProductTasteService::buildAndAttachTastes(
                     product: $product,
                     textTastesCsv: $normalized['wine_tastes'] ?? null,
@@ -130,18 +284,28 @@ class ProductImporter implements ToCollection, WithChunkReading
                     ProductPairingService::attachPairings($product, $normalized['pairing']);
                 }
 
-                // 🔹 Meta: рейтинг и др.
-                $meta = $product->meta ?? [];
+                /*
+                |--------------------------------------------------------------------------
+                | Финальное объединение meta (sections + taste_groups + rating)
+                |--------------------------------------------------------------------------
+                */
+                $currentMeta = $product->meta ?? [];
+                if (!empty($metaSections)) {
+                    $currentMeta['sections'] = $metaSections;
+                }
+
                 if (!empty($normalized['vivino_rating'])) {
-                    $meta['vivino_rating'] = (float)$normalized['vivino_rating'];
+                    $currentMeta['vivino_rating'] = (float)$normalized['vivino_rating'];
                 }
+
                 if (!empty($normalized['manufacturer_rating'])) {
-                    $meta['manufacturer_rating'] = (float)$normalized['manufacturer_rating'];
+                    $currentMeta['manufacturer_rating'] = (float)$normalized['manufacturer_rating'];
                 }
-                $product->meta = $meta;
+
+                $product->meta = $currentMeta;
                 $product->save();
 
-                // 🔹 Изображения (проверка на дубли)
+                // 🔹 Изображения
                 $imageUrl = $normalized['image_link'] ?? $normalized['foto'] ?? null;
                 if ($product && $imageUrl) {
                     $filename = basename(parse_url($imageUrl, PHP_URL_PATH)) ?: 'image.jpg';
@@ -199,9 +363,13 @@ class ProductImporter implements ToCollection, WithChunkReading
         $map = [
             'name_price' => 'name_price',
             'name_price_year' => 'name_price_year',
+            'name_ru' => 'name_ru',
+            'ws_name_ru' => 'ws_name_ru',
             'описание' => 'description',
+            'ws_description' => 'description',
             'about' => 'about',
             'цена' => 'price',
+            'ws_price' => 'price',
             'vivino_link' => 'vivino_link',
             'wine_tastes' => 'wine_tastes',
             'бренд' => 'бренд',
@@ -216,11 +384,13 @@ class ProductImporter implements ToCollection, WithChunkReading
             'винтаж' => 'vintage',
             'vintage' => 'vintage',
             'подходит к' => 'pairing',
-            'подходит_к' => 'pairing',
             'гастрономические сочетания' => 'pairing',
             'pairing' => 'pairing',
             'pairings' => 'pairing',
             'гастр. сочетания' => 'pairing',
+            'free_remainder' => 'free_remainder',
+            'ws_characteristics' => 'ws_characteristics',
+            'ws_about_product' => 'ws_about_product',
         ];
 
         $normalized = [];
@@ -229,6 +399,68 @@ class ProductImporter implements ToCollection, WithChunkReading
             $target = $map[$keyLower] ?? $keyLower;
             $normalized[$target] = is_string($value) ? trim($value) : $value;
         }
+
+        // 🔍 Обработка JSON-характеристик
+        if (!empty($normalized['ws_characteristics'])) {
+            $chars = json_decode($normalized['ws_characteristics'], true);
+            if (is_array($chars)) {
+                foreach ($chars as $char) {
+                    $key = trim($char['key'] ?? '');
+                    $val = trim($char['values'] ?? '');
+                    if (!$key || !$val) continue;
+
+                    switch (mb_strtolower($key)) {
+                        case 'крепость':
+                            $normalized['strength'] = $val;
+                            break;
+                        case 'объем':
+                            $normalized['volume'] = $val;
+                            break;
+                        case 'бренд':
+                            $normalized['бренд'] = $val;
+                            break;
+                        case 'регион':
+                            $normalized['регион'] = $val;
+                            break;
+                        case 'страна':
+                            $normalized['страна'] = $val;
+                            break;
+                        case 'производитель':
+                            $normalized['производитель'] = $val;
+                            break;
+                        case 'сорта винограда':
+                            $normalized['grapes'] = $val;
+                            break;
+                        case 'подходит к':
+                            $normalized['pairing'] = $val;
+                            break;
+                        default:
+                            $normalized['attributes'][$key] = $val;
+                    }
+                }
+            }
+        }
+
+        // 🔍 Обработка JSON-описания (вкус, аромат, цвет, сочетания)
+        if (!empty($normalized['ws_about_product'])) {
+            $about = json_decode($normalized['ws_about_product'], true);
+            if (is_array($about)) {
+                foreach ($about as $section) {
+                    $title = mb_strtolower(trim($section['title'] ?? ''));
+                    $text = trim($section['text'] ?? '');
+                    if (!$title || !$text) continue;
+
+                    if (in_array($title, ['вкус', 'аромат'])) {
+                        $normalized['wine_tastes'][] = $text;
+                    } elseif ($title === 'сочетания') {
+                        $normalized['pairing'] = ($normalized['pairing'] ?? '') . ' ' . $text;
+                    } elseif ($title === 'цвет') {
+                        $normalized['attributes']['Цвет'] = $text;
+                    }
+                }
+            }
+        }
+
         return array_filter($normalized, fn($v) => $v !== null && $v !== '');
     }
 

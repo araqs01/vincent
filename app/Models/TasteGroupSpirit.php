@@ -5,26 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 
-class Pairing extends Model
+class TasteGroupSpirit extends Model
 {
     use HasTranslations;
+
+    protected $table = 'taste_group_spirits';
 
     protected $fillable = [
         'name',
         'description',
-        'body',
+        'image',
         'meta',
-        'pairing_group_id',
     ];
 
-    public $translatable = ['name', 'description', 'body'];
+    public $translatable = ['name', 'description'];
 
     protected $casts = [
         'meta' => 'array',
     ];
 
-    public function group()
+    public function tastes()
     {
-        return $this->belongsTo(PairingGroup::class, 'pairing_group_id');
+        return $this->hasMany(Taste::class, 'taste_group_spirit_id');
     }
 }

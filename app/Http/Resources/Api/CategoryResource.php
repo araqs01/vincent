@@ -18,13 +18,7 @@ class CategoryResource extends JsonResource
             'id'          => $this->id,
             'slug'        => $this->slug,
             'type'        => $this->type,
-            'name'        => $this->getTranslations('name'),
-            'description' => $this->getTranslations('description'),
-
-            'children' => $this->whenLoaded('children', fn() =>
-            CategoryResource::collection($this->children)
-            ),
-
+            'name'        => $this->name,
             'menu_blocks' => $this->whenLoaded('menuBlocks', fn() =>
             MenuBlockResource::collection($this->menuBlocks->sortBy('order_index'))
             ),

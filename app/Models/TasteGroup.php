@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Translatable\HasTranslations;
 
 class TasteGroup extends Model
 {
     use HasTranslations;
+    use HasSlug;
 
     protected $fillable = [
         'slug',

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pairings', function (Blueprint $table) {
+        Schema::create('pairing_groups', function (Blueprint $table) {
             $table->id();
-            $table->json('name')->nullable();
+            $table->json('name');
             $table->json('description')->nullable();
-            $table->json('body')->nullable();
+            $table->json('meta')->nullable(); // например, иконка или изображение
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pairings');
+        Schema::dropIfExists('pairing_groups');
     }
 };

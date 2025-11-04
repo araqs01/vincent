@@ -40,6 +40,9 @@ class CategoryFilterOptionsRelationManager extends RelationManager
             Forms\Components\Toggle::make('is_active')
                 ->label(__('app.common.is_active'))
                 ->default(true),
+            Forms\Components\Toggle::make('show_in_header')
+                ->label(__('app.common.show_in_header'))
+                ->default(true),
         ]);
     }
 
@@ -50,6 +53,7 @@ class CategoryFilterOptionsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('value')->label('Value'),
                 Tables\Columns\TextColumn::make('slug')->label('Slug'),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
+                Tables\Columns\IconColumn::make('show_in_header')->boolean(),
             ])
             ->defaultSort('order_index')
             ->headerActions([

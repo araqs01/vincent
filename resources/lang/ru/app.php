@@ -7,6 +7,7 @@ return [
     'common' => [
         'order_index' => 'Порядок',
         'is_active' => 'Активен',
+        'show_in_header' => 'Показать в Header',
     ],
 
 

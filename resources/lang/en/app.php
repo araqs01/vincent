@@ -7,6 +7,7 @@ return [
     'common' => [
         'order_index' => 'Order',
         'is_active'   => 'Active',
+        'show_in_header' => 'Show in Header Header',
     ],
 
     'navigation_groups' => [

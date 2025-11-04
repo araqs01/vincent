@@ -9,12 +9,17 @@ class Taste extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['name', 'taste_group_id'];
+    protected $fillable = ['name', 'taste_group_id','taste_group_spirit_id'];
     public $translatable = ['name'];
 
     public function group()
     {
         return $this->belongsTo(TasteGroup::class, 'taste_group_id');
+    }
+
+    public function groupSpirit()
+    {
+        return $this->belongsTo(TasteGroupSpirit::class);
     }
 
     public function products()
