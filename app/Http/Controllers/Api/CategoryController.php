@@ -18,6 +18,9 @@ class CategoryController extends BaseController
         $categories = $this->rememberCache($cacheKey, function () {
             return Category::query()
                 ->whereNull('parent_id')
+                ->whereHas('menuBlocks', function ($q) {
+                    $q->where('is_active', true);
+                })
                 ->with([
                     'children' => fn($q) => $q->orderBy('id'),
                     'menuBlocks' => fn($q) => $q
