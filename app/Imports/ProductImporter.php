@@ -45,16 +45,6 @@ class ProductImporter implements ToCollection, WithChunkReading
                 $normalized = $this->normalizeRow($assoc);
                 if (empty($normalized)) continue;
 
-                /*
-                |--------------------------------------------------------------------------
-                | Распарсить JSON-характеристики (ws_characteristics)
-                |--------------------------------------------------------------------------
-                */
-                /*
-   |--------------------------------------------------------------------------
-   | ws_characteristics → вкусы, виноград, сочетания, страна, регион
-   |--------------------------------------------------------------------------
-   */
                 if (!empty($normalized['ws_characteristics'])) {
                     try {
                         $chars = $normalized['ws_characteristics'];

@@ -19,7 +19,10 @@ class CategoryController extends BaseController
             return Category::query()
                 ->whereNull('parent_id')
                 ->whereHas('menuBlocks', function ($q) {
-                    $q->where('is_active', true);
+                    $q->where('is_active', true)
+                        ->whereHas('values', function ($v) {
+                            $v->where('is_active', true);
+                        });
                 })
                 ->with([
                     'children' => fn($q) => $q->orderBy('id'),
