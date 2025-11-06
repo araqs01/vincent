@@ -20,4 +20,4 @@ Route::prefix('catalog')->group(function () {
 Route::get('/categories', [CategoryController::class, 'index'])->name('api.catalog.categories');
 Route::get('/filters/{slug}', [CategoryController::class, 'filters']);
 Route::get('/sorts/{slug}', [CategoryController::class, 'sorts']);
-Route::get('/categories-product/{slug}', [ProductController::class, 'index']);
+Route::get('/categories/{slug}', [ProductController::class, 'index']);

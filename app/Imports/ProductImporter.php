@@ -10,19 +10,27 @@ use App\Services\ProductGrapeService;
 use App\Services\ProductGrapeVariantService;
 use App\Services\ProductPairingService;
 use App\Services\ProductTasteService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class ProductImporter implements ToCollection, WithChunkReading
+class ProductImporter implements ToCollection, WithChunkReading, WithBatchInserts, ShouldQueue
 {
+    use InteractsWithQueue, Queueable, SerializesModels;
+
     public function collection(Collection $rows)
     {
-        ini_set('max_execution_time', 900);
-        set_time_limit(900);
+        ini_set('memory_limit', '2048M');
+        set_time_limit(0); // бесконечное время, так как работает в очереди
 
         $headerIndex = $this->detectHeaderRow($rows);
         if ($headerIndex === null) {
@@ -40,295 +48,285 @@ class ProductImporter implements ToCollection, WithChunkReading
         });
 
         DB::transaction(function () use ($headers, $dataRows) {
-            foreach ($dataRows as $row) {
-                $assoc = $this->combineRowWithHeaders($headers, $row->toArray());
-                $normalized = $this->normalizeRow($assoc);
-                if (empty($normalized)) continue;
+            try {
+                foreach ($dataRows as $index => $row) {
+                    $assoc = $this->combineRowWithHeaders($headers, $row->toArray());
+                    $normalized = $this->normalizeRow($assoc);
+                    if (empty($normalized)) continue;
 
-                if (!empty($normalized['ws_characteristics'])) {
-                    try {
-                        $chars = $normalized['ws_characteristics'];
+                    if (!empty($normalized['ws_characteristics'])) {
+                        try {
+                            $chars = $normalized['ws_characteristics'];
+                            if (is_string($chars)) {
+                                $fixed = trim($chars);
+                                if ($fixed === '' || $fixed === '[]' || $fixed === '[ ]') {
+                                    $chars = [];
+                                } else {
+                                    if (str_starts_with($fixed, '[') && str_contains($fixed, "'")) {
+                                        $fixed = str_replace("'", '"', $fixed);
+                                    }
+                                    $fixed = preg_replace('/,\s*([\]}])/m', '$1', $fixed);
 
-                        // 🧩 Универсальное приведение к валидному JSON
-                        if (is_string($chars)) {
-                            $fixed = trim($chars);
+                                    $chars = json_decode($fixed, true);
 
-                            // Пропускаем пустые или "[]"
-                            if ($fixed === '' || $fixed === '[]' || $fixed === '[ ]') {
+                                    if (json_last_error() !== JSON_ERROR_NONE) {
+                                        $chars = [];
+                                    }
+                                }
+                            } elseif (!is_array($chars)) {
                                 $chars = [];
-                            } else {
-                                // Исправляем одинарные кавычки
+                            }
+
+                            if (!empty($chars) && is_array($chars)) {
+                                $metaFromChars = [];
+
+                                foreach ($chars as $char) {
+                                    if (!is_array($char)) continue;
+
+                                    $key = trim(mb_strtolower($char['key'] ?? ''));
+                                    $val = trim((string)($char['values'] ?? ''));
+
+                                    if ($key === '' || $val === '') continue;
+
+                                    switch ($key) {
+                                        case 'страна':
+                                            $normalized['страна'] = $val;
+                                            break;
+                                        case 'регион':
+                                            $normalized['регион'] = $val;
+                                            break;
+                                        case 'бренд':
+                                            $normalized['бренд'] = $val;
+                                            break;
+                                            case 'сорта винограда':
+                                        case 'cорта винограда': // латинская c
+                                        case 'виноград':
+                                        case 'grape':
+                                        case 'grapes':
+                                            $normalized['grapes'] = trim(($normalized['grapes'] ?? '') . ', ' . $val, ', ');
+                                            break;
+                                            case 'подходит к':
+                                        case 'гастрономические сочетания':
+                                            $normalized['pairing'] = trim(($normalized['pairing'] ?? '') . ', ' . $val, ', ');
+                                            break;
+
+                                        case 'аромат':
+                                        case 'характер':
+                                        case 'вкус':
+                                        case 'тело':
+                                        case 'кислотность':
+                                            $normalized['wine_tastes'] = trim(($normalized['wine_tastes'] ?? '') . ', ' . $val, ', ');
+                                            break;
+                                            case 'крепость':
+                                        case 'насыщенность':
+                                        case 'глубина цвета':
+                                        case 'температура сервировки':
+                                            $metaFromChars[ucfirst($key)] = $val;
+                                            break;
+                                    }
+                                }
+                                if (!empty($metaFromChars)) {
+                                    $normalized['meta_from_chars'] = $metaFromChars;
+                                }
+                            }
+
+                        } catch (\Throwable $e) {
+                            \Log::warning('Ошибка обработки ws_characteristics: ' . $e->getMessage());
+                        }
+                    }
+
+                    $metaSections = [];
+                    if (!empty($normalized['ws_about_product'])) {
+                        try {
+                            $value = $normalized['ws_about_product'];
+
+                            if (is_string($value)) {
+                                $fixed = trim($value);
+
                                 if (str_starts_with($fixed, '[') && str_contains($fixed, "'")) {
                                     $fixed = str_replace("'", '"', $fixed);
                                 }
 
-                                // Убираем запятые перед закрывающими скобками
-                                $fixed = preg_replace('/,\s*([\]}])/m', '$1', $fixed);
-
-                                $chars = json_decode($fixed, true);
+                                $aboutSections = json_decode($fixed, true);
 
                                 if (json_last_error() !== JSON_ERROR_NONE) {
-                                    \Log::warning('Ошибка JSON ws_characteristics: ' . json_last_error_msg(), ['value' => $fixed]);
-                                    $chars = [];
+                                    \Log::warning('Ошибка JSON ws_about_product: ' . json_last_error_msg(), ['value' => $value]);
+                                    $aboutSections = null;
                                 }
+                            } else {
+                                $aboutSections = is_array($value) ? $value : null;
                             }
-                        } elseif (!is_array($chars)) {
-                            $chars = [];
-                        }
 
-                        if (!empty($chars) && is_array($chars)) {
-                            $metaFromChars = [];
+                            if (is_array($aboutSections)) {
+                                foreach ($aboutSections as $section) {
+                                    if (!is_array($section)) continue;
 
-                            foreach ($chars as $char) {
-                                if (!is_array($char)) continue;
+                                    $title = trim($section['title'] ?? '');
+                                    $text = trim($section['text'] ?? '');
 
-                                $key = trim(mb_strtolower($char['key'] ?? ''));
-                                $val = trim((string)($char['values'] ?? ''));
-
-                                if ($key === '' || $val === '') continue;
-
-                                switch ($key) {
-                                    case 'страна':
-                                        $normalized['страна'] = $val;
-                                        break;
-                                    case 'регион':
-                                        $normalized['регион'] = $val;
-                                        break;
-                                    case 'бренд':
-                                        $normalized['бренд'] = $val;
-                                        break;
-
-                                    // ✅ Виноград — все формы (кириллица/латиница)
-                                    case 'сорта винограда':
-                                    case 'cорта винограда': // латинская c
-                                    case 'виноград':
-                                    case 'grape':
-                                    case 'grapes':
-                                        $normalized['grapes'] = trim(($normalized['grapes'] ?? '') . ', ' . $val, ', ');
-                                        break;
-
-                                    // 🍽️ Гастрономические сочетания
-                                    case 'подходит к':
-                                    case 'гастрономические сочетания':
-                                        $normalized['pairing'] = trim(($normalized['pairing'] ?? '') . ', ' . $val, ', ');
-                                        break;
-
-                                    // 🌸 Вкус и аромат
-                                    case 'аромат':
-                                    case 'характер':
-                                    case 'вкус':
-                                    case 'тело':
-                                    case 'кислотность':
-                                        $normalized['wine_tastes'] = trim(($normalized['wine_tastes'] ?? '') . ', ' . $val, ', ');
-                                        break;
-
-                                    // 📊 Характеристики для meta
-                                    case 'крепость':
-                                    case 'насыщенность':
-                                    case 'глубина цвета':
-                                    case 'температура сервировки':
-                                        $metaFromChars[ucfirst($key)] = $val;
-                                        break;
+                                    if ($title && $text) {
+                                        $metaSections[] = [
+                                            'title' => $title,
+                                            'text' => $text,
+                                        ];
+                                    }
                                 }
-                            }
-
-                            // 💾 Сохраняем в meta
-                            if (!empty($metaFromChars)) {
-                                $normalized['meta_from_chars'] = $metaFromChars;
-                            }
-                        } else {
-                            \Log::info('ws_characteristics пуст или не массив', [
-                                'raw' => $normalized['ws_characteristics']
-                            ]);
-                        }
-
-                    } catch (\Throwable $e) {
-                        \Log::warning('Ошибка обработки ws_characteristics: ' . $e->getMessage());
-                    }
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | ws_about_product
-                |--------------------------------------------------------------------------
-                */
-                $metaSections = [];
-                if (!empty($normalized['ws_about_product'])) {
-                    try {
-                        $value = $normalized['ws_about_product'];
-
-                        if (is_string($value)) {
-                            $fixed = trim($value);
-
-                            if (str_starts_with($fixed, '[') && str_contains($fixed, "'")) {
-                                $fixed = str_replace("'", '"', $fixed);
-                            }
-
-                            $aboutSections = json_decode($fixed, true);
-
-                            if (json_last_error() !== JSON_ERROR_NONE) {
-                                \Log::warning('Ошибка JSON ws_about_product: ' . json_last_error_msg(), ['value' => $value]);
-                                $aboutSections = null;
-                            }
-                        } else {
-                            $aboutSections = is_array($value) ? $value : null;
-                        }
-
-                        // Формируем только meta.sections
-                        if (is_array($aboutSections)) {
-                            foreach ($aboutSections as $section) {
-                                if (!is_array($section)) continue;
-
-                                $title = trim($section['title'] ?? '');
-                                $text  = trim($section['text'] ?? '');
-
-                                if ($title && $text) {
-                                    $metaSections[] = [
-                                        'title' => $title,
-                                        'text'  => $text,
-                                    ];
-                                }
-                            }
-                        }
-                    } catch (\Throwable $e) {
-                        \Log::warning('Ошибка обработки ws_about_product: ' . $e->getMessage());
-                    }
-                }
-
-                // Очистка лишних запятых
-                foreach (['wine_tastes', 'pairing'] as $field) {
-                    if (!empty($normalized[$field])) {
-                        $normalized[$field] = trim($normalized[$field], ", \t\n\r\0\x0B");
-                    }
-                }
-
-                // Нормализация строковых полей
-                if (!empty($normalized['grapes'])) {
-                    $normalized['grapes'] = collect(
-                        preg_split('/[,;\/]+|\s{2,}|\s(?=[А-ЯЁA-Z][а-яё]{2,}\s[А-ЯЁA-Z])/u', $normalized['grapes'])
-                    )->map(fn($v) => trim($v))
-                        ->filter()
-                        ->unique()
-                        ->implode(', ');
-                }
-
-                if (!empty($normalized['pairing'])) {
-                    $normalized['pairing'] = collect(
-                        preg_split('/[,;\/]+|\s{2,}/u', $normalized['pairing'])
-                    )->map(fn($v) => trim($v))
-                        ->filter()
-                        ->unique()
-                        ->implode(', ');
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | Создание/обновление продукта
-                |--------------------------------------------------------------------------
-                */
-                $nameRu = $normalized['name_price'] ?? $normalized['name_ru'] ?? null;
-                $nameEn = $normalized['name_price_en'] ?? null;
-                $nameWithYear = $normalized['name_price_year'] ?? $nameRu;
-
-                [$baseName, $volume, $vintage] = $this->parseNameVolumeAndVintage($nameWithYear);
-                $baseName = trim(preg_replace('/\s{2,}/', ' ', preg_replace('/[\/\\\()\[\]\d.,]+$/u', '', $baseName)));
-                $slug = Str::slug(Str::limit($baseName, 80, ''));
-
-                $descriptionRu = trim(($normalized['about'] ?? '') . "\n\n" . ($normalized['description'] ?? ''));
-                $descriptionEn = $normalized['description_en'] ?? null;
-                $price = $this->sanitizePrice($normalized['price'] ?? null);
-
-                $category = $this->detectCategoryFromName($baseName);
-                $regionId = $this->detectOrCreateRegion(
-                    $normalized['страна'] ?? $normalized['country'] ?? null,
-                    $normalized['регион'] ?? $normalized['region'] ?? null
-                );
-                $brandId = $this->detectOrCreateNameModel(\App\Models\Brand::class, $normalized['бренд'] ?? null, $regionId);
-                $manufacturerId = $this->detectOrCreateNameModel(\App\Models\Manufacturer::class, $normalized['manufacturer'] ?? null, $regionId);
-
-                $product = Product::updateOrCreate(
-                    ['slug' => $slug],
-                    [
-                        'name' => ['ru' => $baseName, 'en' => $nameEn ?: $baseName],
-                        'description' => ['ru' => $descriptionRu, 'en' => $descriptionEn ?: ''],
-                        'category_id' => $category?->id,
-                        'brand_id' => $brandId,
-                        'manufacturer_id' => $manufacturerId,
-                        'region_id' => $regionId,
-                        'status' => 'active',
-                        'price' => $price,
-                        'final_price' => $price,
-                    ]
-                );
-
-                ProductAttributeService::extractAndAttachAttributes($product, $baseName);
-
-                if ($volume || $vintage) {
-                    ProductVariant::updateOrCreate(
-                        ['product_id' => $product->id, 'volume' => $volume, 'vintage' => $vintage],
-                        ['price' => $price, 'final_price' => $price]
-                    );
-                }
-
-//                dump($normalized['grapes']); // 🔍 теперь всегда будет определён
-                if (!empty($normalized['grapes'])) {
-                    ProductGrapeService::attachGrapes($product, (string)$normalized['grapes']);
-                    ProductGrapeVariantService::updateGrapeProfile($product);
-                }
-
-                ProductTasteService::buildAndAttachTastes(
-                    product: $product,
-                    textTastesCsv: $normalized['wine_tastes'] ?? null,
-                    descriptionRu: $descriptionRu,
-                    hasOakByFilters: false
-                );
-
-                if (!empty($normalized['pairing'])) {
-                    ProductPairingService::attachPairings($product, $normalized['pairing']);
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | Финальное объединение meta (sections + taste_groups + rating)
-                |--------------------------------------------------------------------------
-                */
-                $currentMeta = $product->meta ?? [];
-                if (!empty($metaSections)) {
-                    $currentMeta['sections'] = $metaSections;
-                }
-
-                if (!empty($normalized['vivino_rating'])) {
-                    $currentMeta['vivino_rating'] = (float)$normalized['vivino_rating'];
-                }
-
-                if (!empty($normalized['manufacturer_rating'])) {
-                    $currentMeta['manufacturer_rating'] = (float)$normalized['manufacturer_rating'];
-                }
-
-                $product->meta = $currentMeta;
-                $product->save();
-
-                // 🔹 Изображения
-                $imageUrl = $normalized['image_link'] ?? $normalized['foto'] ?? null;
-                if ($product && $imageUrl) {
-                    $filename = basename(parse_url($imageUrl, PHP_URL_PATH)) ?: 'image.jpg';
-                    $alreadyExists = $product->getMedia('images')->contains(fn($m) => $m->file_name === $filename);
-                    if (!$alreadyExists) {
-                        try {
-                            $response = Http::get($imageUrl);
-                            if ($response->successful()) {
-                                $product->addMediaFromString($response->body())
-                                    ->usingFileName($filename)
-                                    ->toMediaCollection('images');
                             }
                         } catch (\Throwable $e) {
-                            \Log::warning("Ошибка загрузки изображения для продукта ID {$product->id}: {$e->getMessage()}");
+                            \Log::warning('Ошибка обработки ws_about_product: ' . $e->getMessage());
+                        }
+                    }
+
+                    foreach (['wine_tastes', 'pairing'] as $field) {
+                        if (!empty($normalized[$field])) {
+                            $normalized[$field] = trim($normalized[$field], ", \t\n\r\0\x0B");
+                        }
+                    }
+
+                    if (!empty($normalized['grapes'])) {
+                        $normalized['grapes'] = collect(
+                            preg_split('/[,;\/]+|\s{2,}|\s(?=[А-ЯЁA-Z][а-яё]{2,}\s[А-ЯЁA-Z])/u', $normalized['grapes'])
+                        )->map(fn($v) => trim($v))
+                            ->filter()
+                            ->unique()
+                            ->implode(', ');
+                    }
+
+                    if (!empty($normalized['pairing'])) {
+                        $normalized['pairing'] = collect(
+                            preg_split('/[,;\/]+|\s{2,}/u', $normalized['pairing'])
+                        )->map(fn($v) => trim($v))
+                            ->filter()
+                            ->unique()
+                            ->implode(', ');
+                    }
+
+                    $nameRu = $normalized['name_price'] ?? $normalized['name_ru'] ?? null;
+                    $nameEn = $normalized['name_price_en'] ?? null;
+                    $nameWithYear = $normalized['name_price_year'] ?? $nameRu;
+
+                    [$baseName, $volume, $vintage] = $this->parseNameVolumeAndVintage($nameWithYear);
+                    $baseName = trim(preg_replace('/\s{2,}/', ' ', preg_replace('/[\/\\\()\[\]\d.,]+$/u', '', $baseName)));
+                    $slug = Str::slug(Str::limit($baseName, 80, ''));
+
+                    $descriptionRu = trim(($normalized['about'] ?? '') . "\n\n" . ($normalized['description'] ?? ''));
+                    $descriptionEn = $normalized['description_en'] ?? null;
+                    $price = $this->sanitizePrice($normalized['price'] ?? null);
+
+                    $category = $this->detectCategory($normalized);
+                    $regionId = $this->detectOrCreateRegion(
+                        $normalized['страна'] ?? $normalized['country'] ?? null,
+                        $normalized['регион'] ?? $normalized['region'] ?? null
+                    );
+                    $brandId = $this->detectOrCreateNameModel(\App\Models\Brand::class, $normalized['бренд'] ?? null, $regionId);
+                    $manufacturerId = $this->detectOrCreateNameModel(\App\Models\Manufacturer::class, $normalized['manufacturer'] ?? null, $regionId);
+
+                    $product = Product::updateOrCreate(
+                        ['slug' => $slug],
+                        [
+                            'name' => ['ru' => $baseName, 'en' => $nameEn ?: $baseName],
+                            'description' => ['ru' => $descriptionRu, 'en' => $descriptionEn ?: ''],
+                            'category_id' => $category?->id,
+                            'brand_id' => $brandId,
+                            'manufacturer_id' => $manufacturerId,
+                            'region_id' => $regionId,
+                            'status' => 'active',
+                            'price' => $price,
+                            'final_price' => $price,
+                        ]
+                    );
+
+                    ProductAttributeService::extractAndAttachAttributes($product, $baseName);
+
+                    if ($volume || $vintage) {
+                        ProductVariant::updateOrCreate(
+                            ['product_id' => $product->id, 'volume' => $volume, 'vintage' => $vintage],
+                            ['price' => $price, 'final_price' => $price]
+                        );
+                    }
+
+                    if (!empty($normalized['grapes'])) {
+                        ProductGrapeService::attachGrapes($product, (string)$normalized['grapes']);
+                        ProductGrapeVariantService::updateGrapeProfile($product);
+                    }
+
+                    ProductTasteService::buildAndAttachTastes(
+                        product: $product,
+                        textTastesCsv: $normalized['wine_tastes'] ?? null,
+                        descriptionRu: $descriptionRu,
+                        hasOakByFilters: false
+                    );
+
+                    if (!empty($normalized['pairing'])) {
+                        ProductPairingService::attachPairings($product, $normalized['pairing']);
+                    }
+                    $currentMeta = $product->meta ?? [];
+                    if (!empty($metaSections)) {
+                        $currentMeta['sections'] = $metaSections;
+                    }
+
+                    if (!empty($normalized['vivino_rating'])) {
+                        $currentMeta['vivino_rating'] = (float)$normalized['vivino_rating'];
+                    }
+
+                    if (!empty($normalized['manufacturer_rating'])) {
+                        $currentMeta['manufacturer_rating'] = (float)$normalized['manufacturer_rating'];
+                    }
+
+                    $product->meta = $currentMeta;
+                    $product->save();
+
+                    $imageUrl = $normalized['image_link'] ?? $normalized['foto'] ?? null;
+                    if ($product && $imageUrl) {
+                        $filename = basename(parse_url($imageUrl, PHP_URL_PATH)) ?: 'image.jpg';
+                        $alreadyExists = $product->getMedia('images')->contains(fn($m) => $m->file_name === $filename);
+                        if (!$alreadyExists) {
+                            try {
+                                $response = Http::get($imageUrl);
+                                if ($response->successful()) {
+                                    $product->addMediaFromString($response->body())
+                                        ->usingFileName($filename)
+                                        ->toMediaCollection('images');
+                                }
+                            } catch (\Throwable $e) {
+                                \Log::warning("Ошибка загрузки изображения для продукта ID {$product->id}: {$e->getMessage()}");
+                            }
                         }
                     }
                 }
+            } catch (\Throwable $e) {
+                Log::error("💥 Ошибка при обработке строки {$index}: " . $e->getMessage(), [
+                    'trace' => $e->getTraceAsString(),
+                ]);
             }
         });
+
+
     }
+
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
+
+    /**
+     * Количество строк, вставляемых за один запрос
+     * 200-500 — оптимально
+     */
+    public function batchSize(): int
+    {
+        return 300;
+    }
+
+    /**
+     * Опционально: количество попыток выполнения задачи в очереди
+     */
+    public $tries = 3;
+
+    /**
+     * Увеличиваем таймаут очереди (в секундах)
+     */
+    public $timeout = 900;
 
     protected function detectHeaderRow(Collection $rows): ?int
     {
@@ -398,6 +396,8 @@ class ProductImporter implements ToCollection, WithChunkReading
             'виноград' => 'grapes',
             'grape' => 'grapes',
             'grapes' => 'grapes',
+            'wine_type' => 'wine_type',
+            'тип' => 'wine_type',
         ];
 
         $normalized = [];
@@ -455,7 +455,6 @@ class ProductImporter implements ToCollection, WithChunkReading
     }
 
 
-
     protected function detectOrCreateNameModel(string $model, ?string $name, ?int $regionId = null): ?int
     {
         if (empty($name)) {
@@ -479,11 +478,7 @@ class ProductImporter implements ToCollection, WithChunkReading
         return $item->id;
     }
 
-    public function chunkSize(): int
-    {
-        return 200;
-    }
-    protected function detectCategoryFromName(string $name): ?Category
+    protected function detectCategory(array $normalized): ?Category
     {
         $categoryMap = [
             // Вино
@@ -540,7 +535,6 @@ class ProductImporter implements ToCollection, WithChunkReading
 
             // Водка
             'водка' => 'ВОДКА',
-            'водка плодовая' => 'ВОДКА',
             'чача' => 'ВОДКА',
             'шнапс' => 'ВОДКА',
 
@@ -554,7 +548,6 @@ class ProductImporter implements ToCollection, WithChunkReading
 
             // Вода
             'вода' => 'ВОДА И ЛИМОНАДЫ',
-            'вода минеральная' => 'ВОДА И ЛИМОНАДЫ',
             'тоник' => 'ВОДА И ЛИМОНАДЫ',
             'сироп' => 'ВОДА И ЛИМОНАДЫ',
             'сок' => 'ВОДА И ЛИМОНАДЫ',
@@ -563,7 +556,6 @@ class ProductImporter implements ToCollection, WithChunkReading
 
             // Продукты
             'масло' => 'ПРОДУКТЫ',
-            'оливковое масло' => 'ПРОДУКТЫ',
             'уксус' => 'ПРОДУКТЫ',
             'печенье' => 'ПРОДУКТЫ',
             'шоколад' => 'ПРОДУКТЫ',
@@ -588,30 +580,44 @@ class ProductImporter implements ToCollection, WithChunkReading
             'жидкость' => 'ТАБАК & ВЭЙП',
         ];
 
-        $normalized = mb_strtolower($name);
+        $rawType = $normalized['wine_type'] ?? $normalized['тип'] ?? null;
+        $normalizedName = mb_strtolower(trim((string)$rawType));
 
-        foreach ($categoryMap as $keyword => $categoryName) {
-            if (str_contains($normalized, $keyword)) {
+        $categoryName = null;
 
-                // 🔍 ищем категорию без учёта регистра
-                $existing = Category::whereRaw(
-                    'LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) = ?',
-                    [mb_strtolower($categoryName)]
-                )->first();
-
-                if ($existing) {
-                    return $existing;
-                }
-
-                // если нет — просто возвращаем null (не создаём новую!)
-                return null;
+        // 1️⃣ Если тип явно указан в таблице соответствий — используем его
+        foreach ($categoryMap as $keyword => $cat) {
+            if (str_contains($normalizedName, $keyword)) {
+                $categoryName = $cat;
+                break;
             }
         }
 
-        // если ничего не нашли, возвращаем категорию "ПРОЧЕЕ", если она уже есть
-        return Category::whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) = ?', ['прочее'])->first();
-    }
+        // 2️⃣ Если не нашли в карте — используем сам wine_type как категорию
+        if (!$categoryName && $normalizedName) {
+            $categoryName = Str::upper($normalizedName);
+        }
 
+        // 3️⃣ Если вообще ничего — категория "ПРОЧЕЕ"
+        if (!$categoryName) {
+            $categoryName = 'ПРОЧЕЕ';
+        }
+
+        // 4️⃣ Ищем или создаём категорию в БД
+        $existing = Category::whereRaw(
+            'LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, "$.ru"))) = ?',
+            [mb_strtolower($categoryName)]
+        )->first();
+
+        if ($existing) return $existing;
+
+        return Category::create([
+            'name' => ['ru' => $categoryName, 'en' => Str::title(Str::lower($categoryName))],
+            'slug' => Str::slug($categoryName),
+            'type' => 'default',
+            'description' => ['ru' => '', 'en' => ''],
+        ]);
+    }
 
 
     protected function detectOrCreateRegion(?string $country, ?string $region): ?int
@@ -619,7 +625,7 @@ class ProductImporter implements ToCollection, WithChunkReading
         if (!$country && $region && str_contains($region, ',')) {
             [$countryPart, $regionPart] = array_map('trim', explode(',', $region, 2));
             $country = $countryPart;
-            $region  = $regionPart;
+            $region = $regionPart;
         }
 
         if (empty($country) && empty($region)) {
@@ -627,7 +633,7 @@ class ProductImporter implements ToCollection, WithChunkReading
         }
 
         $country = $country ? trim($country) : null;
-        $region  = $region ? trim($region) : null;
+        $region = $region ? trim($region) : null;
 
         // 🔹 Утилита для нормализации текста (без регистра, дефисов, ё/й)
         $normalize = fn($v) => trim(mb_strtolower(
@@ -692,7 +698,7 @@ class ProductImporter implements ToCollection, WithChunkReading
         $countryRegion = null;
         if ($country) {
             $countryRegion = \App\Models\Region::whereNull('parent_id')->get()
-                ->first(fn($r) => $normalize($r->getTranslation('name','ru')) === $normalize($country));
+                ->first(fn($r) => $normalize($r->getTranslation('name', 'ru')) === $normalize($country));
 
             if (!$countryRegion) {
                 $countryRegion = \App\Models\Region::create([
@@ -705,7 +711,7 @@ class ProductImporter implements ToCollection, WithChunkReading
         // 🏞️ 6. Если нашли родителя — ищем или создаём дочерний
         if ($parentRegion && $region) {
             $existingChild = \App\Models\Region::where('parent_id', $parentRegion->id)->get()
-                ->first(fn($r) => $normalize($r->getTranslation('name','ru')) === $normalize($region));
+                ->first(fn($r) => $normalize($r->getTranslation('name', 'ru')) === $normalize($region));
 
             if ($existingChild) {
                 return $existingChild->id;
@@ -720,7 +726,7 @@ class ProductImporter implements ToCollection, WithChunkReading
         // 🧩 7. Если нет родителя, ищем под страной
         if ($region) {
             $existing = \App\Models\Region::where('parent_id', $countryRegion?->id)->get()
-                ->first(fn($r) => $normalize($r->getTranslation('name','ru')) === $normalize($region));
+                ->first(fn($r) => $normalize($r->getTranslation('name', 'ru')) === $normalize($region));
 
             if ($existing) {
                 return $existing->id;
