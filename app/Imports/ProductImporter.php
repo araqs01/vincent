@@ -277,6 +277,9 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                     $product->save();
 
                     $imageUrl = $normalized['image_link'] ?? $normalized['foto'] ?? null;
+                    if (empty($imageUrl)) {
+                        $imageUrl = 'https://s2.wine.style/images_gen/116/11675/0_0_695x600.webp';
+                    }
                     if ($product && $imageUrl) {
                         $filename = basename(parse_url($imageUrl, PHP_URL_PATH)) ?: 'image.jpg';
                         $alreadyExists = $product->getMedia('images')->contains(fn($m) => $m->file_name === $filename);
