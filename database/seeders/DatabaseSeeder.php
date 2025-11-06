@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             CategoriesAndMenuSeeder::class,
             GrapeSeeder::class,
             PairingSeeder::class,
-            TasteSeeder::class
+            TasteSeeder::class,
+            RegionSeeder::class
         ]);
     }
 }

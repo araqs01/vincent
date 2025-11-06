@@ -49,18 +49,34 @@ class ProductImporter implements ToCollection, WithChunkReading
                     try {
                         $chars = $normalized['ws_characteristics'];
 
+                        // 🧩 Универсальное приведение к валидному JSON
                         if (is_string($chars)) {
-                            if (str_contains($chars, "{'")) {
-                                $chars = preg_replace_callback(
-                                    '/\'(.*?)\'/',
-                                    fn($m) => '"' . str_replace('"', '\"', $m[1]) . '"',
-                                    $chars
-                                );
+                            $fixed = trim($chars);
+
+                            // Пропускаем пустые или "[]"
+                            if ($fixed === '' || $fixed === '[]' || $fixed === '[ ]') {
+                                $chars = [];
+                            } else {
+                                // Исправляем одинарные кавычки
+                                if (str_starts_with($fixed, '[') && str_contains($fixed, "'")) {
+                                    $fixed = str_replace("'", '"', $fixed);
+                                }
+
+                                // Убираем запятые перед закрывающими скобками
+                                $fixed = preg_replace('/,\s*([\]}])/m', '$1', $fixed);
+
+                                $chars = json_decode($fixed, true);
+
+                                if (json_last_error() !== JSON_ERROR_NONE) {
+                                    \Log::warning('Ошибка JSON ws_characteristics: ' . json_last_error_msg(), ['value' => $fixed]);
+                                    $chars = [];
+                                }
                             }
-                            $chars = json_decode($chars, true);
+                        } elseif (!is_array($chars)) {
+                            $chars = [];
                         }
 
-                        if (is_array($chars)) {
+                        if (!empty($chars) && is_array($chars)) {
                             $metaFromChars = [];
 
                             foreach ($chars as $char) {
@@ -75,37 +91,38 @@ class ProductImporter implements ToCollection, WithChunkReading
                                     case 'страна':
                                         $normalized['страна'] = $val;
                                         break;
-
                                     case 'регион':
                                         $normalized['регион'] = $val;
                                         break;
-
                                     case 'бренд':
                                         $normalized['бренд'] = $val;
                                         break;
 
-                                    case 'производитель':
-                                        $normalized['производитель'] = $val;
-                                        break;
-
+                                    // ✅ Виноград — все формы (кириллица/латиница)
                                     case 'сорта винограда':
+                                    case 'cорта винограда': // латинская c
                                     case 'виноград':
+                                    case 'grape':
+                                    case 'grapes':
                                         $normalized['grapes'] = trim(($normalized['grapes'] ?? '') . ', ' . $val, ', ');
                                         break;
 
+                                    // 🍽️ Гастрономические сочетания
                                     case 'подходит к':
                                     case 'гастрономические сочетания':
                                         $normalized['pairing'] = trim(($normalized['pairing'] ?? '') . ', ' . $val, ', ');
                                         break;
 
+                                    // 🌸 Вкус и аромат
                                     case 'аромат':
                                     case 'характер':
+                                    case 'вкус':
                                     case 'тело':
                                     case 'кислотность':
                                         $normalized['wine_tastes'] = trim(($normalized['wine_tastes'] ?? '') . ', ' . $val, ', ');
                                         break;
 
-                                    // 🎯 Новые ключи для meta
+                                    // 📊 Характеристики для meta
                                     case 'крепость':
                                     case 'насыщенность':
                                     case 'глубина цвета':
@@ -115,19 +132,20 @@ class ProductImporter implements ToCollection, WithChunkReading
                                 }
                             }
 
-                            // 💾 сохраняем в meta
+                            // 💾 Сохраняем в meta
                             if (!empty($metaFromChars)) {
                                 $normalized['meta_from_chars'] = $metaFromChars;
                             }
                         } else {
-                            \Log::warning('ws_characteristics не распознан как JSON: ' . substr((string)$normalized['ws_characteristics'], 0, 120));
+                            \Log::info('ws_characteristics пуст или не массив', [
+                                'raw' => $normalized['ws_characteristics']
+                            ]);
                         }
+
                     } catch (\Throwable $e) {
-                        \Log::warning('Ошибка JSON-декодирования ws_characteristics: ' . $e->getMessage());
+                        \Log::warning('Ошибка обработки ws_characteristics: ' . $e->getMessage());
                     }
                 }
-
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -177,8 +195,6 @@ class ProductImporter implements ToCollection, WithChunkReading
                     }
                 }
 
-
-//                dump($metaSections);
                 // Очистка лишних запятых
                 foreach (['wine_tastes', 'pairing'] as $field) {
                     if (!empty($normalized[$field])) {
@@ -186,11 +202,7 @@ class ProductImporter implements ToCollection, WithChunkReading
                     }
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | Нормализация строковых полей
-                |--------------------------------------------------------------------------
-                */
+                // Нормализация строковых полей
                 if (!empty($normalized['grapes'])) {
                     $normalized['grapes'] = collect(
                         preg_split('/[,;\/]+|\s{2,}|\s(?=[А-ЯЁA-Z][а-яё]{2,}\s[А-ЯЁA-Z])/u', $normalized['grapes'])
@@ -232,7 +244,7 @@ class ProductImporter implements ToCollection, WithChunkReading
                     $normalized['регион'] ?? $normalized['region'] ?? null
                 );
                 $brandId = $this->detectOrCreateNameModel(\App\Models\Brand::class, $normalized['бренд'] ?? null, $regionId);
-                $manufacturerId = $this->detectOrCreateNameModel(\App\Models\Manufacturer::class, $normalized['производитель'] ?? null, $regionId);
+                $manufacturerId = $this->detectOrCreateNameModel(\App\Models\Manufacturer::class, $normalized['manufacturer'] ?? null, $regionId);
 
                 $product = Product::updateOrCreate(
                     ['slug' => $slug],
@@ -258,6 +270,7 @@ class ProductImporter implements ToCollection, WithChunkReading
                     );
                 }
 
+//                dump($normalized['grapes']); // 🔍 теперь всегда будет определён
                 if (!empty($normalized['grapes'])) {
                     ProductGrapeService::attachGrapes($product, (string)$normalized['grapes']);
                     ProductGrapeVariantService::updateGrapeProfile($product);
@@ -363,14 +376,14 @@ class ProductImporter implements ToCollection, WithChunkReading
             'vivino_link' => 'vivino_link',
             'wine_tastes' => 'wine_tastes',
             'бренд' => 'бренд',
-            'производитель' => 'производитель',
+            'производитель' => 'manufacturer',
+            'manufacturer' => 'manufacturer',
             'регион' => 'регион',
             'страна' => 'страна',
             'foto' => 'foto',
             'image_link' => 'image_link',
             'vivino_rating' => 'vivino_rating',
             'manufacturer_rating' => 'manufacturer_rating',
-            'сорта винограда' => 'grapes',
             'винтаж' => 'vintage',
             'vintage' => 'vintage',
             'подходит к' => 'pairing',
@@ -381,6 +394,10 @@ class ProductImporter implements ToCollection, WithChunkReading
             'free_remainder' => 'free_remainder',
             'ws_characteristics' => 'ws_characteristics',
             'ws_about_product' => 'ws_about_product',
+            'сорта винограда' => 'grapes',
+            'виноград' => 'grapes',
+            'grape' => 'grapes',
+            'grapes' => 'grapes',
         ];
 
         $normalized = [];
@@ -388,67 +405,6 @@ class ProductImporter implements ToCollection, WithChunkReading
             $keyLower = trim(mb_strtolower($key));
             $target = $map[$keyLower] ?? $keyLower;
             $normalized[$target] = is_string($value) ? trim($value) : $value;
-        }
-
-        // 🔍 Обработка JSON-характеристик
-        if (!empty($normalized['ws_characteristics'])) {
-            $chars = json_decode($normalized['ws_characteristics'], true);
-            if (is_array($chars)) {
-                foreach ($chars as $char) {
-                    $key = trim($char['key'] ?? '');
-                    $val = trim($char['values'] ?? '');
-                    if (!$key || !$val) continue;
-
-                    switch (mb_strtolower($key)) {
-                        case 'крепость':
-                            $normalized['strength'] = $val;
-                            break;
-                        case 'объем':
-                            $normalized['volume'] = $val;
-                            break;
-                        case 'бренд':
-                            $normalized['бренд'] = $val;
-                            break;
-                        case 'регион':
-                            $normalized['регион'] = $val;
-                            break;
-                        case 'страна':
-                            $normalized['страна'] = $val;
-                            break;
-                        case 'производитель':
-                            $normalized['производитель'] = $val;
-                            break;
-                        case 'сорта винограда':
-                            $normalized['grapes'] = $val;
-                            break;
-                        case 'подходит к':
-                            $normalized['pairing'] = $val;
-                            break;
-                        default:
-                            $normalized['attributes'][$key] = $val;
-                    }
-                }
-            }
-        }
-
-        // 🔍 Обработка JSON-описания (вкус, аромат, цвет, сочетания)
-        if (!empty($normalized['ws_about_product'])) {
-            $about = json_decode($normalized['ws_about_product'], true);
-            if (is_array($about)) {
-                foreach ($about as $section) {
-                    $title = mb_strtolower(trim($section['title'] ?? ''));
-                    $text = trim($section['text'] ?? '');
-                    if (!$title || !$text) continue;
-
-                    if (in_array($title, ['вкус', 'аромат'])) {
-                        $normalized['wine_tastes'][] = $text;
-                    } elseif ($title === 'сочетания') {
-                        $normalized['pairing'] = ($normalized['pairing'] ?? '') . ' ' . $text;
-                    } elseif ($title === 'цвет') {
-                        $normalized['attributes']['Цвет'] = $text;
-                    }
-                }
-            }
         }
 
         return array_filter($normalized, fn($v) => $v !== null && $v !== '');
@@ -502,13 +458,24 @@ class ProductImporter implements ToCollection, WithChunkReading
 
     protected function detectOrCreateNameModel(string $model, ?string $name, ?int $regionId = null): ?int
     {
-        if (empty($name)) return null;
-        $item = $model::firstOrNew(['name->ru' => $name]);
-        $item->fill(['name' => ['ru' => $name, 'en' => $name]]);
+        if (empty($name)) {
+            return null;
+        }
+
+        // 🧹 Очистка имени — убираем года и слово "год"
+        $cleanedName = trim(preg_replace('/\b(19|20)\d{2}\b|\bгод\b/iu', '', $name));
+        $cleanedName = preg_replace('/\s{2,}/u', ' ', $cleanedName); // убираем двойные пробелы
+
+        // 🔎 Ищем по очищенному названию
+        $item = $model::firstOrNew(['name->ru' => $cleanedName]);
+        $item->fill(['name' => ['ru' => $cleanedName, 'en' => $cleanedName]]);
+
         if (empty($item->region_id)) {
             $item->region_id = $regionId;
         }
+
         $item->save();
+
         return $item->id;
     }
 
@@ -649,11 +616,10 @@ class ProductImporter implements ToCollection, WithChunkReading
 
     protected function detectOrCreateRegion(?string $country, ?string $region): ?int
     {
-        // 🧠 Если регион содержит запятую — разделяем на страну и регион
         if (!$country && $region && str_contains($region, ',')) {
             [$countryPart, $regionPart] = array_map('trim', explode(',', $region, 2));
             $country = $countryPart;
-            $region = $regionPart;
+            $region  = $regionPart;
         }
 
         if (empty($country) && empty($region)) {
@@ -661,31 +627,111 @@ class ProductImporter implements ToCollection, WithChunkReading
         }
 
         $country = $country ? trim($country) : null;
-        $region = $region ? trim($region) : null;
+        $region  = $region ? trim($region) : null;
 
-        // 🏳️ Создаём или ищем страну
+        // 🔹 Утилита для нормализации текста (без регистра, дефисов, ё/й)
+        $normalize = fn($v) => trim(mb_strtolower(
+            str_replace(['ё', 'й', '’', "'", '"', '–', '—', '-', '  '], ['е', 'и', '', '', '', ' ', ' ', ' ', ' '], $v)
+        ));
+
+        // 🚫 1. Проверка: регион с таким названием уже есть (в любом регистре)
+        if ($region) {
+            $normalizedRegion = $normalize($region);
+
+            $existingRegion = \App\Models\Region::get()->first(function ($r) use ($normalize, $normalizedRegion) {
+                $nameRu = is_array($r->name)
+                    ? ($r->name['ru'] ?? null)
+                    : optional(json_decode($r->name, true))['ru'] ?? $r->name;
+                return $normalize($nameRu) === $normalizedRegion;
+            });
+
+            if ($existingRegion) {
+                return $existingRegion->id;
+            }
+        }
+
+        // 🧭 2. Загружаем все корневые регионы (страны и крупные области)
+        $rootRegions = \App\Models\Region::whereNull('parent_id')->get();
+
+        // 📍 3. Пытаемся определить родителя по началу строки
+        $parentRegion = null;
+        foreach ($rootRegions as $root) {
+            $rootName = is_array($root->name)
+                ? ($root->name['ru'] ?? $root->name['en'])
+                : optional(json_decode($root->name, true))['ru'] ?? $root->name;
+
+            if ($rootName && str_starts_with($normalize($region), $normalize($rootName) . ' ')) {
+                $parentRegion = $root;
+                $region = trim(Str::after($region, $root->getTranslation('name', 'ru')));
+                break;
+            }
+        }
+
+        // 🚫 4. Проверка на составные регионы (Пьемонт Асти, Тоскана Кьянти Классико, Россия Краснодарский край)
+        if ($region && !$parentRegion && str_contains($region, ' ')) {
+            [$maybeParent, $maybeChild] = array_map('trim', explode(' ', $region, 2));
+
+            // Ищем родителя
+            $parent = \App\Models\Region::whereNull('parent_id')
+                ->get()
+                ->first(fn($r) => $normalize($r->getTranslation('name', 'ru')) === $normalize($maybeParent));
+
+            // Если нашли родителя — проверяем, есть ли у него дочерний с таким именем
+            if ($parent) {
+                $child = \App\Models\Region::where('parent_id', $parent->id)->get()
+                    ->first(fn($r) => $normalize($r->getTranslation('name', 'ru')) === $normalize($maybeChild));
+
+                if ($child) {
+                    // 💡 Уже есть parent + child — просто возвращаем ID ребёнка
+                    return $child->id;
+                }
+            }
+        }
+
+        // 🏳️ 5. Создаём / находим страну (верхний уровень)
         $countryRegion = null;
         if ($country) {
-            $countryRegion = \App\Models\Region::firstOrCreate(
-                ['name->ru' => $country],
-                ['name' => ['ru' => $country, 'en' => $country], 'parent_id' => null]
-            );
+            $countryRegion = \App\Models\Region::whereNull('parent_id')->get()
+                ->first(fn($r) => $normalize($r->getTranslation('name','ru')) === $normalize($country));
+
+            if (!$countryRegion) {
+                $countryRegion = \App\Models\Region::create([
+                    'name' => ['ru' => $country, 'en' => $country],
+                    'parent_id' => null,
+                ]);
+            }
         }
 
-        // 🏞️ Создаём или ищем дочерний регион
+        // 🏞️ 6. Если нашли родителя — ищем или создаём дочерний
+        if ($parentRegion && $region) {
+            $existingChild = \App\Models\Region::where('parent_id', $parentRegion->id)->get()
+                ->first(fn($r) => $normalize($r->getTranslation('name','ru')) === $normalize($region));
+
+            if ($existingChild) {
+                return $existingChild->id;
+            }
+
+            return \App\Models\Region::create([
+                'name' => ['ru' => ucfirst($region), 'en' => ucfirst($region)],
+                'parent_id' => $parentRegion->id,
+            ])->id;
+        }
+
+        // 🧩 7. Если нет родителя, ищем под страной
         if ($region) {
-            $childRegion = \App\Models\Region::firstOrCreate(
-                ['name->ru' => $region, 'parent_id' => $countryRegion?->id],
-                [
-                    'name' => ['ru' => $region, 'en' => $region],
-                    'parent_id' => $countryRegion?->id,
-                ]
-            );
+            $existing = \App\Models\Region::where('parent_id', $countryRegion?->id)->get()
+                ->first(fn($r) => $normalize($r->getTranslation('name','ru')) === $normalize($region));
 
-            return $childRegion->id;
+            if ($existing) {
+                return $existing->id;
+            }
+
+            return \App\Models\Region::create([
+                'name' => ['ru' => ucfirst($region), 'en' => ucfirst($region)],
+                'parent_id' => $countryRegion?->id,
+            ])->id;
         }
 
-        // 🇷🇺 Если только страна
         return $countryRegion?->id;
     }
 
