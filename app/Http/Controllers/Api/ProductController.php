@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class ProductController extends BaseController
 {
+
+    //nkarner dnenq vkuserin u en inch ka
     public function index(Request $request, ?string $slug = null)
     {
         $slug = $slug ?? $request->query('category');

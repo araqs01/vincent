@@ -67,11 +67,7 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                                     }
                                     $fixed = preg_replace('/,\s*([\]}])/m', '$1', $fixed);
 
-                                    $chars = json_decode($fixed, true);
-
-                                    if (json_last_error() !== JSON_ERROR_NONE) {
-                                        $chars = [];
-                                    }
+                                    $chars = $this->safeJsonDecode($fixed) ?? [];
                                 }
                             } elseif (!is_array($chars)) {
                                 $chars = [];
@@ -147,12 +143,7 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                                     $fixed = str_replace("'", '"', $fixed);
                                 }
 
-                                $aboutSections = json_decode($fixed, true);
-
-                                if (json_last_error() !== JSON_ERROR_NONE) {
-                                    \Log::warning('Ошибка JSON ws_about_product: ' . json_last_error_msg(), ['value' => $value]);
-                                    $aboutSections = null;
-                                }
+                                $aboutSections = $this->safeJsonDecode($value);
                             } else {
                                 $aboutSections = is_array($value) ? $value : null;
                             }
@@ -277,8 +268,8 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                     $product->save();
 
                     $imageUrl = $normalized['image_link'] ?? $normalized['foto'] ?? null;
-                    if (empty($imageUrl)) {
-                        $imageUrl = 'https://s2.wine.style/images_gen/116/11675/0_0_695x600.webp';
+                    if ($imageUrl === 'https://s2.wine.style/images_gen/116/11675/0_0_695x600.webp') {
+                        continue;
                     }
                     if ($product && $imageUrl) {
                         $filename = basename(parse_url($imageUrl, PHP_URL_PATH)) ?: 'image.jpg';
@@ -742,6 +733,106 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
         }
 
         return $countryRegion?->id;
+    }
+
+    protected function safeJsonDecode($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        $value = (string)$value;
+
+        // 🔹 Удаляем невидимые и неразрешённые символы (в т.ч. soft-hyphen \xAD и неразрывные пробелы)
+        $value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
+        $value = preg_replace('/[\x00-\x1F\x7F\xA0\xAD]/u', '', $value);
+
+        // 🔹 Принудительно приводим к UTF-8
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            $value = mb_convert_encoding($value, 'UTF-8', 'auto');
+        }
+
+        // 🔹 Нормализация типографики
+        $value = str_replace(
+            ['“', '”', '„', '‟', '«', '»', '‘', '’', '‹', '›'],
+            '"',
+            $value
+        );
+
+        // 🔹 Исправляем python-формат
+        if (preg_match('/^\s*\[\s*\{\'/', $value) || preg_match('/^\s*\{\s*\'/', $value)) {
+            $value = str_replace("'", '"', $value);
+        }
+
+        // 🔹 Убираем запятые перед закрытием
+        $value = preg_replace('/,\s*([\]}])/m', '$1', $value);
+
+        // 🔹 Исправляем d"Oro / Harat"s / d"Avola
+        $value = preg_replace('/([A-Za-zА-Яа-яЁё])\"([A-Za-zА-Яа-яЁё])/', "$1'$2", $value);
+
+        // 🔹 Исправляем вложенные кавычки внутри текстов ("Спритц", "Аньолотти", "Cola Royal")
+        $value = preg_replace_callback(
+            '/\"text\"\s*:\s*\"(.*?)\"(\s*[},])/su',
+            function ($m) {
+                $txt = $m[1];
+                $txt = preg_replace('/(?<!\\\\)\"/u', '«', $txt);
+                $txt = preg_replace('/«([^\«]*)$/u', '«$1»', $txt);
+                return '"text": "' . $txt . '"' . $m[2];
+            },
+            $value
+        );
+
+        // 🔹 Подчищаем BOM, пробелы
+        $value = trim($value, "\xEF\xBB\xBF\t\n\r ");
+
+        // 🔹 Основная попытка декодирования
+        try {
+            return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+
+            // 🧩 Попытка 2 — при ошибке кодировки
+            if (str_contains($e->getMessage(), 'Malformed UTF-8')) {
+                $value = mb_convert_encoding($value, 'UTF-8', 'auto');
+                try {
+                    return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e2) {
+                    \Log::warning('Ошибка JSON decode после перекодировки: ' . $e2->getMessage(), [
+                        'value' => Str::limit($value, 700),
+                    ]);
+                }
+            }
+
+            // 🧩 Попытка 3 — заменяем все двойные кавычки внутри текста на «»
+            $fallback = preg_replace_callback(
+                '/\"text\"\s*:\s*\"(.*?)\"(\s*[},])/su',
+                fn($m) => '"text": "' . str_replace('"', '«', $m[1]) . '"' . $m[2],
+                $value
+            );
+
+            try {
+                return json_decode($fallback, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e3) {
+
+                // 🧩 Попытка 4 — фиксим оборванные фразы вроде «Спритц»", в сочетании...
+                if (str_contains($e3->getMessage(), 'Syntax error')) {
+                    $fixed = preg_replace('/»\"\s*,\s*в/u', '», в', $value);
+                    $fixed = preg_replace('/\"\,\s*в\s+/u', ', в ', $fixed);
+                    try {
+                        return json_decode($fixed, true, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e4) {
+                        \Log::warning('Ошибка JSON decode (после фикса кавычки перед запятой): ' . $e4->getMessage(), [
+                            'value' => Str::limit($value, 700),
+                        ]);
+                    }
+                }
+
+                // ❌ Всё ещё неудачно — логируем финал
+                \Log::warning('Ошибка JSON decode (финально): ' . $e3->getMessage(), [
+                    'value' => Str::limit($value, 700),
+                ]);
+                return null;
+            }
+        }
     }
 
 
