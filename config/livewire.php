@@ -65,7 +65,7 @@ return [
 
     'temporary_file_upload' => [
         'disk' => 'local',       // хранить временные файлы в /storage/app/livewire-tmp
-        'rules' => ['required', 'file', 'mimes:xlsx,csv', 'max:51200'], // 50MB
+        'rules' => ['required', 'file', 'max:51200'], // 50MB
         'directory' => 'livewire-tmp',
         'middleware' => ['throttle:60,1'], // стандартный лимит Livewire
         'preview_mimes' => [
