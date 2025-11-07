@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PairingGroupResource\Pages;
 use App\Models\PairingGroup;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables;
 use Filament\Resources\Resource;
 use Filament\Forms\Form;
@@ -39,6 +40,15 @@ class PairingGroupResource extends Resource
                         ->label('Название')
                         ->required()
                 ),
+                Forms\Components\Section::make(__('app.product.sections.media'))
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('images')
+                            ->label('icon')
+                            ->collection('images')
+                            ->reorderable()
+                            ->image(),
+                    ])
+                    ->collapsible(),
             ]),
         ]);
     }

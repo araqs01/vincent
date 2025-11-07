@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TasteResource\Pages;
 use App\Models\Taste;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -48,7 +49,16 @@ class TasteResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label('Название')
                     ->required(),
-            )
+            ),
+            Forms\Components\Section::make(__('app.product.sections.media'))
+                ->schema([
+                    SpatieMediaLibraryFileUpload::make('images')
+                        ->label('icon')
+                        ->collection('images')
+                        ->reorderable()
+                        ->image(),
+                ])
+                ->collapsible(),
         ]);
     }
 

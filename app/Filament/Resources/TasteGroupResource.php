@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TasteGroupResource\Pages;
 use App\Models\TasteGroup;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables;
 use Filament\Resources\Resource;
 use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer;
@@ -52,6 +53,15 @@ class TasteGroupResource extends Resource
                             ->label(__('app.taste_group.fields.description'))
                             ->rows(3),
                     ),
+                    Forms\Components\Section::make(__('app.product.sections.media'))
+                        ->schema([
+                            SpatieMediaLibraryFileUpload::make('images')
+                                ->label('icon')
+                                ->collection('images')
+                                ->reorderable()
+                                ->image(),
+                        ])
+                        ->collapsible(),
                 ])
                 ->columns(2)
                 ->collapsible(),

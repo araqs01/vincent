@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Translatable\HasTranslations;
 
-class TasteGroup extends Model
+class TasteGroup extends Model implements HasMedia
 {
     use HasTranslations;
     use HasSlug;
+    use InteractsWithMedia;
 
     protected $fillable = [
         'slug',
@@ -38,4 +41,10 @@ class TasteGroup extends Model
         return $this->hasManyThrough(Product::class, Taste::class, 'taste_group_id', 'id', 'id', 'id');
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('images')
+            ->singleFile();
+    }
 }

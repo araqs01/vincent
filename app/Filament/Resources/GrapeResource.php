@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\GrapeResource\Pages;
 use App\Models\Grape;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer;
 
 class GrapeResource extends Resource
 {
@@ -37,13 +39,24 @@ class GrapeResource extends Resource
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('name')
-                ->label('Название')
-                ->required()
-                ->maxLength(255),
+            TranslatableContainer::make(
+                Forms\Components\TextInput::make('name')
+                    ->label('Название')
+                    ->required()
+                    ->maxLength(255),
+            ),
             Forms\Components\Textarea::make('description')
                 ->label('Описание')
                 ->rows(3),
+            Forms\Components\Section::make(__('app.product.sections.media'))
+                ->schema([
+                    SpatieMediaLibraryFileUpload::make('images')
+                        ->label('icon')
+                        ->collection('images')
+                        ->reorderable()
+                        ->image(),
+                ])
+                ->collapsible(),
         ]);
     }
 

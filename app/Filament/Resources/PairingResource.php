@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PairingResource\Pages;
 use App\Models\Pairing;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -43,7 +44,17 @@ class PairingResource extends Resource
             TranslatableContainer::make(
                 Forms\Components\TextInput::make('name')
                     ->label('Название')
-                    ->required(),)
+                    ->required(),
+            ),
+            Forms\Components\Section::make(__('app.product.sections.media'))
+                ->schema([
+                    SpatieMediaLibraryFileUpload::make('images')
+                        ->label('icon')
+                        ->collection('images')
+                        ->reorderable()
+                        ->image(),
+                ])
+                ->collapsible(),
         ]);
     }
 
