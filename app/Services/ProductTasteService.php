@@ -8,13 +8,6 @@ use App\Models\TasteGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-/**
- * Финальная версия логики вкусов:
- * - Использует только wine_tastes (VivinoLink — просто ссылка)
- * - Расчёт весов из строки формата "apple - 9; honey - 7; citrus - 4"
- * - Сохраняет веса в product_taste.intensity_percent
- * - Группирует по taste_group_id, нормирует по группе-лидеру
- */
 class ProductTasteService
 {
     public static function buildAndAttachTastes(
@@ -24,28 +17,34 @@ class ProductTasteService
         bool $hasOakByFilters = false
     ): void {
         DB::transaction(function () use ($product, $textTastesCsv, $descriptionRu, $hasOakByFilters) {
+            // 1️⃣ Извлекаем уже прикрепленные вкусы (например, от сортов винограда)
+            $existing = $product->tastes()
+                ->pluck('product_taste.intensity_percent', 'tastes.id')
+                ->toArray();
 
-            // 1️⃣ Расчёт тегов из wine_tastes
-            $tastes = static::parseWineTastes($textTastesCsv);
+            // 2️⃣ Парсим новые вкусы из Vivino / таблицы
+            $parsed = static::parseWineTastes($textTastesCsv);
 
-            if (empty($tastes)) {
+            // 3️⃣ Объединяем два источника
+            $combined = static::mergeTasteSources($existing, $parsed);
+
+            if (empty($combined)) {
                 $product->tastes()->detach();
                 return;
             }
 
-            // 2️⃣ Учитываем дуб / ваниль
+            // 4️⃣ Проверяем выдержку в дубе
             $hasOakText = static::detectOakAgingMention($descriptionRu);
-            // если есть выдержка по фильтрам или упоминание в тексте
             $hasOak = $hasOakByFilters || $hasOakText;
-            $tastes = static::applyOakVanillaRules($tastes, $hasOak);
+            $combined = static::applyOakVanillaRules($combined, $hasOak);
 
-            // 3️⃣ Группировка и нормализация
-            $grouped = static::groupAndNormalize($tastes);
+            // 5️⃣ Группируем и нормируем
+            $grouped = static::groupAndNormalize($combined);
 
-            // 4️⃣ Сохранение в product_taste
-            static::persistProductTastes($product, $tastes);
+            // 6️⃣ Сохраняем вкусы в product_taste
+            static::persistProductTastes($product, $combined);
 
-            // 5️⃣ Сохранение taste_groups в meta
+            // 7️⃣ Обновляем meta.taste_groups
             $meta = $product->meta ?? [];
             $meta['taste_groups'] = $grouped;
             $product->meta = $meta;
@@ -53,7 +52,7 @@ class ProductTasteService
         });
     }
 
-    /* ---------------- Парсинг wine_tastes ---------------- */
+    /* ------------------------- Парсинг CSV ------------------------- */
     protected static function parseWineTastes(?string $csv): array
     {
         if (empty($csv)) return [];
@@ -73,7 +72,7 @@ class ProductTasteService
                 $score = 1;
             }
 
-            $value = min(1.0, $score / 10); // например, 9 → 0.9
+            $value = min(1.0, $score / 10); // 9 → 0.9
             $norm = static::normalizeTasteKey($name);
             $result[$norm] = max($result[$norm] ?? 0, $value);
         }
@@ -81,7 +80,29 @@ class ProductTasteService
         return $result;
     }
 
-    /* ---------------- Дуб/Ваниль ---------------- */
+    /* ------------------------- Объединение источников ------------------------- */
+    protected static function mergeTasteSources(array $existing, array $parsed): array
+    {
+        $merged = [];
+
+        // Сначала добавляем уже существующие вкусы (например, от винограда)
+        foreach ($existing as $id => $pct) {
+            $taste = Taste::find($id);
+            if ($taste) {
+                $key = static::normalizeTasteKey($taste->getTranslation('name', 'ru'));
+                $merged[$key] = max($merged[$key] ?? 0, $pct / 100);
+            }
+        }
+
+        // Затем добавляем новые (Vivino / текст)
+        foreach ($parsed as $key => $val) {
+            $merged[$key] = max($merged[$key] ?? 0, $val);
+        }
+
+        return $merged;
+    }
+
+    /* ------------------------- Дуб / ваниль ------------------------- */
     protected static function detectOakAgingMention(?string $text): bool
     {
         if (!$text) return false;
@@ -106,7 +127,7 @@ class ProductTasteService
         return $tags;
     }
 
-    /* ---------------- Группировка ---------------- */
+    /* ------------------------- Группировка ------------------------- */
     protected static function groupAndNormalize(array $tags): array
     {
         if (empty($tags)) return [];
@@ -150,7 +171,7 @@ class ProductTasteService
         return $out;
     }
 
-    /* ---------------- Сохранение ---------------- */
+    /* ------------------------- Сохранение ------------------------- */
     protected static function persistProductTastes(Product $product, array $tags): void
     {
         $max = max($tags);
@@ -162,12 +183,11 @@ class ProductTasteService
             $sync[$taste->id] = ['intensity_percent' => $pct];
         }
 
-        // сортируем по интенсивности, чтобы top-4 были в начале
-        arsort($sync);
-        $product->tastes()->sync($sync);
+        // вместо полного sync — мягкое обновление (не удаляет старые связи)
+        $product->tastes()->syncWithoutDetaching($sync);
     }
 
-    /* ---------------- Taste helpers ---------------- */
+    /* ------------------------- Taste helpers ------------------------- */
     protected static array $tasteCache = [];
 
     protected static function firstOrCreateTasteWithGroup(string $name): array
@@ -182,11 +202,8 @@ class ProductTasteService
         $groupSlug = mb_strtolower($groupSlug);
 
         $group = TasteGroup::firstOrCreate(
-            ['name->en' => ucfirst($groupSlug)],
-            [
-                'name' => ['ru' => ucfirst($groupSlug), 'en' => ucfirst($groupSlug)],
-                'slug' => Str::slug($groupSlug),
-            ]
+            ['slug' => Str::slug($groupSlug)],
+            ['name' => ['ru' => ucfirst($groupSlug), 'en' => ucfirst($groupSlug)]]
         );
 
         $taste = Taste::query()
@@ -207,7 +224,6 @@ class ProductTasteService
 
         return static::$tasteCache[$norm] = [$taste, $group];
     }
-
 
     protected static function normalizeTasteKey(string $s): string
     {

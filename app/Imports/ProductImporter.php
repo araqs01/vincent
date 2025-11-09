@@ -30,12 +30,10 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
     public function collection(Collection $rows)
     {
         ini_set('memory_limit', '2048M');
-        set_time_limit(0); // бесконечное время, так как работает в очереди
+        set_time_limit(0);
 
         $headerIndex = $this->detectHeaderRow($rows);
-        if ($headerIndex === null) {
-            return;
-        }
+        if ($headerIndex === null) return;
 
         $headers = collect($rows[$headerIndex])
             ->map(fn($v) => is_string($v) ? trim(mb_strtolower($v)) : $v)
@@ -43,45 +41,28 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
             ->values()
             ->toArray();
 
-        $dataRows = $rows->slice($headerIndex + 1)->filter(function ($row) {
-            return $row->filter(fn($v) => $v !== null && trim((string)$v) !== '')->isNotEmpty();
-        });
+        $dataRows = $rows->slice($headerIndex + 1)->filter(
+            fn($row) => $row->filter(fn($v) => $v !== null && trim((string)$v) !== '')->isNotEmpty()
+        );
 
         DB::transaction(function () use ($headers, $dataRows) {
-            try {
-                foreach ($dataRows as $index => $row) {
+            foreach ($dataRows as $index => $row) {
+                try {
                     $assoc = $this->combineRowWithHeaders($headers, $row->toArray());
                     $normalized = $this->normalizeRow($assoc);
                     if (empty($normalized)) continue;
 
+                    // 🔹 Основные поля из характеристик
                     if (!empty($normalized['ws_characteristics'])) {
                         try {
-                            $chars = $normalized['ws_characteristics'];
-                            if (is_string($chars)) {
-                                $fixed = trim($chars);
-                                if ($fixed === '' || $fixed === '[]' || $fixed === '[ ]') {
-                                    $chars = [];
-                                } else {
-                                    if (str_starts_with($fixed, '[') && str_contains($fixed, "'")) {
-                                        $fixed = str_replace("'", '"', $fixed);
-                                    }
-                                    $fixed = preg_replace('/,\s*([\]}])/m', '$1', $fixed);
-
-                                    $chars = $this->safeJsonDecode($fixed) ?? [];
-                                }
-                            } elseif (!is_array($chars)) {
-                                $chars = [];
-                            }
-
-                            if (!empty($chars) && is_array($chars)) {
+                            $chars = $this->safeJsonDecode($normalized['ws_characteristics']) ?? [];
+                            if (is_array($chars)) {
                                 $metaFromChars = [];
 
                                 foreach ($chars as $char) {
                                     if (!is_array($char)) continue;
-
                                     $key = trim(mb_strtolower($char['key'] ?? ''));
                                     $val = trim((string)($char['values'] ?? ''));
-
                                     if ($key === '' || $val === '') continue;
 
                                     switch ($key) {
@@ -94,80 +75,51 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                                         case 'бренд':
                                             $normalized['бренд'] = $val;
                                             break;
-                                            case 'сорта винограда':
-                                        case 'cорта винограда': // латинская c
+                                        case 'сорта винограда':
                                         case 'виноград':
                                         case 'grape':
                                         case 'grapes':
                                             $normalized['grapes'] = trim(($normalized['grapes'] ?? '') . ', ' . $val, ', ');
                                             break;
-                                            case 'подходит к':
+                                        case 'подходит к':
                                         case 'гастрономические сочетания':
                                             $normalized['pairing'] = trim(($normalized['pairing'] ?? '') . ', ' . $val, ', ');
                                             break;
-
-                                        case 'аромат':
-                                        case 'характер':
-                                        case 'вкус':
-                                        case 'тело':
-                                        case 'кислотность':
-                                            $normalized['wine_tastes'] = trim(($normalized['wine_tastes'] ?? '') . ', ' . $val, ', ');
-                                            break;
-                                            case 'крепость':
-                                        case 'насыщенность':
-                                        case 'глубина цвета':
+                                        // ⚠️ Больше НЕ парсим "вкус", "характер", "тело", "кислотность"
+                                        // эти данные идут из Vivino или сортов винограда
+                                        case 'крепость':
                                         case 'температура сервировки':
                                             $metaFromChars[ucfirst($key)] = $val;
                                             break;
                                     }
                                 }
+
                                 if (!empty($metaFromChars)) {
                                     $normalized['meta_from_chars'] = $metaFromChars;
                                 }
                             }
-
                         } catch (\Throwable $e) {
-                            \Log::warning('Ошибка обработки ws_characteristics: ' . $e->getMessage());
+                            Log::warning('Ошибка обработки ws_characteristics: ' . $e->getMessage());
                         }
                     }
 
+                    // 🔹 Описание товара (ws_about_product)
                     $metaSections = [];
                     if (!empty($normalized['ws_about_product'])) {
-                        try {
-                            $value = $normalized['ws_about_product'];
-
-                            if (is_string($value)) {
-                                $fixed = trim($value);
-
-                                if (str_starts_with($fixed, '[') && str_contains($fixed, "'")) {
-                                    $fixed = str_replace("'", '"', $fixed);
-                                }
-
-                                $aboutSections = $this->safeJsonDecode($value);
-                            } else {
-                                $aboutSections = is_array($value) ? $value : null;
-                            }
-
-                            if (is_array($aboutSections)) {
-                                foreach ($aboutSections as $section) {
-                                    if (!is_array($section)) continue;
-
-                                    $title = trim($section['title'] ?? '');
-                                    $text = trim($section['text'] ?? '');
-
-                                    if ($title && $text) {
-                                        $metaSections[] = [
-                                            'title' => $title,
-                                            'text' => $text,
-                                        ];
-                                    }
+                        $aboutSections = $this->safeJsonDecode($normalized['ws_about_product']);
+                        if (is_array($aboutSections)) {
+                            foreach ($aboutSections as $section) {
+                                if (!is_array($section)) continue;
+                                $title = trim($section['title'] ?? '');
+                                $text = trim($section['text'] ?? '');
+                                if ($title && $text) {
+                                    $metaSections[] = ['title' => $title, 'text' => $text];
                                 }
                             }
-                        } catch (\Throwable $e) {
-                            \Log::warning('Ошибка обработки ws_about_product: ' . $e->getMessage());
                         }
                     }
 
+                    // 🔹 Очистка и нормализация строк
                     foreach (['wine_tastes', 'pairing'] as $field) {
                         if (!empty($normalized[$field])) {
                             $normalized[$field] = trim($normalized[$field], ", \t\n\r\0\x0B");
@@ -177,29 +129,21 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                     if (!empty($normalized['grapes'])) {
                         $normalized['grapes'] = collect(
                             preg_split('/[,;\/]+|\s{2,}|\s(?=[А-ЯЁA-Z][а-яё]{2,}\s[А-ЯЁA-Z])/u', $normalized['grapes'])
-                        )->map(fn($v) => trim($v))
-                            ->filter()
-                            ->unique()
-                            ->implode(', ');
+                        )->map(fn($v) => trim($v))->filter()->unique()->implode(', ');
                     }
 
                     if (!empty($normalized['pairing'])) {
                         $normalized['pairing'] = collect(
                             preg_split('/[,;\/]+|\s{2,}/u', $normalized['pairing'])
-                        )->map(fn($v) => trim($v))
-                            ->filter()
-                            ->unique()
-                            ->implode(', ');
+                        )->map(fn($v) => trim($v))->filter()->unique()->implode(', ');
                     }
 
+                    // 🔹 Основные поля продукта
                     $nameRu = $normalized['name_price'] ?? $normalized['name_ru'] ?? null;
                     $nameEn = $normalized['name_price_en'] ?? null;
                     $nameWithYear = $normalized['name_price_year'] ?? $nameRu;
-
                     [$baseName, $volume, $vintage] = $this->parseNameVolumeAndVintage($nameWithYear);
-                    $baseName = trim(preg_replace('/\s{2,}/', ' ', preg_replace('/[\/\\\()\[\]\d.,]+$/u', '', $baseName)));
                     $slug = Str::slug(Str::limit($baseName, 80, ''));
-
                     $descriptionRu = trim(($normalized['about'] ?? '') . "\n\n" . ($normalized['description'] ?? ''));
                     $descriptionEn = $normalized['description_en'] ?? null;
                     $price = $this->sanitizePrice($normalized['price'] ?? null);
@@ -227,8 +171,10 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                         ]
                     );
 
+                    // 🔹 Цвет и тип (атрибуты)
                     ProductAttributeService::extractAndAttachAttributes($product, $baseName);
 
+                    // 🔹 Объём / винтаж
                     if ($volume || $vintage) {
                         ProductVariant::updateOrCreate(
                             ['product_id' => $product->id, 'volume' => $volume, 'vintage' => $vintage],
@@ -236,11 +182,33 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                         );
                     }
 
+                    // 🍇 Привязка сортов и вариантов винограда
                     if (!empty($normalized['grapes'])) {
                         ProductGrapeService::attachGrapes($product, (string)$normalized['grapes']);
                         ProductGrapeVariantService::updateGrapeProfile($product);
+
+                        // 🧩 Добавляем вкусы от винограда (из grape_variant_taste)
+                        $variantIds = $product->grapeVariants()->pluck('id');
+                        if ($variantIds->isNotEmpty()) {
+                            $grapeTastes = \App\Models\Taste::query()
+                                ->whereIn('id', function ($q) use ($variantIds) {
+                                    $q->select('taste_id')
+                                        ->from('grape_variant_taste')
+                                        ->whereIn('grape_variant_id', $variantIds);
+                                })
+                                ->get();
+
+                            if ($grapeTastes->isNotEmpty()) {
+                                $sync = [];
+                                foreach ($grapeTastes->values() as $i => $taste) {
+                                    $sync[$taste->id] = ['intensity_percent' => round(100 - $i * 10)];
+                                }
+                                $product->tastes()->syncWithoutDetaching($sync);
+                            }
+                        }
                     }
 
+                    // 🍷 Построение вкусового профиля (из Vivino/текста)
                     ProductTasteService::buildAndAttachTastes(
                         product: $product,
                         textTastesCsv: $normalized['wine_tastes'] ?? null,
@@ -248,33 +216,30 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                         hasOakByFilters: false
                     );
 
+                    // 🍽 Гастрономические сочетания
                     if (!empty($normalized['pairing'])) {
                         ProductPairingService::attachPairings($product, $normalized['pairing']);
                     }
+
+                    // 📦 Meta (sections, ratings)
                     $currentMeta = $product->meta ?? [];
                     if (!empty($metaSections)) {
                         $currentMeta['sections'] = $metaSections;
                     }
-
                     if (!empty($normalized['vivino_rating'])) {
                         $currentMeta['vivino_rating'] = (float)$normalized['vivino_rating'];
                     }
-
                     if (!empty($normalized['manufacturer_rating'])) {
                         $currentMeta['manufacturer_rating'] = (float)$normalized['manufacturer_rating'];
                     }
-
                     $product->meta = $currentMeta;
                     $product->save();
 
+                    // 🖼 Загрузка изображения
                     $imageUrl = $normalized['image_link'] ?? $normalized['foto'] ?? null;
-                    if ($imageUrl === 'https://s2.wine.style/images_gen/116/11675/0_0_695x600.webp') {
-                        continue;
-                    }
-                    if ($product && $imageUrl) {
+                    if ($imageUrl && $imageUrl !== 'https://s2.wine.style/images_gen/116/11675/0_0_695x600.webp') {
                         $filename = basename(parse_url($imageUrl, PHP_URL_PATH)) ?: 'image.jpg';
-                        $alreadyExists = $product->getMedia('images')->contains(fn($m) => $m->file_name === $filename);
-                        if (!$alreadyExists) {
+                        if (!$product->getMedia('images')->contains(fn($m) => $m->file_name === $filename)) {
                             try {
                                 $response = Http::get($imageUrl);
                                 if ($response->successful()) {
@@ -283,43 +248,20 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                                         ->toMediaCollection('images');
                                 }
                             } catch (\Throwable $e) {
-                                \Log::warning("Ошибка загрузки изображения для продукта ID {$product->id}: {$e->getMessage()}");
+                                Log::warning("Ошибка загрузки изображения для продукта ID {$product->id}: {$e->getMessage()}");
                             }
                         }
                     }
+                } catch (\Throwable $e) {
+                    Log::error("💥 Ошибка при обработке строки {$index}: " . $e->getMessage());
                 }
-            } catch (\Throwable $e) {
-                Log::error("💥 Ошибка при обработке строки {$index}: " . $e->getMessage(), [
-                    'trace' => $e->getTraceAsString(),
-                ]);
             }
         });
-
-
     }
 
-    public function chunkSize(): int
-    {
-        return 1000;
-    }
-
-    /**
-     * Количество строк, вставляемых за один запрос
-     * 200-500 — оптимально
-     */
-    public function batchSize(): int
-    {
-        return 300;
-    }
-
-    /**
-     * Опционально: количество попыток выполнения задачи в очереди
-     */
+    public function chunkSize(): int { return 1000; }
+    public function batchSize(): int { return 300; }
     public $tries = 3;
-
-    /**
-     * Увеличиваем таймаут очереди (в секундах)
-     */
     public $timeout = 900;
 
     protected function detectHeaderRow(Collection $rows): ?int
