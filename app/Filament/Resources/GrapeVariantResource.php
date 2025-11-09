@@ -62,7 +62,18 @@ class GrapeVariantResource extends Resource
                         Forms\Components\TextInput::make('meta.acidity')->numeric()->minValue(0)->maxValue(5)->label('Кислотность'),
                         Forms\Components\TextInput::make('meta.sparkling')->numeric()->minValue(0)->maxValue(5)->label('Игристость'),
                     ]),
-                ])
+                ]),
+            Section::make('Вкусовой профиль')
+                ->description('Выбери вкусы, характерные для этого сорта')
+                ->schema([
+                    Forms\Components\Select::make('tastes')
+                        ->multiple()
+                        ->relationship('tastes', 'name')
+                        ->label('Вкусы сорта')
+                        ->preload()
+                        ->searchable(),
+                ]),
+
         ]);
     }
 

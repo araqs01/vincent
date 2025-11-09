@@ -6,6 +6,7 @@ use App\Filament\Resources\TasteGroupSpiritResource\Pages;
 use App\Models\TasteGroupSpirit;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -40,12 +41,11 @@ class TasteGroupSpiritResource extends Resource
                         ->required(),
                 )->columnSpanFull(),
 
-                FileUpload::make('image')
-                    ->label('Изображение')
-                    ->image()
-                    ->directory('taste_groups_spirit')
-                    ->visibility('public')
-                    ->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('hero_image')
+                    ->label('icon')
+                    ->collection('hero_image')
+                    ->reorderable()
+                    ->image(),
             ]),
         ]);
     }

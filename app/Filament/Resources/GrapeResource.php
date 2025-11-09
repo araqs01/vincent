@@ -50,11 +50,9 @@ class GrapeResource extends Resource
                 ->rows(3),
             Forms\Components\Section::make(__('app.product.sections.media'))
                 ->schema([
-                    SpatieMediaLibraryFileUpload::make('images')
+                    SpatieMediaLibraryFileUpload::make('hero_image')
                         ->label('icon')
-                        ->collection('images')
-                        ->reorderable()
-                        ->image(),
+                        ->collection('hero_image'),
                 ])
                 ->collapsible(),
         ]);

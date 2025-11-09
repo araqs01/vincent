@@ -22,10 +22,9 @@ class Grape extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this
-            ->addMediaCollection('images')
-            ->singleFile();
+        $this->addMediaCollection('hero_image')->singleFile();
     }
+
 }
 
 

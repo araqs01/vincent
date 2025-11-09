@@ -27,8 +27,7 @@ class PairingGroup extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this
-            ->addMediaCollection('images')
-            ->useDisk('public') // или 'media' если у тебя отдельный диск
+            ->addMediaCollection('hero_image')// или 'media' если у тебя отдельный диск
             ->singleFile(); // если нужно хранить только одно фото
     }
 }

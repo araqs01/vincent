@@ -40,7 +40,7 @@ class Taste extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this
-            ->addMediaCollection('images')
+            ->addMediaCollection('hero_image')
             ->singleFile();
     }
 }

@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
             PermissionsSeeder::class,
             AdminUserSeeder::class,
             CategoriesAndMenuSeeder::class,
-            GrapeSeeder::class,
             PairingSeeder::class,
             TasteSeeder::class,
-            RegionSeeder::class
+            RegionSeeder::class,
+            GrapeSeeder::class,
         ]);
     }
 }

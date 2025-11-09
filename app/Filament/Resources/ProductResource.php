@@ -122,7 +122,6 @@ class ProductResource extends Resource
                 ->columns(4)
                 ->collapsible(),
 
-            // 🖼️ Галерея (Spatie)
             Forms\Components\Section::make(__('app.product.sections.media'))
                 ->schema([
                     SpatieMediaLibraryFileUpload::make('images')
@@ -133,7 +132,6 @@ class ProductResource extends Resource
                         ->image(),
                 ])
                 ->collapsible(),
-            // ⚙️ Мета и прочее
             Forms\Components\ViewField::make('meta')
                 ->label('Мета данные')
                 ->view('filament.resources.product.partials.meta-display')

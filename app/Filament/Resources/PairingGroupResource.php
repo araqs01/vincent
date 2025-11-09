@@ -42,9 +42,9 @@ class PairingGroupResource extends Resource
                 ),
                 Forms\Components\Section::make(__('app.product.sections.media'))
                     ->schema([
-                        SpatieMediaLibraryFileUpload::make('images')
+                        SpatieMediaLibraryFileUpload::make('hero_image')
                             ->label('icon')
-                            ->collection('images')
+                            ->collection('hero_image')
                             ->reorderable()
                             ->image(),
                     ])
