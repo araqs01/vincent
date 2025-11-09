@@ -26,6 +26,7 @@ class Product extends Model implements HasMedia
         'description',
         'meta',
         'manufacturer_id',
+        'alcohol_strength'
     ];
 
     public $translatable = ['name', 'description'];
@@ -65,18 +66,30 @@ class Product extends Model implements HasMedia
     }
 
 
-    public function attributes()
-    {
-        return $this->belongsToMany(Attribute::class, 'product_attribute_value')
-            ->withPivot('value')
-            ->withTimestamps();
-    }
-
-
+// ✅ Прямая связь с attribute_values
     public function attributeValues()
     {
-        return $this->belongsToMany(AttributeValue::class, 'product_attribute_value')
-            ->withTimestamps();
+        return $this->belongsToMany(
+            AttributeValue::class,
+            'product_attribute_value',
+            'product_id',
+            'attribute_value_id'
+        )
+            ->withTimestamps()
+            ->with(['attribute']); // сразу подгружаем attribute
+    }
+
+// ✅ Удобная "через" связь для получения самих атрибутов
+    public function attributes()
+    {
+        return $this->hasManyThrough(
+            Attribute::class,
+            AttributeValue::class,
+            'id',             // local key в attribute_values
+            'id',             // local key в attributes
+            null,
+            'attribute_id'    // foreign key attribute_values.attribute_id → attributes.id
+        );
     }
 
 
@@ -89,7 +102,9 @@ class Product extends Model implements HasMedia
     public function tastes()
     {
         return $this->belongsToMany(Taste::class, 'product_taste')
-            ->withPivot('intensity_percent');
+            ->withPivot('intensity_percent')
+            ->select('tastes.*') // выбираем только уникальные taste
+            ->distinct('tastes.id'); // 👈 DISTINCT по ID taste
     }
 
     public function dishes()
@@ -161,4 +176,94 @@ class Product extends Model implements HasMedia
             ->useDisk('public') // или 'media' если у тебя отдельный диск
             ->singleFile(); // если нужно хранить только одно фото
     }
+
+    public function getShortSpecsAttribute(): array
+    {
+        $parts = [];
+
+        // 🏳️ Страна = родитель региона
+        if ($this->region) {
+            $region = $this->region->parent
+                ? $this->region->getTranslation('name', app()->getLocale())
+                : null;
+
+            $parts[] = $region ?? null ;
+        }
+
+        // 🎨 Цвет (атрибут)
+        $color = $this->attributeValues
+            ->firstWhere('attribute.slug', 'cvet-vina')
+            ?->getTranslation('value', app()->getLocale());
+
+        if ($color) {
+            $parts[] = ucfirst($color);
+        }
+
+        // 🍯 Сахар (атрибут)
+        $sugar = $this->attributeValues
+            ->firstWhere('attribute.slug', 'tip-saxar')
+            ?->getTranslation('value', app()->getLocale());
+
+        if ($sugar) {
+            $parts[] = ucfirst($sugar);
+        }
+
+        // 💪 Крепость
+        if ($this->alcohol_strength) {
+            $parts[] = rtrim(rtrim(number_format($this->alcohol_strength, 1, '.', ''), '0'), '.') . '%';
+        }
+
+        if ($this->grapes->isNotEmpty()) {
+            $firstGrape = ucfirst($this->grapes->first()->getTranslation('name', app()->getLocale()));
+            $parts[] = $firstGrape;
+        }
+
+
+        return $parts;
+    }
+
+    public function getFullSpecsAttribute(): array
+    {
+        $parts = [];
+
+        // 🌍 Страна
+        if ($this->region?->parent?->getTranslation('name', app()->getLocale())) {
+            $parts[] = $this->region->parent->getTranslation('name', app()->getLocale());
+        }
+
+        // 🏞️ Подрегион (если есть)
+        if ($this->region && $this->region?->parent) {
+            $parts[] = $this->region->getTranslation('name', app()->getLocale());
+        }
+
+        // 🎨 Цвет
+        $color = $this->attributeValues
+            ->firstWhere('attribute.slug', 'cvet-vina')
+            ?->getTranslation('value', app()->getLocale());
+        if ($color) {
+            $parts[] = ucfirst($color);
+        }
+
+        // 🍯 Сахар
+        $sugar = $this->attributeValues
+            ->firstWhere('attribute.slug', 'tip-saxar')
+            ?->getTranslation('value', app()->getLocale());
+        if ($sugar) {
+            $parts[] = ucfirst($sugar);
+        }
+
+        // 💪 Крепость (%)
+        if (!empty($this->alcohol_strength)) {
+            $parts[] = rtrim($this->alcohol_strength, '%') . '%';
+        }
+
+        // 🍇 Сорта винограда (все, через точку)
+        if ($this->grapes->isNotEmpty()) {
+            $parts[] = $this->grapes->take(2)->pluck('name')->map(fn($n) => ucfirst($n))->join(' • ');
+        }
+
+        return $parts;
+    }
+
+
 }

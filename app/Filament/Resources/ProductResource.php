@@ -102,6 +102,11 @@ class ProductResource extends Resource
                         ->suffix('₽')
                         ->required(),
 
+                    Forms\Components\TextInput::make('alcohol_strength')
+                        ->label(__('alcohol_strength'))
+                        ->numeric()
+                        ->required(),
+
                     Forms\Components\Select::make('status')
                         ->label(__('app.product.fields.status'))
                         ->options([

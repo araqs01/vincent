@@ -25,6 +25,13 @@ class Grape extends Model implements HasMedia
         $this->addMediaCollection('hero_image')->singleFile();
     }
 
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_grape')
+            ->withPivot(['percent', 'main'])
+            ->withTimestamps();
+    }
+
 }
 
 

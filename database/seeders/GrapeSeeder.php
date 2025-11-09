@@ -193,22 +193,18 @@ class GrapeSeeder extends Seeder
                         ->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, '$.ru'))) = ?", [$tasteName])
                         ->first();
 
+                    // ⚠️ Если вкус не найден — просто пропускаем
                     if (!$taste) {
-                        $group = TasteGroup::firstOrCreate(
-                            ['slug' => 'other'],
-                            ['name' => ['ru' => 'Другое', 'en' => 'Other']]
-                        );
-
-                        $taste = Taste::create([
-                            'name' => ['ru' => $tasteName, 'en' => ucfirst($tasteName)],
-                            'taste_group_id' => $group->id,
-                        ]);
+                        $this->command->warn("⏭ Вкус не найден в справочнике: {$tasteName}");
+                        continue;
                     }
 
                     $tasteIds[] = $taste->id;
                 }
 
-                $variant->tastes()->sync($tasteIds);
+                if (!empty($tasteIds)) {
+                    $variant->tastes()->sync($tasteIds);
+                }
             }
 
             $count++;

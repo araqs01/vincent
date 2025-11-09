@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             TasteSeeder::class,
             RegionSeeder::class,
             GrapeSeeder::class,
+            WineDishSeeder::class,
         ]);
     }
 }

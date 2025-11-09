@@ -12,9 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_taste', function (Blueprint $table) {
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('taste_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')
+                ->constrained('products')
+                ->cascadeOnDelete();
+
+            $table->foreignId('taste_id')
+                ->constrained('tastes')
+                ->cascadeOnDelete();
+
             $table->float('intensity_percent')->nullable();
+
             $table->primary(['product_id', 'taste_id']);
         });
     }

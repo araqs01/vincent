@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\Api\ProductResource;
+use App\Http\Resources\Api\ProductsResource;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -27,7 +28,8 @@ class ProductController extends BaseController
                         'category:id,slug,name',
                         'brand:id,name',
                         'brandLine:id,name',
-                        'region:id,name',
+                        'region:id,parent_id,name',
+                        'region.parent:id,name',
                         'supplier:id,name',
                         'manufacturer:id,name',
                         'grapes:id,name',
@@ -41,7 +43,7 @@ class ProductController extends BaseController
                         'media',
                     ])
                     ->orderBy('id'),
-                ProductResource::class
+                ProductsResource::class
             ),
         );
     }

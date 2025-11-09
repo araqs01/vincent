@@ -17,7 +17,7 @@ class Taste extends Model implements HasMedia
 
     public function group()
     {
-        return $this->belongsTo(TasteGroup::class, 'taste_group_id');
+        return $this->belongsTo(TasteGroup::class, 'taste_group_id','id');
     }
 
     public function groupSpirit()

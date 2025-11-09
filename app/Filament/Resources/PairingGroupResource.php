@@ -21,9 +21,9 @@ class PairingGroupResource extends Resource
     protected static ?string $model = PairingGroup::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder-open';
-    protected static ?string $navigationLabel = 'Группы сочетаний';
-    protected static ?string $pluralModelLabel = 'Группы сочетаний';
-    protected static ?string $modelLabel = 'Группа сочетаний';
+    protected static ?string $navigationLabel = 'Группы Блюд';
+    protected static ?string $pluralModelLabel = 'Группы Блюд';
+    protected static ?string $modelLabel = 'Группа Блюд';
     protected static ?int $navigationSort = 20;
 
     public static function getNavigationGroup(): ?string

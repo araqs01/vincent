@@ -35,6 +35,7 @@ return new class extends Migration
             $table->float('rating')->nullable();
             $table->string('status')->default('active');
             $table->json('meta')->nullable(); // универсальные параметры (винтаж, серия, крепость и т.д.)
+            $table->string('alcohol_strength')->nullable();
 
             $table->timestamps();
         });

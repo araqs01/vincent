@@ -23,7 +23,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class ProductImporter implements ToCollection, WithChunkReading, WithBatchInserts, ShouldQueue
+class ProductImporter implements ToCollection, WithChunkReading, WithBatchInserts
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
@@ -126,18 +126,6 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                         }
                     }
 
-                    if (!empty($normalized['grapes'])) {
-                        $normalized['grapes'] = collect(
-                            preg_split('/[,;\/]+|\s{2,}|\s(?=[А-ЯЁA-Z][а-яё]{2,}\s[А-ЯЁA-Z])/u', $normalized['grapes'])
-                        )->map(fn($v) => trim($v))->filter()->unique()->implode(', ');
-                    }
-
-                    if (!empty($normalized['pairing'])) {
-                        $normalized['pairing'] = collect(
-                            preg_split('/[,;\/]+|\s{2,}/u', $normalized['pairing'])
-                        )->map(fn($v) => trim($v))->filter()->unique()->implode(', ');
-                    }
-
                     // 🔹 Основные поля продукта
                     $nameRu = $normalized['name_price'] ?? $normalized['name_ru'] ?? null;
                     $nameEn = $normalized['name_price_en'] ?? null;
@@ -147,6 +135,7 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                     $descriptionRu = trim(($normalized['about'] ?? '') . "\n\n" . ($normalized['description'] ?? ''));
                     $descriptionEn = $normalized['description_en'] ?? null;
                     $price = $this->sanitizePrice($normalized['price'] ?? null);
+                    $alcoholStrength = $this->parseFloat($normalized['alcohol_strength'] ?? null);
 
                     $category = $this->detectCategory($normalized);
                     $regionId = $this->detectOrCreateRegion(
@@ -155,6 +144,7 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                     );
                     $brandId = $this->detectOrCreateNameModel(\App\Models\Brand::class, $normalized['бренд'] ?? null, $regionId);
                     $manufacturerId = $this->detectOrCreateNameModel(\App\Models\Manufacturer::class, $normalized['manufacturer'] ?? null, $regionId);
+
 
                     $product = Product::updateOrCreate(
                         ['slug' => $slug],
@@ -168,6 +158,7 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                             'status' => 'active',
                             'price' => $price,
                             'final_price' => $price,
+                            'alcohol_strength' => $alcoholStrength,
                         ]
                     );
 
@@ -188,7 +179,10 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                         ProductGrapeVariantService::updateGrapeProfile($product);
 
                         // 🧩 Добавляем вкусы от винограда (из grape_variant_taste)
-                        $variantIds = $product->grapeVariants()->pluck('id');
+                        $variantIds = $product->grapeVariants()
+                            ->select('grape_variants.id as gv_id')
+                            ->distinct()
+                            ->pluck('gv_id');
                         if ($variantIds->isNotEmpty()) {
                             $grapeTastes = \App\Models\Taste::query()
                                 ->whereIn('id', function ($q) use ($variantIds) {
@@ -200,10 +194,100 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
 
                             if ($grapeTastes->isNotEmpty()) {
                                 $sync = [];
+                                $total = $grapeTastes->count();
+                                $oddStep = 1 / $total;   // шаг для нечетных
+                                $evenStep = 0.5 / $total; // базовый шаг для четных (0.5, 0.4, ...)
+
+                                $oddValue = 1.0;
+                                $evenValue = 0.5;
+
                                 foreach ($grapeTastes->values() as $i => $taste) {
-                                    $sync[$taste->id] = ['intensity_percent' => round(100 - $i * 10)];
+                                    $x = $i + 1;
+
+                                    if ($x % 2 !== 0) {
+                                        // нечетные (1,3,5…)
+                                        $val = max(0, $oddValue);
+                                        $oddValue -= $oddStep;
+                                    } else {
+                                        // четные (2,4,6…)
+                                        $val = max(0, $evenValue);
+                                        $evenValue -= $evenStep;
+                                    }
+
+                                    $sync[$taste->id] = ['intensity_percent' => round($val * 100)];
                                 }
-                                $product->tastes()->syncWithoutDetaching($sync);
+
+                                // 🔹 Привязываем вкусы к продукту
+                                $product->tastes()->sync($sync);
+
+                                // 🔹 Получаем вкусы с их группами
+                                $tastes = $product->tastes()
+                                    ->select('tastes.id', 'tastes.taste_group_id', 'tastes.name', 'product_taste.intensity_percent')
+                                    ->with(['group:id,slug,name'])
+                                    ->get()
+                                    ->filter(fn($t) => $t->group);
+
+
+                                // ==============================
+                                // 🧩 Построение taste_groups (по группам вкусов)
+                                // ==============================
+                                if ($tastes->isNotEmpty()) {
+                                    $grouped = $tastes->groupBy(fn($t) => $t->group->slug);
+
+                                    // Среднее значение интенсивности в каждой группе
+                                    $avgByGroup = $grouped->mapWithKeys(function ($items, $slug) {
+                                        $avg = round($items->avg(fn($t) => $t->pivot->intensity_percent ?? 0), 1);
+                                        $name = json_decode($items->first()->group->name, true)['ru'] ?? $slug;
+                                        return [$name => $avg];
+                                    });
+
+                                    // Нормализация: лидирующая группа = 100%
+                                    $max = max($avgByGroup->values()->toArray());
+                                    $normalizedGroups = $avgByGroup->map(fn($v) => round(($v / $max) * 100, 1));
+
+                                    $tasteScaleMap = [
+                                        'Фруктовость' => ['fruits', 'red-berries', 'tropical-fruits', 'citrus'],
+                                        'Сладость' => ['sweets'],
+                                        'Полнотелость' => ['woody', 'toasted/smoky', 'nutty', 'spices'],
+                                        'Танинность' => ['woody', 'spices'],
+                                        'Кислотность' => ['minerals/stone/elements', 'herbs'],
+                                    ];
+
+                                    $scaleValues = [];
+
+                                    foreach ($tasteScaleMap as $scale => $relatedSlugs) {
+                                        $matchedGroups = $grouped->filter(fn($_, $slug) => in_array($slug, $relatedSlugs));
+                                        if ($matchedGroups->isNotEmpty()) {
+                                            $avg = $matchedGroups->flatten()
+                                                ->avg(fn($t) => $t->pivot->intensity_percent ?? 0);
+                                            $scaleValues[$scale] = round($avg);
+                                        } else {
+                                            $scaleValues[$scale] = 0; // ✅ если нет данных, ставим 0
+                                        }
+                                    }
+                                    $maxScale = max($scaleValues) ?: 1; // чтобы не делить на 0
+                                    foreach ($scaleValues as $k => $v) {
+                                        $scaleValues[$k] = round(($v / $maxScale) * 100, 1);
+                                    }
+                                    $defaultScales = [
+                                        'Фруктовость' => 0,
+                                        'Сладость' => 0,
+                                        'Полнотелость' => 0,
+                                        'Танинность' => 0,
+                                        'Кислотность' => 0,
+                                    ];
+
+                                    $scaleValues = array_merge($defaultScales, $scaleValues);
+
+                                    // ==============================
+                                    // 💾 Сохраняем всё в meta
+                                    // ==============================
+                                    $meta = $product->meta ?? [];
+                                    $meta['taste_groups'] = $normalizedGroups->toArray();
+                                    $meta['taste_scales'] = $scaleValues;
+                                    $product->meta = $meta;
+                                    $product->save();
+                                }
                             }
                         }
                     }
@@ -216,13 +300,9 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                         hasOakByFilters: false
                     );
 
-                    // 🍽 Гастрономические сочетания
-                    if (!empty($normalized['pairing'])) {
-                        ProductPairingService::attachPairings($product, $normalized['pairing']);
-                    }
-
                     // 📦 Meta (sections, ratings)
                     $currentMeta = $product->meta ?? [];
+
                     if (!empty($metaSections)) {
                         $currentMeta['sections'] = $metaSections;
                     }
@@ -232,9 +312,10 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                     if (!empty($normalized['manufacturer_rating'])) {
                         $currentMeta['manufacturer_rating'] = (float)$normalized['manufacturer_rating'];
                     }
+
+
                     $product->meta = $currentMeta;
                     $product->save();
-
                     // 🖼 Загрузка изображения
                     $imageUrl = $normalized['image_link'] ?? $normalized['foto'] ?? null;
                     if ($imageUrl && $imageUrl !== 'https://s2.wine.style/images_gen/116/11675/0_0_695x600.webp') {
@@ -334,6 +415,9 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
             'grapes' => 'grapes',
             'wine_type' => 'wine_type',
             'тип' => 'wine_type',
+            'крепость' => 'alcohol_strength',
+            'alcohol_strength' => 'alcohol_strength',
+            'крепость (%)' => 'alcohol_strength'
         ];
 
         $normalized = [];
@@ -775,6 +859,65 @@ class ProductImporter implements ToCollection, WithChunkReading, WithBatchInsert
                 return null;
             }
         }
+    }
+
+    protected function parseFloat($value): ?float
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        // 🟢 Excel DateTime
+        if ($value instanceof \DateTimeInterface) {
+            $day = (int)$value->format('d');
+            $month = (int)$value->format('m');
+            return round($day + $month / 10, 1);
+        }
+
+        $value = trim((string)$value);
+
+        // 🟡 Английские месяцы ("12.May")
+        if (preg_match('/^(\d{1,2})[-.\s]?(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i', $value, $m)) {
+            $monthMap = [
+                'jan' => 0.1, 'feb' => 0.2, 'mar' => 0.3, 'apr' => 0.4,
+                'may' => 0.5, 'jun' => 0.6, 'jul' => 0.7, 'aug' => 0.8,
+                'sep' => 0.9, 'oct' => 1.0, 'nov' => 1.1, 'dec' => 1.2,
+            ];
+            $base = (float)$m[1];
+            $suffix = $monthMap[strtolower($m[2])] ?? 0;
+            return round($base + $suffix, 1);
+        }
+
+        // 🔵 Русские месяцы ("12.май")
+        if (preg_match('/^(\d{1,2})[.\s]?(янв|фев|мар|апр|май|июн|июл|авг|сен|окт|ноя|дек)/ui', $value, $m)) {
+            $monthMap = [
+                'янв' => 0.1, 'фев' => 0.2, 'мар' => 0.3, 'апр' => 0.4,
+                'май' => 0.5, 'июн' => 0.6, 'июл' => 0.7, 'авг' => 0.8,
+                'сен' => 0.9, 'окт' => 1.0, 'ноя' => 1.1, 'дек' => 1.2,
+            ];
+            $base = (float)$m[1];
+            $suffix = $monthMap[mb_strtolower($m[2])] ?? 0;
+            return round($base + $suffix, 1);
+        }
+
+        // ⚪ Формат "12.05.2025"
+        if (preg_match('/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/', $value, $m)) {
+            $day = (int)$m[1];
+            $month = (int)$m[2];
+            return round($day + $month / 10, 1);
+        }
+
+        // 🟠 Excel numeric date
+        if (is_numeric($value) && $value > 40000) {
+            $dt = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value);
+            $day = (int)$dt->format('d');
+            $month = (int)$dt->format('m');
+            return round($day + $month / 10, 1);
+        }
+
+        // ⚫ Обычное число
+        $value = str_replace(',', '.', $value);
+        return is_numeric($value) ? (float)$value : null;
     }
 
 

@@ -58,23 +58,19 @@ class ProductTasteService
         if (empty($csv)) return [];
 
         $pairs = preg_split('/[;,]+/u', $csv);
+        $names = collect($pairs)->map(fn($v) => trim($v))->filter()->values();
+
+        $n = $names->count();
+        if ($n === 0) return [];
+
+        $step = 1 / $n;
+        $value = 1.0;
         $result = [];
 
-        foreach ($pairs as $pair) {
-            $pair = trim($pair);
-            if ($pair === '') continue;
-
-            if (preg_match('/^(.+?)\s*[-–—]\s*(\d+)$/u', $pair, $m)) {
-                $name = trim($m[1]);
-                $score = (int)$m[2];
-            } else {
-                $name = trim($pair);
-                $score = 1;
-            }
-
-            $value = min(1.0, $score / 10); // 9 → 0.9
+        foreach ($names as $name) {
             $norm = static::normalizeTasteKey($name);
-            $result[$norm] = max($result[$norm] ?? 0, $value);
+            $result[$norm] = round($value, 2);
+            $value -= $step;
         }
 
         return $result;
@@ -90,7 +86,7 @@ class ProductTasteService
             $taste = Taste::find($id);
             if ($taste) {
                 $key = static::normalizeTasteKey($taste->getTranslation('name', 'ru'));
-                $merged[$key] = max($merged[$key] ?? 0, $pct / 100);
+                $merged[$key] = max($merged[$key] ?? 0, abs($pct / 100));
             }
         }
 
@@ -178,6 +174,7 @@ class ProductTasteService
         $sync = [];
 
         foreach ($tags as $name => $w) {
+            $w = abs($w); // 👈 гарантирует только положительные значения
             [$taste] = static::firstOrCreateTasteWithGroup($name);
             $pct = $max > 0 ? round($w * 100 / $max, 1) : 0;
             $sync[$taste->id] = ['intensity_percent' => $pct];

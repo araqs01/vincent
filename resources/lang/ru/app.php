@@ -87,8 +87,8 @@ return [
     ],
 
     'pairing' => [
-        'singular' => 'Сочетание',
-        'plural' => 'Сочетания',
+        'singular' => 'Блюда',
+        'plural' => 'Блюда',
         'fields' => [
             'name' => 'Название',
         ],
