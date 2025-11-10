@@ -11,18 +11,34 @@ class WineDish extends Model
 
     protected $fillable = [
         'category_id',
-        'type',        // например: 'игристое', 'брют', 'шампанское'
+        'type',
         'color',
         'name',
         'grape_mix',
         'region_id',
         'pairings',
+        'aromaticity',
+        'sweetness',
+        'body',
+        'tannin',
+        'acidity',
+        'effervescence',
+        'strength_min',
+        'strength_max',
+        'age_min',
+        'age_max',
+        'sugar',
+        'price_min',
+        'price_max',
+        'extra_marker',
+        'meta'
     ];
 
     public $translatable = ['name', 'grape_mix', 'pairings'];
 
     protected $casts = [
         'pairings' => 'array',
+        'meta'=>'array',
     ];
 
     public function category()

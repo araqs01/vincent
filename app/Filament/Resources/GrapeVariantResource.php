@@ -38,20 +38,35 @@ class GrapeVariantResource extends Resource
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form->schema([
-            Forms\Components\Select::make('grape_id')
-                ->relationship('grape', 'name')
-                ->label('Сорт винограда')
-                ->required(),
-            Forms\Components\Select::make('region_id')
-                ->relationship('region', 'name')
-                ->label('Регион')
-                ->searchable(),
-            Forms\Components\Select::make('category_id')
-                ->relationship('category', 'name')
-                ->label('Категория')
-                ->searchable(),
 
-            Section::make('Характеристики вина')
+            Section::make('Основная информация')
+                ->schema([
+                    Grid::make(3)->schema([
+                        Forms\Components\Select::make('grape_id')
+                            ->relationship('grape', 'name')
+                            ->label('Сорт винограда')
+                            ->required()
+                            ->searchable(),
+
+                        Forms\Components\Select::make('region_id')
+                            ->relationship('region', 'name')
+                            ->label('Регион')
+                            ->searchable(),
+
+                        Forms\Components\Select::make('category_id')
+                            ->relationship('category', 'name')
+                            ->label('Категория')
+                            ->searchable(),
+                    ]),
+                    Grid::make(4)->schema([
+                        Forms\Components\TextInput::make('meta.wine_type')->label('Тип вина / игристого'),
+                        Forms\Components\TextInput::make('meta.color')->label('Цвет'),
+                        Forms\Components\TextInput::make('meta.blend')->label('Купаж'),
+                        Forms\Components\TextInput::make('meta.series')->label('Серия'),
+                    ]),
+                ])->collapsible(),
+
+            Section::make('Характеристики вкуса')
                 ->description('Оцени по шкале от 0 до 5')
                 ->schema([
                     Grid::make(3)->schema([
@@ -62,9 +77,30 @@ class GrapeVariantResource extends Resource
                         Forms\Components\TextInput::make('meta.acidity')->numeric()->minValue(0)->maxValue(5)->label('Кислотность'),
                         Forms\Components\TextInput::make('meta.sparkling')->numeric()->minValue(0)->maxValue(5)->label('Игристость'),
                     ]),
-                ]),
+                ])->collapsible(),
+
+            Section::make('Технические параметры')
+                ->schema([
+                    Grid::make(3)->schema([
+                        Forms\Components\TextInput::make('meta.sugar')->label('Сахар'),
+                        Forms\Components\TextInput::make('meta.strength_min')->numeric()->label('Мин. крепость'),
+                        Forms\Components\TextInput::make('meta.age_min')->numeric()->label('Мин. возраст'),
+                        Forms\Components\TextInput::make('meta.oak_aging')->label('Выдержка в дубе'),
+                        Forms\Components\TextInput::make('meta.storage_potential')->label('Потенциал хранения'),
+                    ]),
+                ])->collapsible(),
+
+            Section::make('Дополнительные характеристики')
+                ->schema([
+                    Grid::make(3)->schema([
+                        Forms\Components\TextInput::make('meta.main_taste')->label('Основной вкус'),
+                        Forms\Components\TextInput::make('meta.aging')->label('Выдержка'),
+                        Forms\Components\Textarea::make('meta.similar_wines')->label('Похожие вина')->rows(2),
+                        Forms\Components\Textarea::make('meta.similar_grapes')->label('Похожие сорта')->rows(2),
+                    ]),
+                ])->collapsible(),
+
             Section::make('Вкусовой профиль')
-                ->description('Выбери вкусы, характерные для этого сорта')
                 ->schema([
                     Forms\Components\Select::make('tastes')
                         ->multiple()
@@ -72,8 +108,7 @@ class GrapeVariantResource extends Resource
                         ->label('Вкусы сорта')
                         ->preload()
                         ->searchable(),
-                ]),
-
+                ])->collapsible(),
         ]);
     }
 
@@ -82,11 +117,17 @@ class GrapeVariantResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('grape.name')->label('Сорт'),
+                Tables\Columns\TextColumn::make('grape.name')->label('Сорт')->searchable(),
                 Tables\Columns\TextColumn::make('region.name')->label('Регион'),
                 Tables\Columns\TextColumn::make('category.name')->label('Категория'),
-                Tables\Columns\TextColumn::make('meta')->label('Meta')->limit(60),
+                Tables\Columns\TextColumn::make('meta.wine_type')->label('Тип вина'),
+                Tables\Columns\TextColumn::make('meta.color')->label('Цвет'),
+                Tables\Columns\TextColumn::make('meta.body')->label('Полнотелость')->sortable(),
+                Tables\Columns\TextColumn::make('meta.acidity')->label('Кислотность')->sortable(),
+                Tables\Columns\TextColumn::make('meta.sweetness')->label('Сладость')->sortable(),
             ])
+            ->defaultSort('id', 'asc')
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -99,9 +140,9 @@ class GrapeVariantResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGrapeVariants::route('/'),
+            'index'  => Pages\ListGrapeVariants::route('/'),
             'create' => Pages\CreateGrapeVariant::route('/create'),
-            'edit' => Pages\EditGrapeVariant::route('/{record}/edit'),
+            'edit'   => Pages\EditGrapeVariant::route('/{record}/edit'),
         ];
     }
 }

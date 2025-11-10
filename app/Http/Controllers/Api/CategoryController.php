@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 
 class CategoryController extends BaseController
 {
+    //cache jamanakavor hanela petq , wine_dish ic kpcnel product dhis, mek el product nerqin sarql
     public function catalog(Request $request)
     {
         $cacheKey = $this->cacheKey("categories-with-menu");

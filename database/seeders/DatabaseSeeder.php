@@ -16,8 +16,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RolesSeeder::class,
-            PermissionsSeeder::class,
             AdminUserSeeder::class,
             CategoriesAndMenuSeeder::class,
             PairingSeeder::class,
@@ -25,6 +23,14 @@ class DatabaseSeeder extends Seeder
             RegionSeeder::class,
             GrapeSeeder::class,
             WineDishSeeder::class,
+            ShieldSeeder::class,
+            WhiskyTasteGroupSeeder::class,
+            WhiskyTasteSeeder::class,
+            BeerTasteSeeder::class,
+            WhiskyBaseSeeder::class,
+            WhiskyDishSeeder::class,
+            StrongDrinkDishSeeder::class,
+            AgingPotentialGroupSeeder::class
         ]);
     }
 }

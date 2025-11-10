@@ -65,6 +65,12 @@ class RegionResource extends Resource
                 ->collapsible(),
             Forms\Components\Section::make(__('app.region.descriptions.icons'))
                 ->schema([
+                    SpatieMediaLibraryFileUpload::make('hero_image')
+                        ->collection('icon_production')
+                        ->label(__('Шапка'))
+                        ->image()
+                        ->maxFiles(1),
+
                     SpatieMediaLibraryFileUpload::make('icon_terroir')
                         ->collection('icon_terroir')
                         ->label(__('app.region.fields.icon_terroir'))
@@ -87,43 +93,58 @@ class RegionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn($query) => $query->with([
+                'parent',
+                'parent.parent',
+                'parent.parent.parent',
+                'parent.parent.parent.parent',
+            ]))
             ->columns([
-                Tables\Columns\ImageColumn::make('icon_terroir')
-                    ->label(__('app.region.fields.icon_terroir'))
-                    ->height(40)
-                    ->circular(),
+                // 🌲 Уровень
+                Tables\Columns\TextColumn::make('level')
+                    ->label('Уровень')
+                    ->getStateUsing(function ($record) {
+                        $level = 1;
+                        $parent = $record->parent;
+                        while ($parent) {
+                            $level++;
+                            $parent = $parent->parent;
+                        }
+                        return $level;
+                    })
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        1 => 'success',
+                        2 => 'info',
+                        3 => 'warning',
+                        4 => 'danger',
+                        default => 'gray',
+                    }),
 
-                Tables\Columns\ImageColumn::make('icon_production')
-                    ->label(__('app.region.fields.icon_production'))
-                    ->height(40)
-                    ->circular(),
-
+                // 🏷 Название
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('app.region.fields.name'))
+                    ->label('Название')
+                    ->formatStateUsing(function ($record) {
+                        $depth = 0;
+                        $parent = $record->parent;
+                        while ($parent) {
+                            $depth++;
+                            $parent = $parent->parent;
+                        }
+                        $indent = str_repeat(' ', $depth * 2);
+                        $arrow = $depth > 0 ? '↳ ' : '';
+                        return $indent . $arrow . $record->name;
+                    })
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('parent.name')
-                    ->label(__('app.region.fields.parent'))
+                    ->label('Родительский регион')
                     ->toggleable(),
-
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created')
-                    ->dateTime()
-                    ->since()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('parent')
-                    ->relationship('parent', 'name')
-                    ->label(__('app.region.fields.parent')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

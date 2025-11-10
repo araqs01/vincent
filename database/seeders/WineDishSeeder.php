@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\GrapeVariant;
 use Illuminate\Database\Seeder;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
@@ -33,20 +34,34 @@ class WineDishSeeder extends Seeder
         DB::transaction(function () use ($rows, &$count) {
             foreach ($rows as $index => $row) {
                 try {
-                    $categoryName = trim($row['B'] ?? '');
-                    $color        = trim($row['C'] ?? '');
-                    $grapeMix     = trim($row['D'] ?? '');
-                    $blend        = trim($row['E'] ?? '');
-                    $name         = trim($row['F'] ?? '');
-                    $countryName  = trim($row['N'] ?? '');
-                    $regionName   = trim($row['O'] ?? '');
-                    $pairings     = trim($row['X'] ?? '');
+                    $categoryName  = trim($row['B'] ?? '');
+                    $color         = trim($row['C'] ?? '');
+                    $grapeMix      = trim($row['D'] ?? '');
+                    $blend         = trim($row['E'] ?? '');
+                    $name          = trim($row['F'] ?? '');
+                    $unitMarker    = trim($row['G'] ?? ''); // ← колонка "единица"
+                    $aromaticity   = trim($row['H'] ?? '');
+                    $sweetness     = trim($row['I'] ?? '');
+                    $body          = trim($row['J'] ?? '');
+                    $tannin        = trim($row['K'] ?? '');
+                    $acidity       = trim($row['L'] ?? '');
+                    $effervescence = trim($row['M'] ?? '');
+                    $countryName   = trim($row['N'] ?? '');
+                    $regionName    = trim($row['O'] ?? '');
+                    $strengthMin   = floatval($row['P'] ?? null);
+                    $strengthMax   = floatval($row['Q'] ?? null);
+                    $ageMin        = intval($row['R'] ?? null);
+                    $ageMax        = intval($row['S'] ?? null);
+                    $sugar         = trim($row['T'] ?? '');
+                    $priceMin      = floatval($row['U'] ?? null);
+                    $priceMax      = floatval($row['V'] ?? null);
+                    $extraMarker   = trim($row['W'] ?? '');
+                    $pairings      = trim($row['X'] ?? '');
 
                     if (!$categoryName && !$pairings) continue;
 
                     // 🔹 Категория
-                    $category = \App\Models\Category::where('slug', 'wine')->first();
-
+                    $category = Category::where('slug', 'wine')->first();
                     if (!$category) {
                         throw new \Exception('❌ Категория "Wine" не найдена в таблице categories');
                     }
@@ -84,7 +99,39 @@ class WineDishSeeder extends Seeder
                         ->values()
                         ->toArray();
 
-                    // 🔹 Создаём блюдо
+                    // 🔹 Если есть «1» в колонке — тянем характеристики из GrapeVariant
+                    $meta = [];
+                    if ($unitMarker === '1') {
+                        $baseGrapeName = $name ?: ($grapeMix ?: $blend);
+                        if ($baseGrapeName) {
+                            $variant = GrapeVariant::query()
+                                ->whereHas('grape', function ($q) use ($baseGrapeName) {
+                                    $q->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, '$.en'))) = ?", [Str::lower($baseGrapeName)]);
+                                })
+                                ->first();
+                            if ($variant) {
+                                $metaFromGrape = $variant->meta ?? [];
+                                $aromaticity   = $metaFromGrape['aromatic'] ?? $aromaticity;
+                                $sweetness     = $metaFromGrape['sweetness'] ?? $sweetness;
+                                $body          = $metaFromGrape['body'] ?? $body;
+                                $tannin        = $metaFromGrape['tannin'] ?? $tannin;
+                                $acidity       = $metaFromGrape['acidity'] ?? $acidity;
+                                $effervescence = $metaFromGrape['sparkling'] ?? $effervescence;
+
+                                $meta = [
+                                    'source_grape_variant_id' => $variant->id,
+                                    'source_grape_name' => $baseGrapeName,
+                                    'import_mode' => 'from_grape_variant'
+                                ];
+
+                                Log::info("🍇 Подтянуты характеристики из GrapeVariant для {$baseGrapeName}");
+                            } else {
+                                Log::warning("⚠️ GrapeVariant не найден для {$baseGrapeName}");
+                            }
+                        }
+                    }
+
+                    // 🔹 Создаём или обновляем блюдо
                     $dish = WineDish::updateOrCreate(
                         [
                             'category_id' => $category->id,
@@ -92,11 +139,26 @@ class WineDishSeeder extends Seeder
                             'region_id'   => $region?->id,
                         ],
                         [
-                            'type'        => $type,
-                            'color'       => $color,
-                            'name'        => ['ru' => $name ?: ($grapeMix ?: $blend), 'en' => $name ?: ($grapeMix ?: $blend)],
-                            'grape_mix'   => ['ru' => $grapeMix ?: $blend, 'en' => $grapeMix ?: $blend],
-                            'pairings'    => $pairingArray,
+                            'type'          => $type,
+                            'color'         => $color,
+                            'name'          => ['ru' => $name ?: ($grapeMix ?: $blend), 'en' => $name ?: ($grapeMix ?: $blend)],
+                            'grape_mix'     => ['ru' => $grapeMix ?: $blend, 'en' => $grapeMix ?: $blend],
+                            'pairings'      => $pairingArray,
+                            'aromaticity'   => $aromaticity,
+                            'sweetness'     => $sweetness,
+                            'body'          => $body,
+                            'tannin'        => $tannin,
+                            'acidity'       => $acidity,
+                            'effervescence' => $effervescence,
+                            'strength_min'  => $strengthMin,
+                            'strength_max'  => $strengthMax,
+                            'age_min'       => $ageMin,
+                            'age_max'       => $ageMax,
+                            'sugar'         => $sugar,
+                            'price_min'     => $priceMin,
+                            'price_max'     => $priceMax,
+                            'extra_marker'  => $extraMarker,
+                            'meta'          => $meta,
                         ]
                     );
 
