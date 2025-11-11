@@ -133,6 +133,13 @@ class WineDishResource extends Resource
                 Tables\Columns\TextColumn::make('region.name')->label('Регион')->sortable(),
                 Tables\Columns\TextColumn::make('pairings')->label('Гастро-сочетания')->limit(60)->wrap(),
             ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label('Тип вина')

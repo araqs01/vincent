@@ -10,7 +10,6 @@ use App\Models\Taste;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 
 class GrapeSeeder extends Seeder
@@ -65,8 +64,9 @@ class GrapeSeeder extends Seeder
         $this->command->info("📊 Всего строк в Excel: {$totalRows}");
 
         $count = 0;
-
-        foreach ($rows as $row) {
+        $rowIndex = array_key_first($rows);
+        foreach ($rows as $index => $row) {
+            if ($index > 1657) break;
             $categoryName = trim($row['A'] ?? '');
             $wineType = trim($row['B'] ?? '');
             $color = trim($row['C'] ?? '');
@@ -102,25 +102,18 @@ class GrapeSeeder extends Seeder
                 $grapeNameRu = $grapeNameEn;
             }
 
-            if (!$grapeNameRu && !$grapeNameEn) {
-                $this->command->warn("⏭ Пропущена строка без имени сорта (строка {$count})");
-                continue;
-            }
 
-            $grape = Grape::firstOrCreate(
-                ['name->ru' => $grapeNameRu],
-                [
-                    'name' => [
-                        'ru' => $grapeNameRu,
-                        'en' => $grapeNameEn ?: $grapeNameRu,
-                    ],
-                    'description' => [
-                        'ru' => $displayName ?: $grapeNameRu,
-                        'en' => $displayName ?: ($grapeNameEn ?: $grapeNameRu),
-                    ],
-                ]
-            );
-
+            $grape = new Grape([
+                'name' => [
+                    'ru' => $grapeNameRu,
+                    'en' => $grapeNameEn ?: $grapeNameRu,
+                ],
+                'description' => [
+                    'ru' => $displayName ?: $grapeNameRu,
+                    'en' => $displayName ?: ($grapeNameEn ?: $grapeNameRu),
+                ],
+            ]);
+            $grape->save();
             // 🏷 Категория
             // 🏷 Категория и тип вина
             $rawType = trim(mb_strtolower($row['A'] ?? '')); // например "портвейн"
@@ -170,35 +163,33 @@ class GrapeSeeder extends Seeder
                 }
             }
 
-            // 🔸 Вариант сорта
-            $variant = GrapeVariant::firstOrCreate([
+            $variant = new GrapeVariant([
                 'grape_id' => $grape->id,
                 'region_id' => $region?->id,
                 'category_id' => $category?->id,
-            ],
-                [
-                    'meta' => [
-                        'wine_type' => $wineType,
-                        'color' => $color,
-                        'blend' => $blend,
-                        'aromatic' => $aromatic,
-                        'sweetness' => $sweetness,
-                        'body' => $body,
-                        'tannin' => $tannin,
-                        'acidity' => $acidity,
-                        'sparkling' => $sparkling,
-                        'sugar' => $sugar,
-                        'strength_min' => $strengthMin,
-                        'age_min' => $ageMin,
-                        'oak_aging' => $oakAging,
-                        'series' => $series,
-                        'storage_potential' => $storage,
-                        'main_taste' => $mainTaste,
-                        'aging' => $aging,
-                        'similar_wines' => collect(explode(',', $similarWines))->map(fn($v) => trim($v))->filter()->values(),
-                        'similar_grapes' => collect(explode(',', $similarGrapes))->map(fn($v) => trim($v))->filter()->values(),
-                    ]
-                ]);
+                'meta' => [
+                    'wine_type' => $wineType,
+                    'color' => $color,
+                    'blend' => $blend,
+                    'aromatic' => $aromatic,
+                    'sweetness' => $sweetness,
+                    'body' => $body,
+                    'tannin' => $tannin,
+                    'acidity' => $acidity,
+                    'sparkling' => $sparkling,
+                    'sugar' => $sugar,
+                    'strength_min' => $strengthMin,
+                    'age_min' => $ageMin,
+                    'oak_aging' => $oakAging,
+                    'series' => $series,
+                    'storage_potential' => $storage,
+                    'main_taste' => $mainTaste,
+                    'aging' => $aging,
+                    'similar_wines' => collect(explode(',', $similarWines))->map(fn($v) => trim($v))->filter()->values(),
+                    'similar_grapes' => collect(explode(',', $similarGrapes))->map(fn($v) => trim($v))->filter()->values(),
+                ]
+            ]);
+            $variant->save();
 
             // 🖼 Поиск и привязка изображения
             if (is_dir($tempDir)) {
@@ -285,7 +276,12 @@ class GrapeSeeder extends Seeder
                 }
 
                 if (!empty($tasteIds)) {
-                    $variant->tastes()->sync($tasteIds);
+                    $pivotData = [];
+                    foreach ($tasteIds as $index => $tasteId) {
+                        $pivotData[$tasteId] = ['order_index' => $index + 1];
+                    }
+
+                    $variant->tastes()->sync($pivotData);
                 }
             }
 

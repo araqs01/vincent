@@ -32,7 +32,8 @@ class DatabaseSeeder extends Seeder
             StrongDrinkDishSeeder::class,
             AgingPotentialGroupSeeder::class,
             SommelierSeeder::class,
-            SupplierSeeder::class
+            SupplierSeeder::class,
+            WineTasteSeeder::class
         ]);
     }
 }

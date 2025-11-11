@@ -9,7 +9,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
-
+use Filament\Forms\Components\Select;
+use App\Models\Taste;
 class GrapeVariantResource extends Resource
 {
     protected static ?string $model = GrapeVariant::class;
@@ -102,13 +103,43 @@ class GrapeVariantResource extends Resource
 
             Section::make('Вкусовой профиль')
                 ->schema([
-                    Forms\Components\Select::make('tastes')
-                        ->multiple()
-                        ->relationship('tastes', 'name')
+                    Select::make('tastes')
                         ->label('Вкусы сорта')
+                        ->multiple()
                         ->preload()
-                        ->searchable(),
-                ])->collapsible(),
+                        ->searchable()
+                        // Загружаем все варианты вкусов
+                        ->options(function () {
+                            return Taste::orderBy('name->ru')
+                                ->get()
+                                ->pluck('name', 'id');
+                        })
+                        // При открытии записи — выставляем порядок по pivot (order_index)
+                        ->afterStateHydrated(function (Select $component, $record) {
+                            if (! $record) {
+                                return;
+                            }
+
+                            $ids = $record->tastes()
+                                ->orderByPivot('order_index')
+                                ->pluck('tastes.id')
+                                ->toArray();
+
+                            $component->state($ids);
+                        })
+                        // При сохранении вручную фиксируем порядок
+                        ->dehydrateStateUsing(fn($state) => $state)
+                        ->saveRelationshipsUsing(function (Select $component, $state, $record) {
+                            if (! $record) return;
+
+                            $record->tastes()->sync(
+                                collect($state)->mapWithKeys(
+                                    fn($id, $i) => [$id => ['order_index' => $i + 1]]
+                                )->all()
+                            );
+                        }),
+                ])
+                ->collapsible(),
         ]);
     }
 

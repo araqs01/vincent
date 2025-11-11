@@ -61,6 +61,13 @@ class WhiskyDishResource extends Resource
                 TextColumn::make('body')->label('Плотность'),
                 TextColumn::make('age')->label('Возраст'),
             ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ])
             ->defaultSort('id', 'asc');
     }
 

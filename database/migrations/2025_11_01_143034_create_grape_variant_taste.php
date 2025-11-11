@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('taste_id')->constrained()->cascadeOnDelete();
             $table->float('intensity_default')->default(50);
             $table->primary(['grape_variant_id', 'taste_id']); // составной ключ
+            $table->unsignedSmallInteger('order_index')->nullable();
             $table->timestamps();
         });
     }

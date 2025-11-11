@@ -26,7 +26,6 @@ class WhiskyDishSeeder extends Seeder
         foreach ($rows as $i => $row) {
             $type = trim($row['A'] ?? '');
             $region = trim($row['B'] ?? '');
-            if (!$type) continue;
 
             try {
                 WhiskyDish::updateOrCreate(

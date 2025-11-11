@@ -27,9 +27,11 @@ class GrapeVariant extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function tastes()
+    public function tastes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Taste::class, 'grape_variant_taste');
+        return $this->belongsToMany(Taste::class)
+            ->withPivot('order_index')
+            ->orderByPivot('order_index'); // чтобы Laravel возвращал в правильном порядке
     }
 
     public function pairings()
