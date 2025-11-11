@@ -94,6 +94,7 @@ class WineTasteSeeder extends Seeder
             $tasteEn = trim($row['C'] ?? '');
             $group1 = trim($row['D'] ?? '');
             $group2 = trim($row['F'] ?? '');
+            $group2_en = trim($row['G'] ?? '');
             $type = trim($row['H'] ?? '');
             $typeEn = trim($row['I'] ?? '');
 
@@ -107,6 +108,7 @@ class WineTasteSeeder extends Seeder
                 'meta' => [
                     'group_1' => $group1,
                     'group_2' => $group2,
+                    'group2_en' => $group2_en,
                     'type' => $type,
                     'type_en' => $typeEn,
                 ],
