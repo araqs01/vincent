@@ -31,7 +31,8 @@ class WineDish extends Model
         'price_min',
         'price_max',
         'extra_marker',
-        'meta'
+        'meta',
+        'grouping'
     ];
 
     public $translatable = ['name', 'grape_mix', 'pairings'];

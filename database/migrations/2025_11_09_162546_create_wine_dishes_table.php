@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json('grape_mix')->nullable();   // текст купажа
             $table->foreignId('region_id')->nullable()->constrained()->nullOnDelete();
             $table->json('pairings')->nullable();    // блюда
+            $table->boolean('grouping')->default(0);
             $table->timestamps();
         });
 

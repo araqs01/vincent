@@ -125,7 +125,6 @@ class GrapeSeeder extends Seeder
             // 🏷 Категория и тип вина
             $rawType = trim(mb_strtolower($row['A'] ?? '')); // например "портвейн"
             $wineType = $rawType ?: 'вино'; // тип вина
-            $categoryName = 'вино'; // общая категория
 
             $categoryMap = [
                 'вино' => 'Вино',
@@ -145,15 +144,11 @@ class GrapeSeeder extends Seeder
                 'шерри' => 'Вино',
             ];
 
-            $categoryBase = $categoryMap[$rawType] ?? 'Вино';
+            $categoryBase = $categoryMap[$rawType] ?? 'Вино'; // нормализуем
 
-            $category = Category::firstOrCreate(
-                ['name->ru' => $categoryBase],
-                [
-                    'name' => ['ru' => $categoryBase, 'en' => 'Wine'],
-                    'slug' => Str::slug($categoryBase, '-'),
-                ]
-            );
+            $category = Category::query()
+                ->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, '$.ru'))) = ?", [mb_strtolower($categoryBase)])
+                ->first();
 
             $region = null;
             if ($country || $regionName) {
