@@ -21,7 +21,7 @@ class SommelierGroupResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
     protected static ?string $navigationGroup = 'Каталог';
     protected static ?string $modelLabel = 'Группа сомелье';
-    protected static ?string $pluralModelLabel = 'Сомелье группы';
+    protected static ?string $pluralModelLabel = 'Вино-теги-сомелье';
 
     public static function form(\Filament\Forms\Form $form): Forms\Form
     {
