@@ -68,6 +68,8 @@ class WineDishResource extends Resource
                     ->relationship('region', 'name')
                     ->searchable()
                     ->preload(),
+                Forms\Components\Checkbox::make('grouping')
+                    ->label('Группировка'),
             ]),
 
             Section::make('Характеристики вина')
