@@ -104,7 +104,7 @@ class WineDishResource extends Resource
                     ->label('Доп. маркер')
                     ->maxLength(255),
 
-                Forms\Components\Textarea::make('meta')
+                Forms\Components\Textarea::make('meta.source_grape_name')
                     ->label('Meta (доп. данные)')
                     ->rows(3),
             ]),

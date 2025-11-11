@@ -30,7 +30,9 @@ class DatabaseSeeder extends Seeder
             WhiskyBaseSeeder::class,
             WhiskyDishSeeder::class,
             StrongDrinkDishSeeder::class,
-            AgingPotentialGroupSeeder::class
+            AgingPotentialGroupSeeder::class,
+            SommelierSeeder::class,
+            SupplierSeeder::class
         ]);
     }
 }
