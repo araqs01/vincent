@@ -72,11 +72,8 @@ class WineTasteSeeder extends Seeder
 
         $normalizedGroups = collect(WineTasteGroup::all())->mapWithKeys(function ($group) use ($normalize) {
             $name = is_array($group->name) ? ($group->name['ru'] ?? reset($group->name)) : $group->name;
-            $type = is_array($group->type) ? ($group->type['ru'] ?? reset($group->type)) : $group->type;
-
             $keys = [
                 $normalize($name),
-                $normalize($type),
             ];
 
             return collect($keys)->mapWithKeys(fn($k) => [$k => $group->id]);
@@ -101,7 +98,6 @@ class WineTasteSeeder extends Seeder
             if (!$tasteRu) continue;
 
             $groupId = $this->detectGroupId($group1, $group2, $normalizedGroups);
-
             WineTaste::create([
                 'group_id' => $groupId,
                 'name' => ['ru' => $tasteRu, 'en' => $tasteEn ?: $tasteRu],
@@ -144,10 +140,10 @@ class WineTasteSeeder extends Seeder
         $g1 = $normalize($group1);
         $g2 = $normalize($group2);
 
-        $g1 = $groupAliases[$g1] ?? $g1;
+        $g1_ = $groupAliases[$g1] ?? $g1;
         $g2 = $groupAliases[$g2] ?? $g2;
 
-        $groupId = $normalizedGroups[$g1] ?? ($normalizedGroups[$g2] ?? null);
+        $groupId = $normalizedGroups[$g1] ?? ($normalizedGroups[$g1_] ?? null);
 
         if (!$groupId) {
             foreach ($normalizedGroups as $key => $id) {
