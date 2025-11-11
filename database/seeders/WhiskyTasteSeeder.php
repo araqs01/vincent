@@ -41,19 +41,11 @@ class WhiskyTasteSeeder extends Seeder
             // 🔹 Создаём / находим группу
             $group = null;
             if ($groupEn || $groupRu) {
-                $group = WhiskyTasteGroup::firstOrCreate(
-                    ['name->en' => $groupEn],
-                    [
-                        'name' => ['en' => $groupEn ?: $groupRu, 'ru' => $groupRu ?: $groupEn],
-                        'type' => ['en' => $typeEn ?: null, 'ru' => $typeRu ?: null],
-                    ]
-                );
+                $group = WhiskyTasteGroup::where('name->en', $groupEn)->first();
             }
 
             // 🔹 Создаём вкус
-            WhiskyTaste::updateOrCreate(
-                ['name->en' => $nameEn],
-                [
+            $whiskey =WhiskyTaste::create([
                     'name'  => ['en' => $nameEn ?: $nameRu, 'ru' => $nameRu ?: $nameEn],
                     'group' => ['en' => $groupEn ?: null, 'ru' => $groupRu ?: null],
                     'type'  => ['en' => $typeEn ?: null, 'ru' => $typeRu ?: null],
@@ -62,6 +54,7 @@ class WhiskyTasteSeeder extends Seeder
                 ]
             );
 
+            $whiskey->save();
             $count++;
         }
 

@@ -9,20 +9,23 @@ class WhiskyBeerTasteResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
     protected static ?string $navigationGroup = 'Справочники';
-    protected static ?string $model = null; // у нас нет единой модели
+    protected static ?string $model = \App\Models\WhiskyTasteGroup::class; // ✅ главная модель — группы вкусов
     protected static ?string $navigationLabel = 'Виски – Крепкие напитки – Пиво – вкусы и группы';
 
-    public static function getModel(): string
-    {
-        // безопасный fallback
-        return \App\Models\WhiskyTaste::class;
-    }
+    // ❌ удаляем весь метод getModel()
 
     public static function getPages(): array
     {
         return [
-            // ✅ теперь метод route() будет доступен
             'index' => Pages\ManageWhiskyBeerTastes::route('/'),
+            'view' => Pages\ViewWhiskyTasteGroup::route('/{record}'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            \App\Filament\Resources\WhiskyBeerTasteResource\RelationManagers\TastesRelationManager::class,
         ];
     }
 }

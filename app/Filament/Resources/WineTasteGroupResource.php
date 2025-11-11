@@ -35,11 +35,6 @@ class WineTasteGroupResource extends Resource
                     ->label('Тип напитка (Wine / Champagne / etc.)')
                     ->required(),
             ),
-            TranslatableContainer::make(
-                Forms\Components\TextInput::make('final_group')
-                    ->label('Финальная группировка')
-                    ->placeholder('Например: Фруктовые / Цветочные'),
-            ),
             Forms\Components\Textarea::make('meta')
                 ->label('Meta (дополнительные данные)')
                 ->rows(3),
@@ -59,9 +54,6 @@ class WineTasteGroupResource extends Resource
                     ->label('Тип напитка')
                     ->limit(30)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('final_group')
-                    ->label('Финальная группа')
-                    ->limit(40),
                 Tables\Columns\TextColumn::make('tastes_count')
                     ->counts('tastes')
                     ->label('Количество вкусов')

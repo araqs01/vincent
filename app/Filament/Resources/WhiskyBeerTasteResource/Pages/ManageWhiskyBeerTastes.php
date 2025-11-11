@@ -38,11 +38,6 @@ class ManageWhiskyBeerTastes extends ManageRecords
                 ->badge(WhiskyTasteGroup::count())
                 ->modifyQueryUsing(fn() => WhiskyTasteGroup::query()),
 
-            'whisky' => Tab::make('Виски / Крепкие напитки')
-                ->icon('heroicon-o-fire')
-                ->badge(WhiskyTaste::count())
-                ->modifyQueryUsing(fn() => WhiskyTaste::query()),
-
             'beer' => Tab::make('Пиво')
                 ->icon('heroicon-o-beaker')
                 ->badge(BeerTaste::count())
@@ -56,7 +51,6 @@ class ManageWhiskyBeerTastes extends ManageRecords
     protected function getTableQuery(): ?\Illuminate\Database\Eloquent\Builder
     {
         return match ($this->activeTab) {
-            'whisky' => WhiskyTaste::query(),
             'beer' => BeerTaste::query(),
             default => WhiskyTasteGroup::query(),
         };
@@ -79,6 +73,12 @@ class ManageWhiskyBeerTastes extends ManageRecords
                     ->getStateUsing(fn($record) => $record->type)
                     ->toggleable(),
 
+                TextColumn::make('tastes_count')
+                    ->label('Кол-во вкусов')
+                    ->counts('tastes') // Eloquent counts relation
+                    ->sortable()
+                    ->visible(fn() => $this->activeTab === 'groups'),
+
                 TextColumn::make('weight')
                     ->label('Вес')
                     ->numeric()
@@ -87,51 +87,45 @@ class ManageWhiskyBeerTastes extends ManageRecords
             ])
             ->headerActions([
                 $this->getCreateGroupAction(),
-                $this->getCreateWhiskyAction(),
                 $this->getCreateBeerAction(),
             ])
             ->actions([
+                // 👁 Открыть (только для групп)
+                Tables\Actions\ViewAction::make()
+                    ->label('Открыть')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn($record) => $this->activeTab === 'groups'
+                        ? \App\Filament\Resources\WhiskyBeerTasteResource::getUrl('view', ['record' => $record])
+                        : null
+                    )
+                    ->visible(fn() => $this->activeTab === 'groups'),
+                // ✏️ Редактировать
                 Tables\Actions\EditAction::make()
                     ->label('Редактировать')
                     ->form(function () {
                         return match ($this->activeTab) {
                             'groups' => [
-                               TranslatableContainer::make(
-                                   TextInput::make('name')
+                                \Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer::make(
+                                    \Filament\Forms\Components\TextInput::make('name')
                                         ->label('Название группы')
                                         ->required(),
                                 ),
-                                TranslatableContainer::make(
-                                    TextInput::make('type')
-                                    ->label('Тип напитка'),
-                                )
-                            ],
-                            'whisky' => [
-                                TranslatableContainer::make(
-                                    \Filament\Forms\Components\TextInput::make('name')->label('Название')->required(),
+                                \Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer::make(
+                                    \Filament\Forms\Components\TextInput::make('type')
+                                        ->label('Тип напитка'),
                                 ),
-                                \Filament\Forms\Components\Select::make('group_id')
-                                    ->label('Группа вкуса')
-                                    ->relationship('groupRelation', 'name')
-                                    ->preload()
-                                    ->searchable()
-                                    ->required(),
-                                TranslatableContainer::make(
-                                \Filament\Forms\Components\TextInput::make('type')->label('Тип напитка'),
-                                ),
-                                \Filament\Forms\Components\TextInput::make('weight')->label('Вес')->numeric(),
                             ],
                             'beer' => [
-                              TranslatableContainer::make(
+                                \Mvenghaus\FilamentPluginTranslatableInline\Forms\Components\TranslatableContainer::make(
                                     \Filament\Forms\Components\TextInput::make('name')->label('Название')->required(),
                                 ),
                             ],
                             default => [],
                         };
                     }),
-                DeleteAction::make(),
-            ])
-            ->defaultSort('id', 'asc');
+
+                Tables\Actions\DeleteAction::make(),
+            ]);
     }
 
     /** ------------------------------
@@ -153,24 +147,6 @@ class ManageWhiskyBeerTastes extends ManageRecords
             ]);
     }
 
-    protected function getCreateWhiskyAction(): CreateAction
-    {
-        return CreateAction::make('createWhisky')
-            ->visible(fn() => $this->activeTab === 'whisky')
-            ->model(WhiskyTaste::class)
-            ->label('Создать вкус виски / крепких напитков')
-            ->form([
-                TextInput::make('name')->label('Название')->required(),
-                Select::make('group_id')
-                    ->label('Группа вкуса')
-                    ->relationship('groupRelation', 'name')
-                    ->preload()
-                    ->searchable()
-                    ->required(),
-                TextInput::make('type')->label('Тип напитка'),
-                TextInput::make('weight')->label('Вес')->numeric(),
-            ]);
-    }
 
     protected function getCreateBeerAction(): CreateAction
     {
@@ -181,5 +157,12 @@ class ManageWhiskyBeerTastes extends ManageRecords
             ->form([
                 TextInput::make('name')->label('Название')->required(),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            \App\Filament\Resources\WhiskyBeerTasteResource\RelationManagers\TastesRelationManager::class,
+        ];
     }
 }
